@@ -9,12 +9,14 @@ exports.getAdmins = function ( req, res ) {
 }
 
 exports.addAdmin = function ( req, res ) {
+	var id = req.body.id;
 	var name = req.body.name;
-	var desc = req.body.desc;
+	var username = req.body.username;
+	var password = req.body.password
 	
 	// Add user with predefined image for the demo
-	admins.push( { "name": name } );
-	res.send( users );
+	admins.push( { "id": id, "name": name, "username": username, "password": password } );
+	res.send( admins );
 }
 
 exports.updateAdmin = function ( req, res ) {
@@ -22,16 +24,15 @@ exports.updateAdmin = function ( req, res ) {
 }
 
 exports.deleteAdmin = function ( req, res ) {
-	var userId = req.params.userId;
+	var adminID = req.params.id;
 	
-	for ( var userIndex in users ) {
-		var user = users[ userIndex ];
+	for ( var adminIndex in admins ) {
+		var admin = admins[ adminIndex ];
 		
-		if ( user.id === userId ) {
-			users.splice( userIndex, 1 );
+		if ( admin.id === adminID ) {
+			admins.splice( adminIndex, 1 );
 			break;
 		}
 	}
-	
-	res.send( users );
+	res.send( admins );
 }
