@@ -1,3 +1,7 @@
+var MongoClient = require( 'mongodb' ).MongoClient;
+var assert = require( 'assert' );
+var url = 'mongodb://administrator:mongoLO@localhost:27017';
+
 var admins = [
 	{ "id": "1", "name": "Juan García", "username": "juanga", "password": "juanga" },
 	{ "id": "2", "name": "María Pérez", "username": "mariape", "password": "mariape" },
@@ -5,7 +9,23 @@ var admins = [
 ];
 
 exports.getAdmins = function ( req, res ) {
-	res.send( admins );
+	// res.send( admins );
+	MongoClient.connect( url, { useNewUrlParser: true }, function ( err, db ) {
+		if ( err ) throw err;
+		var dbo = db.db( "Actapp" );
+		dbo.collection( "admins" ).findOne( {}, function ( err, result ) {
+			if ( err ) throw err;
+			console.log( result.name );
+			db.close();
+			res.send( result );
+		} );
+	} );
+	// 	MongoClient.connect(url, {useNewUrlParser: true},function(err, db) {
+	// 		assert.equal(null, err);
+	// 		console.log("Connected successfully to server");
+	//
+	// 		db.close();
+	// 	})
 }
 
 exports.addAdmin = function ( req, res ) {
