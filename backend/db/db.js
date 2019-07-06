@@ -1,16 +1,26 @@
 var MongoClient = require( 'mongodb' ).MongoClient;
-var url = 'mongodb://administrator:mongoLO@localhost:27017/Actapp';
+var url = 'mongodb://administrator:mongoLO@localhost:27017';
 
+let dbConnection = null;
+let dbCursor = null;
+
+exports.getDb = () => dbCursor;
 
 exports.createDBConnection = async () => {
-	if (db) return new Promise((resolve, reject) => resolve(db));
+	if (dbCursor)
+		return dbCursor;
 	
-	let dbURL = getDBUrl();
-	// Connect to the db
-	let dbConnection = await MongoClient.connect(dbURL);
-	if (!dbConnection) {
+	dbConnection = await MongoClient.connect( url, { useNewUrlParser: true } );
+	if (!dbConnection)
 		throw Error('Error connecting DB');
-	}
 	
-	return db;
+	dbCursor = dbConnection.db('Actapp');
+	return dbCursor;
 };
+
+exports.closeDBConnection = async () => {
+	if (dbConnection)
+		dbConnection.close();
+};
+
+
