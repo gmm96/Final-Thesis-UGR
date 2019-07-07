@@ -1,6 +1,7 @@
 var dbModule = require( '../db' );
 
-let adminsCollection = dbModule.getDb().collection( 'admins' );
+let db = dbModule.getDb();
+let adminsCollection = db.collection( 'admins' );
 
 exports.createAdmin = async ( admin ) => {
 	let result = await adminsCollection.findOne( { email: admin.email } );
@@ -9,6 +10,12 @@ exports.createAdmin = async ( admin ) => {
 		return 'Admin already exists!';
 	}
 	result = ( await adminsCollection.insertOne( admin ) ).ops[ 0 ];
+	console.log( 'result', result );
+	return result;
+};
+
+exports.getAdmin = async ( email ) => {
+	let result = ( await adminsCollection.findOne( { email: email } ) );
 	console.log( 'result', result );
 	return result;
 };

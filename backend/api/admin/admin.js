@@ -1,27 +1,25 @@
-var MongoClient = require( 'mongodb' ).MongoClient;
+const apiTools = require( "../api_tools" );
+var jwt = require( 'jsonwebtoken' );
 var dbModule = require( '../../db/db' );
-var adminCollection = require( '../../db/admin/admin' )
-
 
 exports.getAdmins = async ( req, res ) => {
-	var dbo = dbModule.getDb();
-	dbo.collection( "admins" ).findOne( {}, function ( err, result ) {
-		if ( err ) throw err;
-		console.log( result.name );
-		res.send( result );
-	} );
+	res.send( req.user );
 }
 
 exports.addAdmin = async ( req, res ) => {
-	let newAdmin = {
-		name: req.body.name,
-		surname: req.body.surname,
-		username: req.body.username,
-		password: req.body.password,
-		email: req.body.email
-	};
-	let result = ( await adminCollection.createAdmin( newAdmin ) );
-	res.send( result );
+	try {
+		let newAdmin = {
+			name: req.body.name,
+			surname: req.body.surname,
+			username: req.body.username,
+			email: req.body.email,
+			password: req.body.password
+		};
+		let result = ( await adminCollection.createAdmin( newAdmin ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
 }
 
 exports.updateAdmin = async ( req, res ) => {
@@ -51,4 +49,13 @@ exports.deleteAdmin = async ( req, res ) => {
 	// 	}
 	// }
 	res.send( result );
+}
+
+
+exports.login = async ( req, res ) => {
+	let user = req.user;
+	delete user.password;
+	let token = jwt.sign( user, 'secret', { expiresIn: 3600 } );
+	
+	res.json( { token: 'bearer ' + token } );
 }
