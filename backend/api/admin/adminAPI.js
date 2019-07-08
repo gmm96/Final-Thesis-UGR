@@ -1,21 +1,19 @@
-const apiTools = require( "../api_tools" );
-var jwt = require( 'jsonwebtoken' );
-var dbModule = require( '../../db/db' );
+var apiTools = require( "../apiTools" );
+var adminDomain = require("../../domain/admin/adminDomain");
+var adminCollection = require("../../db/admin/adminDatabase");
+var jwt = require( "jsonwebtoken" );
 
-exports.getAdmins = async ( req, res ) => {
-	res.send( req.user );
-}
 
-exports.addAdmin = async ( req, res ) => {
+
+exports.createAdmin = async ( req, res ) => {
 	try {
 		let newAdmin = {
 			name: req.body.name,
 			surname: req.body.surname,
-			username: req.body.username,
 			email: req.body.email,
 			password: req.body.password
 		};
-		let result = ( await adminCollection.createAdmin( newAdmin ) );
+		let result = await adminDomain.createAdmin( newAdmin );
 		res.send( result );
 	} catch ( e ) {
 		apiTools.manageError( req, res, e );

@@ -13,7 +13,7 @@ var corsOptions = {
 };
 
 dbModule.createDBConnection().then(() => {
-    var adminDomain = require( './domain/admin/admin' );
+    var adminDomain = require( './domain/admin/adminDomain' );
     
     app.use( cors( corsOptions ) );
     app.use( bodyParser.json() );
@@ -55,7 +55,7 @@ dbModule.createDBConnection().then(() => {
         done( null, user );
     } );
     
-    var routes = require( './api/admin/admin_routes' );
+    var routes = require( './api/admin/adminRoutes' );
     routes.assignRoutes( app );
     
     app.listen( 3000 );
