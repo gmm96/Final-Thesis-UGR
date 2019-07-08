@@ -2,6 +2,8 @@ var domainTools = require( "../domainTools" );
 var adminDatabase = require( '../../db/admin/adminDatabase' );
 var bcrypt = require( 'bcrypt' );
 var emailValidator = require( 'email-validator' );
+var ObjectID = require( 'mongodb' ).ObjectID;
+
 
 exports.createAdmin = async ( admin ) => {
 	if ( !admin.name ) throw { code: 422, message: "Invalid name" };
@@ -22,14 +24,14 @@ exports.createAdmin = async ( admin ) => {
 
 
 exports.updateAdmin = async ( id, admin ) => {
-	if ( !id ) throw { code: 422, message: "Invalid id" };
+	if ( !id || !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid id" };
 	if ( !admin.email || !emailValidator.validate( admin.email ) ) throw { code: 422, message: "Invalid email" };
 	if ( !admin.name ) throw { code: 422, message: "Invalid name" };
 	
 	let existingAdminByEmail = ( await adminDatabase.getAdminByEmail( admin.email ) );
 	let existingAdminById = ( await adminDatabase.getAdminById( id ) );
 	if ( !existingAdminById )
-		throw { code: 422, message: "Specified admin not in system" };
+		throw { code: 422, message: "Specified admin is not in system" };
 	if ( existingAdminByEmail && !existingAdminByEmail._id.equals( existingAdminById._id ) )
 		throw { code: 422, message: "Email is already in use" };
 	
@@ -38,16 +40,16 @@ exports.updateAdmin = async ( id, admin ) => {
 
 
 exports.updateAdminPassword = async ( id, password ) => {
-	if ( !id ) throw { code: 422, message: "Invalid id." };
+	if ( !id || !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid id." };
 	if ( !password || ( password.length < 8 || password.length > 16 ) ) {
 		throw { code: 422, message: "Invalid password." };
 	} else {
-		newPassword = ( await domainTools.encryptPassword( password ) );
+		var newPassword = ( await domainTools.encryptPassword( password ) );
 	}
 	
 	let existingAdmin = ( await adminDatabase.getAdminById( id ) );
 	if ( !existingAdmin ) {
-		throw { code: 422, message: "Specified admin not in system" };
+		throw { code: 422, message: "Specified admin is not in system" };
 	}
 	existingAdmin.password = newPassword;
 	
@@ -56,8 +58,14 @@ exports.updateAdminPassword = async ( id, password ) => {
 
 
 exports.deleteAdmin = async ( id ) => {
-	if ( !id ) throw { code: 422, message: "Invalid id." };
+	if ( !id || !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid id." };
 	
+	let existingAdmin = ( await adminDatabase.getAdminById( id ) );
+	if ( !existingAdmin ) {
+		throw { code: 422, message: "Specified admin is not in system" };
+	}
+	
+	return ( await adminDatabase.deleteAdmin( id ) );
 };
 
 

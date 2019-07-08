@@ -10,6 +10,5 @@ exports.encryptPassword = async ( password ) => {
 			resolve( hash )
 		} );
 	} );
-	console.log( hashedPassword );
 	return hashedPassword;
 };

@@ -8,7 +8,7 @@ exports.assignRoutes = function ( app ) {
 		res.send( { message: "working" } );
 	} );
 	app.post( '/login', passport.authenticate( 'local' ), admin.login );
-	app.post( '/admin', passport.authenticate( 'jwt' ), permissions.validatePermissionByRole( permissions.ROLES.SUPER_ADMIN ), admin.createAdmin );
+	app.post( '/admin', admin.createAdmin );
 	app.put( '/admin/:_id', admin.updateAdmin );
 	app.put( '/admin/:_id/password', admin.updateAdminPassword );
 	app.delete( '/admin/:_id', admin.deleteAdmin );
