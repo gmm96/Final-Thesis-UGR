@@ -4,65 +4,60 @@ var bcrypt = require( 'bcrypt' );
 var emailValidator = require( 'email-validator' );
 
 exports.createAdmin = async ( admin ) => {
-	// 1. verificar que todos los datos vienen bien
-	console.log( admin.email );
-	if ( !admin.email ) {
-	} else if ( !emailValidator.validate( admin.email ) ) {
-	}
-	
-	console.log( admin.password );
-	if ( !admin.password ) {
-	} else if ( admin.password.length < 8 || admin.password.length > 16 ) {
+	if ( !admin.name ) throw { code: 422, message: "Invalid name" };
+	if ( !admin.email || !emailValidator.validate( admin.email ) ) throw { code: 422, message: "Invalid email" };
+	if ( !admin.password || ( admin.password.length < 8 || admin.password.length > 16 ) ) {
+		throw { code: 422, message: "Invalid password" };
 	} else {
-		admin.password = domainTools.encryptPassword( admin.password );
+		admin.password = ( await domainTools.encryptPassword( admin.password ) );
 	}
 	
-	console.log( admin.name );
-	if ( !admin.name ) {
-	}
-	
-	// 2. buscar un usuario con el mismo email
-	let existingAdmin = await adminDatabase.getAdminByEmail( admin.email );
-	console.log( 'finding admin', existingAdmin )
-	
-	// 2.1 Si existe un usuario, lanzar exception
+	let existingAdmin = ( await adminDatabase.getAdminByEmail( admin.email ) );
 	if ( existingAdmin ) {
-		throw { code: 422, message: "Admin email is not allowed" };
+		throw { code: 422, message: "Email is already in use" };
 	}
 	
-	// 3. Lllamar a create admin en db
-	return await adminDatabase.createAdmin( admin );
+	return ( await adminDatabase.createAdmin( admin ) );
 };
 
-exports.updateAdmin = async ( admin ) => {
-	// 1. verificar que todos los datos vienen bien
-	console.log( admin.email );
-	if ( !admin.email ) {
-	} else if ( !emailValidator.validate( admin.email ) ) {
-	}
+
+exports.updateAdmin = async ( id, admin ) => {
+	if ( !id ) throw { code: 422, message: "Invalid id" };
+	if ( !admin.email || !emailValidator.validate( admin.email ) ) throw { code: 422, message: "Invalid email" };
+	if ( !admin.name ) throw { code: 422, message: "Invalid name" };
 	
-	console.log( admin.password );
-	if ( !admin.password ) {
-	} else if ( admin.password.length < 8 || admin.password.length > 16 ) {
+	let existingAdminByEmail = ( await adminDatabase.getAdminByEmail( admin.email ) );
+	let existingAdminById = ( await adminDatabase.getAdminById( id ) );
+	if ( !existingAdminById )
+		throw { code: 422, message: "Specified admin not in system" };
+	if ( existingAdminByEmail && !existingAdminByEmail._id.equals( existingAdminById._id ) )
+		throw { code: 422, message: "Email is already in use" };
+	
+	return ( await adminDatabase.updateAdmin( id, admin ) );
+};
+
+
+exports.updateAdminPassword = async ( id, password ) => {
+	if ( !id ) throw { code: 422, message: "Invalid id." };
+	if ( !password || ( password.length < 8 || password.length > 16 ) ) {
+		throw { code: 422, message: "Invalid password." };
 	} else {
-		admin.password = domainTools.encryptPassword( admin.password );
+		newPassword = ( await domainTools.encryptPassword( password ) );
 	}
 	
-	console.log( admin.name );
-	if ( !admin.name ) {
+	let existingAdmin = ( await adminDatabase.getAdminById( id ) );
+	if ( !existingAdmin ) {
+		throw { code: 422, message: "Specified admin not in system" };
 	}
+	existingAdmin.password = newPassword;
 	
-	// 2. buscar un usuario con el mismo email
-	let existingAdmin = await adminDatabase.getAdminByEmail( admin.email );
-	console.log( 'finding admin', existingAdmin );
+	return ( await adminDatabase.updateAdmin( id, existingAdmin ) );
+};
+
+
+exports.deleteAdmin = async ( id ) => {
+	if ( !id ) throw { code: 422, message: "Invalid id." };
 	
-	// 2.1 Si existe un usuario, lanzar exception
-	if ( existingAdmin ) {
-		throw { code: 422, message: "Admin email is not allowed" };
-	}
-	
-	// 3. Lllamar a create admin en db
-	return await adminDatabase.updateAdmin( admin );
 };
 
 
@@ -71,9 +66,9 @@ exports.getAdminByEmailAndPassword = async ( email, password ) => {
 	if ( !admin ) {
 		return null;
 	}
-	if ( admin.password !== password ) {
+	/*if ( admin.password !== password ) {
 		console.log( admin.password, password );
 		return null;
-	}
+	}*/
 	return admin;
 };
