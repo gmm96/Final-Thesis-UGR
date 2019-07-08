@@ -30,7 +30,7 @@ exports.deleteAdmin = async ( email ) => {
 };
 
 exports.updateAdmin = async ( admin ) => {
-	let result = ( await adminCursor.updateOne( { email: email }, admin ) );
+	let result = ( await adminCursor.updateOne( { _id: admin.id }, admin ) );
 	console.log( 'result', result );
 	return result;
 };
