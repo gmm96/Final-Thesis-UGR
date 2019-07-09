@@ -15,6 +15,16 @@ exports.getAdminByEmail = async ( email ) => {
 	return result;
 };
 
+exports.getAllAdmins = async () => {
+	let result = await new Promise( async ( resolve, reject ) => {
+		( await adminCursor.find( {} ).toArray( async ( err, item ) => {
+			if ( err ) reject( err );
+			resolve( item );
+		} ) )
+	} );
+	return result;
+};
+
 exports.createAdmin = async ( admin ) => {
 	result = ( await adminCursor.insertOne( admin ) );
 	return result.ops[ 0 ];

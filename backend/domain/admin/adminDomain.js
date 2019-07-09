@@ -5,6 +5,12 @@ var emailValidator = require( 'email-validator' );
 var ObjectID = require( 'mongodb' ).ObjectID;
 
 
+exports.getAllAdmins = async () => {
+	let allAdmins = ( await adminDatabase.getAllAdmins() );
+	return allAdmins;
+};
+
+
 exports.createAdmin = async ( admin ) => {
 	if ( !admin.name ) throw { code: 422, message: "Invalid name" };
 	if ( !admin.email || !emailValidator.validate( admin.email ) ) throw { code: 422, message: "Invalid email" };

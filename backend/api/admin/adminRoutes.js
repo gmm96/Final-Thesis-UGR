@@ -8,8 +8,9 @@ exports.assignRoutes = function ( app ) {
 		res.send( { message: "working" } );
 	} );
 	app.post( '/login', passport.authenticate( 'local' ), admin.login );
-	app.post( '/admin', admin.createAdmin );
-	app.put( '/admin/:_id', admin.updateAdmin );
-	app.put( '/admin/:_id/password', admin.updateAdminPassword );
-	app.delete( '/admin/:_id', admin.deleteAdmin );
+	app.get( '/admins', admin.getAllAdmins )
+	app.post( '/admins', admin.createAdmin );
+	app.put( '/admins/:_id', admin.updateAdmin );
+	app.put( '/admins/:_id/password', admin.updateAdminPassword );
+	app.delete( '/admins/:_id', admin.deleteAdmin );
 }

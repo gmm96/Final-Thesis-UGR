@@ -1,7 +1,16 @@
 var apiTools = require( "../apiTools" );
 var adminDomain = require( "../../domain/admin/adminDomain" );
-var adminCollection = require( "../../db/admin/adminDatabase" );
 var jwt = require( "jsonwebtoken" );
+
+
+exports.getAllAdmins = async ( req, res ) => {
+	try {
+		let result = ( await adminDomain.getAllAdmins() );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
 
 
 exports.createAdmin = async ( req, res ) => {
