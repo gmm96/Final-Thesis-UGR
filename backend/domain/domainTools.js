@@ -1,6 +1,6 @@
 var bcrypt = require( "bcrypt" );
 
-let saltRounds = 288;
+let saltRounds = 2.88;
 
 
 exports.encryptPassword = async ( password ) => {

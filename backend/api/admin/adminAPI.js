@@ -59,7 +59,7 @@ exports.deleteAdmin = async ( req, res ) => {
 	} catch ( e ) {
 		apiTools.manageError( req, res, e );
 	}
-}
+};
 
 
 exports.login = async ( req, res ) => {

@@ -1,5 +1,5 @@
 var admin = require( './adminAPI' );
-var permissions = require( '../permissions' )
+var permissions = require( '../permissions' );
 var passport = require( 'passport' );
 
 
@@ -8,7 +8,7 @@ exports.assignRoutes = function ( app ) {
 		res.send( { message: "working" } );
 	} );
 	app.post( '/login', passport.authenticate( 'local' ), admin.login );
-	app.get( '/admins', admin.getAllAdmins )
+	app.get( '/admins', admin.getAllAdmins );
 	app.post( '/admins', admin.createAdmin );
 	app.put( '/admins/:_id', admin.updateAdmin );
 	app.put( '/admins/:_id/password', admin.updateAdminPassword );
