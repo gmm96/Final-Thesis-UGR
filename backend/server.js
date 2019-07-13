@@ -6,6 +6,7 @@ var cors = require( 'cors' );
 var moment = require( 'moment' );
 var passport = require( 'passport' );
 var LocalStrategy = require( 'passport-local' ).Strategy;
+var routes = require( "./routes" );
 
 var corsOptions = {
 	origin: true,
@@ -46,22 +47,14 @@ dbModule.createDBConnection().then( () => {
 	} ) );
 	
 	passport.serializeUser( function ( user, done ) {
-		debugger;
 		done( null, user );
 	} );
 	
 	passport.deserializeUser( function ( user, done ) {
-		debugger;
 		done( null, user );
 	} );
 	
-	var adminRoutes = require( './api/admin/adminRoutes' );
-	adminRoutes.assignRoutes( app );
-	var competitionRoutes = require( "./api/competition/competitionRoutes" );
-	competitionRoutes.assignRoutes( app );
-	var teamRoutes = require( './api/team/teamRoutes' );
-	teamRoutes.assignRoutes( app );
+	routes.assignRoutes( app );
 	
 	app.listen( 3000 );
 } );
-
