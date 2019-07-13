@@ -4,8 +4,7 @@ var ObjectID = require( 'mongodb' ).ObjectID;
 
 
 exports.getAllCompetitions = async () => {
-	let allCompetitions = ( await competitionDatabase.getAllCompetitions() );
-	return allCompetitions;
+	return ( await competitionDatabase.getAllCompetitions() );
 };
 
 

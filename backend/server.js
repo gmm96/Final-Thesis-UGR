@@ -59,6 +59,8 @@ dbModule.createDBConnection().then( () => {
 	adminRoutes.assignRoutes( app );
 	var competitionRoutes = require( "./api/competition/competitionRoutes" );
 	competitionRoutes.assignRoutes( app );
+	var teamRoutes = require( './api/team/teamRoutes' );
+	teamRoutes.assignRoutes( app );
 	
 	app.listen( 3000 );
 } );

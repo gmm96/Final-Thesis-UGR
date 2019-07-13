@@ -6,8 +6,7 @@ var ObjectID = require( 'mongodb' ).ObjectID;
 
 
 exports.getAllAdmins = async () => {
-	let allAdmins = ( await adminDatabase.getAllAdmins() );
-	return allAdmins;
+	return ( await adminDatabase.getAllAdmins() );
 };
 
 
