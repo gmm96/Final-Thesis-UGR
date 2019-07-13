@@ -11,12 +11,7 @@ exports.getTeamById = async ( id ) => {
 };
 
 exports.getAllTeams = async () => {
-	let result = await new Promise( async ( resolve, reject ) => {
-		( await teamCursor.find( {} ).toArray( async ( err, item ) => {
-			if ( err ) reject( err );
-			resolve( item );
-		} ) )
-	} );
+	let result = ( await dbModule.findResultToArray( teamCursor, {} ) );
 	return result;
 };
 

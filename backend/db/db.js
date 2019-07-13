@@ -7,20 +7,29 @@ let dbCursor = null;
 exports.getDb = () => dbCursor;
 
 exports.createDBConnection = async () => {
-	if (dbCursor)
+	if ( dbCursor )
 		return dbCursor;
 	
 	dbConnection = await MongoClient.connect( url, { useNewUrlParser: true } );
-	if (!dbConnection)
-		throw Error('Error connecting DB');
+	if ( !dbConnection )
+		throw Error( 'Error connecting DB' );
 	
-	dbCursor = dbConnection.db('Actapp');
+	dbCursor = dbConnection.db( 'Actapp' );
 	return dbCursor;
 };
 
 exports.closeDBConnection = async () => {
-	if (dbConnection)
+	if ( dbConnection )
 		dbConnection.close();
+};
+
+exports.findResultToArray = async ( collectionCursor, query ) => {
+	return ( await new Promise( async ( resolve, reject ) => {
+		( await collectionCursor.find( query ).toArray( async ( err, item ) => {
+			if ( err ) reject( err );
+			resolve( item );
+		} ) )
+	} ) );
 };
 
 

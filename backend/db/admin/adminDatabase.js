@@ -16,12 +16,7 @@ exports.getAdminByEmail = async ( email ) => {
 };
 
 exports.getAllAdmins = async () => {
-	let result = await new Promise( async ( resolve, reject ) => {
-		( await adminCursor.find( {} ).toArray( async ( err, item ) => {
-			if ( err ) reject( err );
-			resolve( item );
-		} ) )
-	} );
+	let result = ( await dbModule.findResultToArray( adminCursor, {} ) );
 	return result;
 };
 

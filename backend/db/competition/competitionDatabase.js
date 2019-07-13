@@ -11,12 +11,7 @@ exports.getCompetitionById = async ( id ) => {
 };
 
 exports.getAllCompetitions = async () => {
-	let result = await new Promise( async ( resolve, reject ) => {
-		( await competitionCursor.find( {} ).toArray( async ( err, item ) => {
-			if ( err ) reject( err );
-			resolve( item );
-		} ) )
-	} );
+	let result = ( await dbModule.findResultToArray( competitionCursor, {} ) );
 	return result;
 };
 
