@@ -1,5 +1,5 @@
 var apiTools = require( "../apiTools" );
-var teamDomain = require( "../../domain/team/teamDomain" );
+var teamDomain = require( "../../domain/competition/teamDomain" );
 
 
 exports.getAllTeams = async ( req, res ) => {
@@ -18,7 +18,9 @@ exports.createTeam = async ( req, res ) => {
 			city: req.body.city,
 			federatedNumber: req.body.federatedNumber,
 			players: [],
-			staff: []
+			staff: [],
+			createdAt: new Date(),
+			updatedAt: new Date()
 		};
 		let result = ( await teamDomain.createTeam( newTeam ) );
 		res.send( result );
@@ -34,7 +36,8 @@ exports.updateTeam = async ( req, res ) => {
 			city: req.body.city,
 			federatedNumber: req.body.federatedNumber,
 			players: [],
-			staff: []
+			staff: [],
+			updatedAt: new Date()
 		};
 		let result = ( await teamDomain.updateTeam( req.params._id, updatedTeam ) );
 		res.send( result );

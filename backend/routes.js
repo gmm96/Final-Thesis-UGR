@@ -1,8 +1,6 @@
 const routes = [
 	"./api/admin/adminRoutes",
-	"./api/competition/competitionRoutes",
-	"./api/team/teamRoutes",
-	"./api/player/playerRoutes"
+	"./api/competition/competitionRoutes"
 ];
 
 exports.assignRoutes = async ( app ) => {

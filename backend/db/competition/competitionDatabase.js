@@ -6,6 +6,7 @@ let ObjectID = require( 'mongodb' ).ObjectID;
 
 
 exports.getCompetitionById = async ( id ) => {
+	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid competition id" };
 	let result = ( await competitionCursor.findOne( { _id: ObjectID( id.toString() ) } ) );
 	return result;
 };
@@ -21,11 +22,13 @@ exports.createCompetition = async ( competition ) => {
 };
 
 exports.updateCompetition = async ( id, competition ) => {
+	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid competition id" };
 	let result = ( await competitionCursor.findOneAndUpdate( { _id: ObjectID( id.toString() ) }, { $set: competition }, { returnOriginal: false } ) );
 	return result.value;
 };
 
 exports.deleteCompetition = async ( id ) => {
+	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid competition id" };
 	let result = ( await competitionCursor.deleteOne( { _id: ObjectID( id.toString() ) } ) );
 	return ( result.result.n === 1 && result.result.ok === 1 );
 };

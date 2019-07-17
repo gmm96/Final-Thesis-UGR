@@ -32,4 +32,11 @@ exports.findResultToArray = async ( collectionCursor, query ) => {
 	} ) );
 };
 
+exports.convertDateToDatabaseDate = function ( date ) {
+	return date.toISOString();
+};
+
+exports.convertDatabaseDateToDate = function ( dbDate ) {
+	return new Date( dbDate );
+};
 

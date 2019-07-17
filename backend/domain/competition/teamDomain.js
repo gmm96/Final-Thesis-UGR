@@ -1,10 +1,16 @@
 var domainTools = require( "../domainTools" );
-var teamDatabase = require( '../../db/team/teamDatabase' );
-var ObjectID = require( 'mongodb' ).ObjectID;
+var teamDatabase = require( '../../db/competition/teamDatabase' );
 
 
 exports.getAllTeams = async () => {
 	let result = ( await teamDatabase.getAllTeams() );
+	return result;
+};
+
+
+exports.getTeamById = async ( id ) => {
+	if ( !id ) throw { code: 422, message: "Invalid team id" };
+	let result = ( await teamDatabase.getTeamById( id ) );
 	return result;
 };
 
@@ -20,7 +26,7 @@ exports.createTeam = async ( team ) => {
 
 
 exports.updateTeam = async ( id, team ) => {
-	if ( !id || !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid team id" };
+	if ( !id ) throw { code: 422, message: "Invalid team id" };
 	if ( !team.name ) throw { code: 422, message: "Invalid team name" };
 	if ( !team.city ) throw { code: 422, message: "Invalid city" };
 	if ( !team.federatedNumber || typeof team.federatedNumber != 'number' )
@@ -34,7 +40,7 @@ exports.updateTeam = async ( id, team ) => {
 
 
 exports.deleteTeam = async ( id ) => {
-	if ( !id || !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid team id" };
+	if ( !id ) throw { code: 422, message: "Invalid team id" };
 	
 	let existingTeam = ( await teamDatabase.getTeamById( id ) );
 	if ( !existingTeam ) {

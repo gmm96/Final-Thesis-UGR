@@ -19,7 +19,9 @@ exports.createAdmin = async ( req, res ) => {
 			name: req.body.name,
 			surname: req.body.surname,
 			email: req.body.email,
-			password: req.body.password
+			password: req.body.password,
+			createdAt: new Date(),
+			updatedAt: new Date()
 		};
 		let result = ( await adminDomain.createAdmin( newAdmin ) );
 		res.send( result );
@@ -34,6 +36,7 @@ exports.updateAdmin = async ( req, res ) => {
 			name: req.body.name,
 			surname: req.body.surname,
 			email: req.body.email,
+			updatedAt: new Date()
 		};
 		let result = ( await adminDomain.updateAdmin( req.params._id, updatedAdmin ) );
 		res.send( result );

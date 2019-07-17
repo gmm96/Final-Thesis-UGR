@@ -6,6 +6,7 @@ let ObjectID = require( 'mongodb' ).ObjectID;
 
 
 exports.getTeamById = async ( id ) => {
+	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid team id" };
 	let result = ( await teamCursor.findOne( { _id: ObjectID( id.toString() ) } ) );
 	return result;
 };
@@ -21,11 +22,13 @@ exports.createTeam = async ( team ) => {
 };
 
 exports.updateTeam = async ( id, team ) => {
+	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid team id" };
 	let result = ( await teamCursor.findOneAndUpdate( { _id: ObjectID( id.toString() ) }, { $set: team }, { returnOriginal: false } ) );
 	return result.value;
 };
 
 exports.deleteTeam = async ( id ) => {
+	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid team id" };
 	let result = ( await teamCursor.deleteOne( { _id: ObjectID( id.toString() ) } ) );
 	return ( result.result.n === 1 && result.result.ok === 1 );
 };

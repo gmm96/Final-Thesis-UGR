@@ -1,5 +1,5 @@
 var apiTools = require( "../apiTools" );
-var playerDomain = require( "../../domain/player/playerDomain" );
+var playerDomain = require( "../../domain/competition/playerDomain" );
 
 
 exports.getAllPlayers = async ( req, res ) => {
@@ -21,7 +21,9 @@ exports.createPlayer = async ( req, res ) => {
 			federatedNumber: req.body.federatedNumber,
 			birthDate: req.body.birthDate,
 			birthPlace: req.body.birthPlace,
-			nationality: req.body.nationality
+			nationality: req.body.nationality,
+			createdAt: new Date(),
+			updatedAt: new Date()
 		};
 		let result = ( await playerDomain.createPlayer( newPlayer ) );
 		res.send( result );
@@ -38,7 +40,8 @@ exports.updatePlayer = async ( req, res ) => {
 			federatedNumber: req.body.federatedNumber,
 			birthDate: req.body.birthDate,
 			birthPlace: req.body.birthPlace,
-			nationality: req.body.nationality
+			nationality: req.body.nationality,
+			updatedAt: new Date()
 		};
 		let result = ( await playerDomain.updatePlayer( req.params._id, updatedPlayer ) );
 		res.send( result );
