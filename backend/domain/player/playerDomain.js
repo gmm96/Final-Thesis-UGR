@@ -55,7 +55,7 @@ exports.updatePlayer = async ( id, player, avatar ) => {
 		if ( existingPlayer.avatar ) ( await domainTools.removeUploadedImage( existingPlayer.avatar ) );
 		player[ 'avatar' ] = ( await domainTools.moveImageToMediaDirectory( avatar.path, "players/" + id + ".jpg" ) );
 	} else {
-		if ( existingPlayer.avatar ) ( await domainTools.removeUploadedImage( existingPlayer.avatar ) );
+		if ( existingPlayer.avatar && player.deleteAvatar ) ( await domainTools.removeUploadedImage( existingPlayer.avatar ) );
 	}
 	
 	return ( await playerDatabase.updatePlayer( id, player ) );

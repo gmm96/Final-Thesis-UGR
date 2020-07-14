@@ -55,6 +55,7 @@ exports.updateTeam = async ( req, res ) => {
 					localJersey: fields.localJersey,
 					visitorJersey: fields.visitorJersey,
 					players: fields.players,
+					deleteAvatar: fields.deleteAvatar,
 					createdAt: new Date(),
 					updatedAt: new Date()
 				};

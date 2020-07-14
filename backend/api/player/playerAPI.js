@@ -59,6 +59,7 @@ exports.updatePlayer = async ( req, res ) => {
 					birthPlace: fields.birthPlace,
 					weight: fields.weight,
 					height: fields.height,
+					deleteAvatar: fields.deleteAvatar,
 					createdAt: new Date(),
 					updatedAt: new Date()
 				};

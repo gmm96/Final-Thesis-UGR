@@ -107,7 +107,7 @@ exports.updateTeam = async ( id, team, avatar ) => {
 		if ( existingTeam.avatar ) ( await domainTools.removeUploadedImage( existingTeam.avatar ) );
 		team[ 'avatar' ] = ( await domainTools.moveImageToMediaDirectory( avatar.path, "teams/" + id + ".jpg" ) );
 	} else {
-		if ( existingTeam.avatar ) ( await domainTools.removeUploadedImage( existingTeam.avatar ) );
+		if ( existingTeam.avatar && team.deleteAvatar ) ( await domainTools.removeUploadedImage( existingTeam.avatar ) );
 	}
 	
 	return ( await teamDatabase.updateTeam( id, team ) );
