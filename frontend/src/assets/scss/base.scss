@@ -1,0 +1,258 @@
+@import "src/styles";
+
+$blue-grey-50: #eceff1;
+$blue-grey-100: #CFD8DC;
+$blue-grey-800: #37474f;
+$indigo-900: #1A237E;
+$gray-50: #FAFAFA;
+$orange: #F25826;
+$black: #222831;
+$amber-200: #FFE082;
+
+@mixin border_radius($radius) {
+    border-radius: $radius;
+    -moz-border-radius: $radius;
+    -webkit-border-radius: $radius;
+}
+
+@mixin border-bottom-left-radius($radius) {
+    border-bottom-left-radius: $radius;
+    -moz-border-radius-bottomleft: $radius;
+    -webkit-border-bottom-left-radius: $radius;
+}
+
+@mixin border-top-left-radius($radius) {
+    border-top-left-radius: $radius;
+    -moz-border-radius-topleft: $radius;
+    -webkit-border-top-left-radius: $radius;
+}
+
+@mixin border-bottom-right-radius($radius) {
+    border-bottom-right-radius: $radius;
+    -moz-border-radius-bottomright: $radius;
+    -webkit-border-bottom-right-radius: $radius;
+}
+
+@mixin border-top-right-radius($radius) {
+    border-top-right-radius: $radius;
+    -moz-border-radius-topright: $radius;
+    -webkit-border-top-right-radius: $radius;
+}
+
+@mixin change-mat-fab-button-size($btnsize,$fontsize) {
+    height: $btnsize;
+    width: $btnsize;
+    line-height: $btnsize - 4;
+    ::ng-deep.mat-button-wrapper {
+        line-height: $fontsize;
+        display: inline;
+        padding: 0;
+        .mat-icon {
+            font-size: $fontsize;
+            height: $fontsize;
+            width: $fontsize;
+        }
+    }
+}
+
+
+.center-background-img {
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-attachment: fixed;
+    background-size: cover;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.center-position-absolute {
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.caption-fixture-info {
+    caption-side: top;
+    border-bottom: 3px solid $orange;
+    background-color: $indigo-900;
+    color: white;
+    font-size: 14px;
+
+    .fixture-info-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .fixture-number {
+            margin-left: 24px;
+            margin-right: 12px;
+        }
+
+        .fixture-date {
+            margin-left: 12px;
+            margin-right: 24px;
+            font-size: 12px;
+        }
+    }
+}
+
+.details-navbar-links {
+    margin-left: -15px;
+    margin-right: -15px;
+    background-color: $blue-grey-100;
+
+    nav {
+        .navbar-toggler-title {
+            border: 0 !important;
+            cursor: auto;
+            font-size: 1rem;
+            padding-left: 1rem;
+
+            span {
+                display: inline-block;
+                vertical-align: middle;
+                line-height: normal;
+                text-transform: capitalize;
+            }
+        }
+
+        button.navbar-toggler {
+            margin-top: 10px;
+            margin-bottom: 10px;
+
+            .navbar-toggler-icon {
+                height: 1em;
+                width: 1em;
+                color: $orange;
+            }
+        }
+
+        .navbar-toggler-content {
+
+            .navbar-links {
+
+                a {
+                    cursor: pointer;
+                }
+
+                li {
+                    @include border_radius(1rem);
+
+                    &:hover {
+                        background-color: rgba($orange, 0.15);
+                    }
+                }
+
+                li.active {
+                    background-color: $orange;
+                    color: white;
+                    transition: all linear 1s;
+                }
+
+                li.active > a {
+                    color: white;
+                }
+            }
+        }
+    }
+}
+
+.details-header-intro {
+    background-color: $blue-grey-800;
+    padding: 10px;
+
+    .header-name {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+
+        .header-name-title {
+            margin: 3px 10px;
+            color: white;
+            font-size: 25px;
+            font-weight: 600;
+        }
+
+        .header-name-subtitle {
+            margin: 3px 10px;
+            color: lightgrey;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+    }
+
+    .header-info {
+        .info-group {
+
+            .header-info-counter {
+                display: flex;
+                flex-direction: column;
+                margin: 5px 5px;
+
+                .counter-title {
+                    color: lightgrey;
+                    font-size: 14px;
+                    font-weight: 500;
+                }
+
+                .counter-badge {
+                    padding: 5px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-around;
+                    align-items: center;
+                    @include border_radius(0.25rem);
+                    background-color: white;
+                    border: 5px solid $orange;
+
+                    .badge {
+
+                        .counter-icon {
+                            color: $orange;
+                        }
+                    }
+
+                    .counter-value {
+                        color: $orange;
+                        text-align: center;
+                        margin: 0 5px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
+        }
+    }
+
+    .header-pic {
+        padding: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            width: 64px;
+            height: 64px;
+            @include border_radius(5px);
+        }
+    }
+}
+
+
+.underline {
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0 2px;
+    transition: background-size .3s;
+
+    &:hover, &:focus {
+        background-size: 100% 2px;
+        cursor: pointer;
+    }
+}

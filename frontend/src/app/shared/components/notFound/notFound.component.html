@@ -1,0 +1,18 @@
+<div class="not-found-container h-100">
+    <div class="not-found-row">
+        <lottie-animation-view class="lottie-animation"
+                               [options]="lottieConfig"
+                               [width]="360"
+                               [height]="202"
+                               (animCreated)="setAnimation($event)">
+        </lottie-animation-view>
+    </div>
+    <div class="not-found-row">
+        <div class="not-found-text">¡ Opps, parece que te has perdido !</div>
+    </div>
+    <div class="not-found-row">
+        <button mat-flat-button color="primary" (click)="navigateToHome()"
+                class="go-home-button">Ir al inicio
+        </button>
+    </div>
+</div>

@@ -40,3 +40,7 @@ exports.convertDatabaseDateToDate = function ( dbDate ) {
 	return new Date( dbDate );
 };
 
+exports.createRegexForCaseInsTextQuery = function ( text ) {
+	return new RegExp( text, "i" );
+}
+

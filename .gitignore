@@ -1,5 +1,7 @@
 backend/node_modules
+backend/media
 frontend/node_modules
 Proyecto.iml
 Proyecto.ipr
 Proyecto.iws
+home/

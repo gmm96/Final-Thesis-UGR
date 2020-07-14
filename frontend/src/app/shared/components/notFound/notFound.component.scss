@@ -1,0 +1,30 @@
+@import "src/assets/scss/base";
+
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background-image: url("src/assets/images/background.jpg");
+    @extend .center-background-img;
+
+    .not-found-row {
+        margin: 10px;
+
+        .not-found-text {
+            color: white;
+            font-size: 25px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .go-home-button {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 150px;
+        }
+
+    }
+}
+

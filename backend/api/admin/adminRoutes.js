@@ -4,8 +4,8 @@ var passport = require( 'passport' );
 
 
 exports.assignRoutes = function ( app ) {
-	app.get( '/admin', passport.authenticate( 'jwt' ), permissions.validatePermissionByRole( permissions.ROLES.SUPER_ADMIN ), function ( req, res, next ) {
-		res.send( { message: "working" } );
+	app.get( '/admin', passport.authenticate( 'jwt' ), function ( req, res, next ) {
+		res.send( req.user );
 	} );
 	app.post( '/login', passport.authenticate( 'local' ), admin.login );
 	app.get( '/admins', admin.getAllAdmins );

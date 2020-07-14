@@ -1,0 +1,39 @@
+<mat-form-field class="table-filter w-100">
+    <mat-label>Filtro</mat-label>
+    <input matInput (keyup)="applyFilter($event)">
+</mat-form-field>
+<div class="table-border table-responsive shadow">
+    <mat-table [dataSource]="dataSource" class="table-responsive game-table">
+        <div class="table-shadow">
+            <ng-container matColumnDef="playerName">
+                <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
+                <mat-cell class="player-name" *matCellDef="let element">
+                    <img mat-card-image src="https://www.pikpng.com/pngl/b/418-4182803_server-icon-png-minecraft.png">
+                    {{ element.playerName }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="playerAge">
+                <mat-header-cell *matHeaderCellDef>Edad</mat-header-cell>
+                <mat-cell class="player-age" *matCellDef="let element">
+                    {{ element.playerAge }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="playerHeight">
+                <mat-header-cell *matHeaderCellDef>Altura (m)</mat-header-cell>
+                <mat-cell class="player-height" *matCellDef="let element">
+                    {{ element.playerHeight }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="playerWeight">
+                <mat-header-cell *matHeaderCellDef>Peso (kg)</mat-header-cell>
+                <mat-cell class="player-weight" *matCellDef="let element">
+                    {{ element.playerWeight }}
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </div>
+    </mat-table>
+<!--    <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" [pageSize]="10" [hidden]="!showPaginator"></mat-paginator>-->
+</div>

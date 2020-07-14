@@ -2,9 +2,9 @@ var apiTools = require( "../apiTools" );
 var competitionDomain = require( "../../domain/competition/competitionDomain" );
 
 
-exports.getAllCompetitions = async ( req, res ) => {
+exports.getCompetitionByID = async ( req, res ) => {
 	try {
-		let result = ( await competitionDomain.getAllCompetitions() );
+		let result = ( await competitionDomain.getCompetitionById( req.params.competitionID ) );
 		res.send( result );
 	} catch ( e ) {
 		apiTools.manageError( req, res, e );
@@ -15,12 +15,16 @@ exports.createCompetition = async ( req, res ) => {
 	try {
 		let newCompetition = {
 			name: req.body.name,
-			description: req.body.description,
-			regulation: req.body.regulation,
-			lineUpPlayerNumber: req.body.lineUpPlayerNumber,
-			maxPlayerNumber: req.body.maxPlayerNumber,
+			organizer: req.body.organizer,
+			season: req.body.season,
+			class: req.body.class,
+			sex: req.body.sex,
+			minTeamNumber: req.body.minTeamNumber,
+			minPlayerNumberPerTeam: req.body.minPlayerNumberPerTeam,
 			leagueFixturesVsSameTeam: req.body.leagueFixturesVsSameTeam,
 			playoffsFixturesVsSameTeam: req.body.playoffsFixturesVsSameTeam,
+			inProgress: true,
+			teams: req.body.teams,
 			createdAt: new Date(),
 			updatedAt: new Date()
 		};
@@ -35,47 +39,47 @@ exports.updateCompetition = async ( req, res ) => {
 	try {
 		let updatedCompetition = {
 			name: req.body.name,
-			description: req.body.description,
-			regulation: req.body.regulation,
+			organizer: req.body.organizer,
+			season: req.body.season,
+			minTeamNumber: req.body.minTeamNumber,
+			minPlayerNumberPerTeam: req.body.minPlayerNumberPerTeam,
 			leagueFixturesVsSameTeam: req.body.leagueFixturesVsSameTeam,
 			playoffsFixturesVsSameTeam: req.body.playoffsFixturesVsSameTeam,
+			inProgress: req.body.inProgress,
+			teams: req.body.teams,
 			updatedAt: new Date()
 		};
-		let result = ( await competitionDomain.updateCompetition( req.params._id, updatedCompetition ) );
+		let result = ( await competitionDomain.updateCompetition( req.params.competitionID, updatedCompetition ) );
 		res.send( result );
 	} catch ( e ) {
 		apiTools.manageError( req, res, e );
 	}
 };
 
-exports.deleteCompetition = async ( req, res ) => {
+exports.purgeCompetition = async ( req, res ) => {
 	try {
-		let result = ( await competitionDomain.deleteCompetition( req.params._id ) );
+		let result = ( await competitionDomain.purgeCompetition( req.params.competitionID ) );
 		res.send( result );
 	} catch ( e ) {
 		apiTools.manageError( req, res, e );
 	}
 };
 
-exports.addNewPlayerToTeam = async ( req, res ) => {
-	try {
-		let newPlayer = {
-			name: req.body.name,
-			surname: req.body.surname,
-			nationalIdentityCard: req.body.nationalIdentityCard,
-			passport: req.body.passport,
-			federatedNumber: req.body.federatedNumber,
-			birthDate: req.body.birthDate,
-			birthPlace: req.body.birthPlace,
-			nationality: req.body.nationality,
-			competitions: [ { teamID: req.params.teamID, competitionID: req.params.competitionID } ],
-			createdAt: new Date(),
-			updatedAt: new Date()
-		};
-		let result = ( await competitionDomain.addNewPlayerToTeam( newPlayer ) );
-		res.send( result );
-	} catch ( e ) {
-		apiTools.manageError( req, res, e );
-	}
-};
-
+// exports.generateCompetitionSchedule = async ( req, res ) => {
+// 	try {
+// 		let result = ( await competitionDomain.generateCompetitionSchedule( req.params.competitionID ) );
+// 		res.send( result );
+// 	} catch ( e ) {
+// 		apiTools.manageError( req, res, e );
+// 	}
+// };
+//
+//
+// exports.deleteCompetitionSchedule = async ( req, res ) => {
+// 	try {
+// 		let result = ( await competitionDomain.deleteCompetitionSchedule( req.params.competitionID ) );
+// 		res.send( result );
+// 	} catch ( e ) {
+// 		apiTools.manageError( req, res, e );
+// 	}
+// };

@@ -1,0 +1,35 @@
+<div class="calendar container">
+    <div class="row">
+        <div class="title col-12">
+            <h2 class="title-container">Calendario</h2>
+        </div>
+        <div class="fixture-changer col-12 col-md-10 offset-md-1">
+            <div class="fixture-changer-container">
+                <button mat-stroked-button class="arrow-icon">
+                    <mat-icon class="back-icon">arrow_back</mat-icon>
+                </button>
+                <div class="fixture-changer-panel">
+                    <div class="fixture-text">Jornada</div>
+                    <div class="fixture-input-container input-group">
+                        <input class="fixture-number" type="number" value="5">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-dark go-button" type="button">
+                                Ir
+                            </button>
+                        </div>
+                    </div>
+                    <div class="fixture-text">de</div>
+                    <div class="fixture-text">36</div>
+                </div>
+                <button mat-stroked-button class="arrow-icon">
+                    <mat-icon class="forward-icon">arrow_forward</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="table-container-matchup col-12 col-md-10 offset-md-1">
+            <app-game-table></app-game-table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,74 @@
+@import "src/assets/scss/base";
+
+.table-border {
+    @include border_radius(10px);
+
+    .game-table {
+        display: table;
+
+        mat-cell {
+            font-size: 16px;
+        }
+
+        .mat-row {
+            background-color: white;
+        }
+
+        .mat-row:nth-child(even) {
+            background-color: rgba(0, 0, 0, .05);
+        }
+
+        .local-team {
+            justify-content: flex-start;
+        }
+
+        .gameStatus {
+            justify-content: center;
+        }
+
+        .visitor-team {
+            justify-content: flex-end;
+        }
+    }
+
+    mat-paginator {
+        ::ng-deep.mat-paginator-page-size {
+            margin-right: 0;
+
+            .mat-paginator-page-size-select {
+                width: 40px;
+            }
+        }
+
+        ::ng-deep.mat-paginator-range-label {
+            margin: 0 10px 0 20px;
+        }
+
+        ::ng-deep.mat-paginator-navigation-previous:enabled, ::ng-deep.mat-paginator-navigation-next:enabled {
+            color: $orange;
+        }
+    }
+}
+
+$filer-color: $orange;
+.table-filter {
+    font-size: 14px;
+
+    ::ng-deep.mat-form-field-underline {
+        /*change color of underline*/
+        background-color: $filer-color;
+    }
+
+    ::ng-deep.mat-form-field-ripple {
+        /*change color of underline when focused*/
+        background-color: $filer-color;;
+    }
+}
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+    color: $filer-color;
+}
+
+
+
+

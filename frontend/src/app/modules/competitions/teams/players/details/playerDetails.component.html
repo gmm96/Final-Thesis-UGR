@@ -1,0 +1,54 @@
+<div class="player-details container-fluid">
+    <div class="details-header-intro row align-items-center">
+        <div class="header-name col-12 col-md-7 offset-md-1 col-lg-7 offset-lg-1 order-2 order-md-1 text-md-left text-center">
+            <div class="header-name-title">
+                <span class="underline" (click)="goToPlayerPage()" matTooltip="Ir a página personal de jugador">
+                    Guillermo Montes Martos
+                </span>
+            </div>
+            <div class="header-name-subtitle">
+                <span class="underline" (click)="goToTeamPage()" matTooltip="Ir a página de equipo en <nombre competición>">
+                    Cansaliebres Bar Gargallo
+                </span>
+            </div>
+        </div>
+        <div class="header-pic col-12 col-md-4 col-lg-4 order-1 order-md-2">
+            <img class="player-pic" mat-card-image src="https://d2cwpp38twqe55.cloudfront.net/req/202006161/images/players/caldejo01.jpg" alt="Photo of a Shiba Inu">
+        </div>
+    </div>
+
+    <div class="details-navbar-links">
+        <nav class="navbar navbar-expand-md navbar-light">
+            <div class="navbar-toggler-title navbar-toggler"><span>{{ currentTabField.toLowerCase() }}</span></div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-toggler-content collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
+                <ul class="navbar-links nav navbar-nav text-center">
+                    <li [class.active]="currentTabField === getTeamDetailsTabs().nextGames">
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openNextGames()">Partidos Post.</a>
+                    </li>
+                    <li [class.active]="currentTabField === getTeamDetailsTabs().prevGames">
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openPrevGames()">Partidos Ant.</a>
+                    </li>
+                    <li [class.active]="currentTabField === getTeamDetailsTabs().stats">
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openTeamStats()">Estadísticas</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <div class="competition-details-content w-100" [ngSwitch]="currentTabField" [@avoidAnimatedTabsFirstEvent]>
+        <div *ngSwitchCase="getTeamDetailsTabs().nextGames" [@animatedTabs]>
+            <app-player-next-games></app-player-next-games>
+        </div>
+        <div *ngSwitchCase="getTeamDetailsTabs().prevGames" [@animatedTabs]>
+            <app-player-prev-games></app-player-prev-games>
+        </div>
+        <div *ngSwitchCase="getTeamDetailsTabs().stats" [@animatedTabs]>
+            <app-competition-player-stats></app-competition-player-stats>
+        </div>
+    </div>
+</div>

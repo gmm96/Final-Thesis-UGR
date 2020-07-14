@@ -7,6 +7,8 @@ var moment = require( 'moment' );
 var passport = require( 'passport' );
 var LocalStrategy = require( 'passport-local' ).Strategy;
 var routes = require( "./routes" );
+var fs = require('fs');
+
 
 var corsOptions = {
 	origin: true,
@@ -53,6 +55,8 @@ dbModule.createDBConnection().then( () => {
 	passport.deserializeUser( function ( user, done ) {
 		done( null, user );
 	} );
+	
+	app.use('/media', express.static(__dirname + '/media'));
 	
 	routes.assignRoutes( app );
 	

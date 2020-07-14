@@ -1,0 +1,65 @@
+<div class="league-table container">
+    <div class="row">
+        <div class="title col-12">
+            <h2 class="title-container">Clasificación</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="table-container col-12 col-md-10 offset-md-1">
+            <div class="table-border table-responsive shadow">
+
+                <table mat-table [dataSource]="dataSource" matSort class="table-striped table-responsive">
+                    <ng-container matColumnDef="position">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                            <span matTooltip="Posición" matTooltipPosition="above">Pos.</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="team">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Equipo</th>
+                        <td mat-cell *matCellDef="let element"> <span class="td-padding">{{element.team}}</span> </td>
+                    </ng-container>
+                    <ng-container matColumnDef="played">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                            <span matTooltip="Partidos jugados" matTooltipPosition="above">J</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element"> {{element.played}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="wins">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                            <span matTooltip="Partidos ganados" matTooltipPosition="above">G</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element"> {{element.wins}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="losses">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                            <span matTooltip="Partidos perdidos" matTooltipPosition="above">P</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element"> {{element.losses}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="total_points">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                            <span matTooltip="Puntos totales a favor" matTooltipPosition="above">PF</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element"> {{element.total_points}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="total_opponent_points">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                            <span matTooltip="Puntos totales en contra" matTooltipPosition="above">PC</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element"> {{element.total_opponent_points}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="difference">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                            <span matTooltip="Diferencia de puntos totales" matTooltipPosition="above">Dif.</span>
+                        </th>
+                        <td mat-cell *matCellDef="let element"> {{element.difference}} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

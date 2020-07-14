@@ -1,0 +1,40 @@
+<div class="login h-100">
+    <div class="row h-100 align-items-center">
+
+        <mat-card class="login-card col-lg-4 col-md-6 col-sm-8 offset-lg-4 offset-md-3 offset-sm-2 ">
+            <mat-card-header>
+                <mat-card-title>Login</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="login-card-content">
+                <form [formGroup]="loginForm">
+                    <mat-form-field class="username col-sm-12">
+                        <input matInput placeholder="Username" formControlName="username">
+                        <mat-error *ngIf="errorHandling('username', 'required')">
+                            You must provide a<strong>name</strong>
+                        </mat-error>
+                        <mat-error *ngIf="errorHandling('username', 'email')">
+                            You must provide a<strong>name</strong>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="password col-sm-12">
+                        <mat-label>Contraseña</mat-label>
+                        <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                                [attr.aria-pressed]="hide">
+                            <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                        </button>
+                        <mat-error *ngIf="errorHandling('password', 'required')">
+                            Debes introducir una <strong>contraseña</strong>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <div class="button-wrapper">
+                        <button mat-flat-button color="primary" (click)="login($event)">Login</button>
+                    </div>
+
+                </form>
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+</div>

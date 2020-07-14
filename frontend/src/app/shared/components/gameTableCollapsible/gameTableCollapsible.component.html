@@ -1,0 +1,39 @@
+<mat-form-field class="table-filter w-100">
+    <mat-label>Filtro</mat-label>
+    <input matInput (keyup)="applyFilter($event.target.value)">
+</mat-form-field>
+<div class="table-border table-responsive shadow">
+    <mat-table [dataSource]="dataSource" class="table-responsive game-collapsible-table">
+        <caption class="caption-fixture-info">
+            <div class="fixture-info-container">
+                <div class="fixture-number">Octavos de final</div>
+                <div class="fixture-date">18/08/2019 - 29/10/2019</div>
+            </div>
+        </caption>
+        <div class="table-container">
+            <ng-container matColumnDef="teamAName">
+                <mat-cell class="local-team" *matCellDef="let element"> {{element.teamAName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="gameStatus">
+                <mat-cell class="gameStatus" *matCellDef="let element"> {{element.gameStatus}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="teamBName">
+                <mat-cell class="visitor-team" *matCellDef="let element"> {{element.teamBName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="expandedDetail">
+                <mat-cell *matCellDef="let detail">
+                    <div class="playoffs-matchup-container">
+                        <app-playoffs-matchup></app-playoffs-matchup>
+                    </div>
+                </mat-cell>
+            </ng-container>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" matRipple class="collapsible-row"
+                     [cdkDetailRow]="row" [cdkDetailRowTpl]="tpl" (toggleChange)="onToggleChange($event)"></mat-row>
+            <ng-template #tpl let-element>
+                <div class="detail-row" [@detailExpand] style="overflow: hidden">
+                    <app-playoffs-matchup></app-playoffs-matchup>
+                </div>
+            </ng-template>
+        </div>
+    </mat-table>
+</div>

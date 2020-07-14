@@ -1,0 +1,30 @@
+@import "src/assets/scss/base";
+
+.playoffs-matchup-table-container {
+    padding-top: 12px;
+    padding-bottom: 12px;
+
+    .playoffs-matchup-table {
+        display: table;
+
+        .mat-row:nth-child(odd) {
+            background-color: rgba(0, 0, 0, .05);
+        }
+
+        mat-cell {
+            text-overflow: ellipsis;
+        }
+
+        .local-team {
+            justify-content: flex-start;
+        }
+
+        .gameStatus {
+            justify-content: center;
+        }
+
+        .visitor-team {
+            justify-content: flex-end;
+        }
+    }
+}

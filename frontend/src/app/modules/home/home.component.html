@@ -1,0 +1,29 @@
+<div class="h-100 home">
+    <div class="row h-100 align-items-center">
+
+        <mat-card class="home-card col-lg-4 col-md-6 col-sm-8 offset-lg-4 offset-md-3 offset-sm-2 ">
+            <mat-card-header>
+                <mat-card-title>Bienvenido a ACTAPPP</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="home-card-content">
+                <form>
+                    <mat-form-field class="search-engine-input col-sm-12" appearance="outline" color="primary">
+                        <mat-icon matPrefix [color]="searchInput.focused ? 'primary' : ''">search</mat-icon>
+                        <input matInput placeholder="Introduce competición, equipo, jugador, etc." type="text"
+                               [formControl]="searchControlHome" [matAutocomplete]="auto" name="searchingFor" #searchInput="matInput">
+                    </mat-form-field>
+                </form>
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+</div>
+
+<mat-autocomplete class="autocomplete-home" #auto="matAutocomplete" (optionSelected)="goToResultPage($event)">
+    <mat-option *ngFor="let option of filteredOptions" [value]="option" [ngSwitch]="option.type" class="autocomplete-option">
+        <mat-icon class="icon-type" *ngSwitchCase="'PLAYER'">person</mat-icon>
+        <mat-icon class="icon-type" *ngSwitchCase="'TEAM'">people</mat-icon>
+        <mat-icon class="icon-type" *ngSwitchCase="'COMPETITION'">emoji_events</mat-icon>
+        <span class="result-name">{{option.name}}</span>
+    </mat-option>
+</mat-autocomplete>
