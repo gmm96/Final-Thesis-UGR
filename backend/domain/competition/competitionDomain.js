@@ -23,7 +23,7 @@ exports.getCompetitionByName = async ( name ) => {
 
 exports.getCompetitionListByName = async ( name ) => {
 	if ( !name ) throw { code: 422, message: "Nombre de competición inválido" };
-	return ( await competitionDatabase.getCompetitionByName( name ) );
+	return ( await competitionDatabase.getCompetitionListByName( name ) );
 }
 
 
