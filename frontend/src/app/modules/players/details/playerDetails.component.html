@@ -3,11 +3,10 @@
         <div class="header-name col-12 col-md-7 offset-md-1 col-lg-7 offset-lg-1 order-2 order-md-1 text-md-left text-center">
             <div class="header-name-title">{{player?.name + " " + player?.surname}}</div>
             <div class="header-name-subtitle">
-                <span class="underline" (click)="goToTeamPage()"
-                      matTooltip="Ir a página de equipo {{ player?.team?.name }}" *ngIf="player.team">
+                <span class="underline" *ngIf="player?.team" (click)="goToTeamPage()" matTooltip="Ir a página de equipo {{ player?.team?.name }}">
                     {{player?.team?.name}}
                 </span>
-                <span *ngIf="!player.team">
+                <span *ngIf="!player?.team">
                     {{ 'Sin equipo' }}
                 </span>
             </div>
