@@ -1,7 +1,8 @@
-import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
+import * as moment from "moment";
 
 @Component({
     selector: 'app-player-table',
@@ -13,7 +14,8 @@ export class PlayerTableComponent implements OnInit, OnDestroy {
     displayedColumns: string[];
     dataSource: MatTableDataSource<any>;
     @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-
+    @Input('roster') roster: any;
+    rosterCompatible: any;
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -22,12 +24,15 @@ export class PlayerTableComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.dataSource = new MatTableDataSource(ELEMENT_DATA);
-        this.dataSource.paginator = this.paginator;
-        this.displayedColumns = ['playerName', 'playerAge', 'playerHeight', 'playerWeight'];
+        this.setDataTable();
+        this.displayedColumns = ['name', 'age', 'height', 'weight'];
     }
 
     ngOnDestroy() {
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        this.setDataTable();
     }
 
     applyFilter(event: Event) {
@@ -35,31 +40,32 @@ export class PlayerTableComponent implements OnInit, OnDestroy {
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
 
+    setDataTable() {
+        if (this.roster) {
+            this.rosterCompatible = this.roster.map(item => {
+                return {
+                    _id: item._id,
+                    name: item.name + " " + item.surname,
+                    age: (moment(item.birthDate).fromNow(true)).replace(" años", ""),
+                    height: item.height,
+                    weight: item.weight,
+                    avatar: item.avatar
+                }
+            });
+            this.dataSource = new MatTableDataSource(this.rosterCompatible);
+            this.dataSource.paginator = this.paginator;
+        }
+    }
+
+    goToPlayer(player) {
+        this.router.navigate([/players/ + player._id]);
+    }
 };
 
 export interface PlayerInterface {
-    playerName: string;
-    playerAge: number;
-    playerHeight: number
-    playerWeight: number;
-    playerImg: string;
+    name: string;
+    age: number;
+    height: number
+    weight: number;
+    avatar?: string;
 }
-
-const ELEMENT_DATA: PlayerInterface[] = [
-    {playerName: "Montes Martos, Francisco Javier", playerAge: 24, playerHeight: 1.84, playerWeight: 82, playerImg:''},
-    {playerName: "Montes Martos, Guillermo", playerAge: 24, playerHeight: 1.84, playerWeight: 82, playerImg:''},
-    {playerName: "De los Ríos Ramon y Cajal, Agustín", playerAge: 25, playerHeight: 1.44, playerWeight: 62, playerImg:''},
-    {playerName: "Montes Martos, Francisco Javier", playerAge: 24, playerHeight: 1.84, playerWeight: 82, playerImg:''},
-    {playerName: "Montes Martos, Guillermo", playerAge: 24, playerHeight: 1.84, playerWeight: 82, playerImg:''},
-    {playerName: "De los Ríos Ramon y Cajal, Agustín", playerAge: 25, playerHeight: 1.44, playerWeight: 62, playerImg:''},
-    {playerName: "Montes Martos, Francisco Javier", playerAge: 24, playerHeight: 1.84, playerWeight: 82, playerImg:''},
-    {playerName: "Montes Martos, Guillermo", playerAge: 24, playerHeight: 1.84, playerWeight: 82, playerImg:''},
-    {playerName: "De los Ríos Ramon y Cajal, Agustín", playerAge: 25, playerHeight: 1.44, playerWeight: 62, playerImg:''},
-    {playerName: "Montes Martos, Francisco Javier", playerAge: 24, playerHeight: 1.84, playerWeight: 82, playerImg:''},
-    {playerName: "Montes Martos, Guillermo", playerAge: 24, playerHeight: 1.84, playerWeight: 82, playerImg:''},
-    {playerName: "De los Ríos Ramon y Cajal, Agustín", playerAge: 25, playerHeight: 1.44, playerWeight: 62, playerImg:''},
-    {playerName: "Montes Martos, Francisco Javier", playerAge: 24, playerHeight: 1.84, playerWeight: 82, playerImg:''},
-    {playerName: "Montes Martos, Guillermo", playerAge: 24, playerHeight: 1.84, playerWeight: 82, playerImg:''},
-    {playerName: "De los Ríos Ramon y Cajal, Agustín", playerAge: 25, playerHeight: 1.44, playerWeight: 62, playerImg:''},
-];
-

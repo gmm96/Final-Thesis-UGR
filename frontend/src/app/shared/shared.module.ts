@@ -15,7 +15,7 @@ import {MatCardModule} from "@angular/material/card";
 import {LoaderComponent} from "./components/loader/loader.component";
 import {LottieAnimationViewModule} from "ng-lottie";
 import {NotFoundComponent} from "./components/notFound/notFound.component";
-import {HomeService} from "../core/home/home.service";
+import {HomeService} from "../core/services/home/home.service";
 import {MatChipsModule} from "@angular/material/chips";
 import {CalendarComponent} from "../modules/competitions/details/calendar/calendar.component";
 import {MatTableModule} from "@angular/material/table";
@@ -57,6 +57,8 @@ import {MatBadgeModule} from "@angular/material/badge";
 import {MatSelectModule} from "@angular/material/select";
 import {ClickOutsideModule} from "ng-click-outside";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {PlayersService} from "../core/services/players/players.service";
+import {TeamsService} from "../core/services/teams/teams.service";
 
 @NgModule({
     declarations: [
@@ -122,6 +124,8 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
     providers: [
         AuthService,
         HomeService,
+        PlayersService,
+        TeamsService,
         {provide: MatPaginatorIntl, useClass: MatPaginatorIntlSpa}
     ],
     exports: [

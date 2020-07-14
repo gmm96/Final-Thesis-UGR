@@ -1,11 +1,10 @@
 <div class="team-details container-fluid">
     <div class="details-header-intro row align-items-center">
         <div class="header-name col-12 col-md-7 offset-md-1 col-lg-7 offset-lg-1 order-2 order-md-1 text-md-left text-center">
-            <div class="header-name-title">Oklahoma City Thunder</div>
-<!--            <div class="header-name-subtitle">XXV Liga de Verano de Baloncesto Cabra 2020</div>-->
+            <div class="header-name-title">{{team?.name}}</div>
         </div>
         <div class="header-pic col-12 col-md-4 col-lg-4 order-1 order-md-2">
-            <img mat-card-image src="https://d2cwpp38twqe55.cloudfront.net/req/202006161/images/players/caldejo01.jpg" alt="Photo of a Shiba Inu">
+            <img mat-card-image [src]="team?.avatar || '/assets/images/defaultteam.png'">
         </div>
     </div>
 
@@ -34,10 +33,10 @@
 
     <div class="competition-details-content w-100" [ngSwitch]="currentTabField" [@avoidAnimatedTabsFirstEvent]>
         <div *ngSwitchCase="getTeamDetailsTabs().info" [@animatedTabs]>
-            <app-team-info></app-team-info>
+            <app-team-info [team]="team"></app-team-info>
         </div>
         <div *ngSwitchCase="getTeamDetailsTabs().roster" [@animatedTabs]>
-            <app-team-roster></app-team-roster>
+            <app-team-roster [teamRoster]="team.players"></app-team-roster>
         </div>
         <div *ngSwitchCase="getTeamDetailsTabs().competitions" [@animatedTabs]>
             <app-team-competitions></app-team-competitions>

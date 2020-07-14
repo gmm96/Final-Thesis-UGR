@@ -7,7 +7,16 @@ var playerDatabase = require( '../../db/player/playerDatabase' );
 
 exports.getPlayerById = async ( id ) => {
 	if ( !id ) throw { code: 422, message: "Identificador de jugador inválido" };
-	return ( await playerDatabase.getPlayerById( id ) );
+	let player = ( await playerDatabase.getPlayerById( id ) );
+	if (!player) throw { code: 404, message: "El jugador especificado no se encuentra en el sistema" };
+	return player;
+};
+
+
+exports.getFullPlayerById = async ( id ) => {
+	let player = ( await exports.getPlayerById( id ) );
+	player.team = ( await teamDomain.hasPlayerAnyTeam( id ) );
+	return player;
 };
 
 

@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
@@ -10,35 +10,35 @@ import {MatPaginator} from "@angular/material/paginator";
 })
 export class SimpleTableComponent implements OnInit, OnDestroy {
 
+    @Input('tableData') tableData: any;
     displayedColumns: string[];
     dataSource: MatTableDataSource<any>;
 
     constructor(
         private activatedRoute: ActivatedRoute,
-        private router: Router
+        private router: Router,
     ) {
     }
 
     ngOnInit() {
-        this.dataSource = new MatTableDataSource(ELEMENT_DATA);
+        this.setTableData();
         this.displayedColumns = ['name', 'value'];
     }
 
     ngOnDestroy() {
     }
+
+    ngOnChanges(changes: SimpleChanges) {
+        this.setTableData();
+    }
+
+    setTableData() {
+        this.dataSource = new MatTableDataSource(this.tableData);
+    }
+
 }
 
 export interface TeamStatsInterface {
     name: string;
-    value: number;
+    value: any;
 }
-
-const ELEMENT_DATA: TeamStatsInterface[] = [
-    {name: "Partidos jugados", value: 24},
-    {name: "Partidos ganados", value: 15},
-    {name: "Partidos perdidos", value: 9},
-    {name: "Puntos a favor", value: 750},
-    {name: "Puntos en contra", value: 590},
-    {name: "Diferencia de puntos", value: 160},
-];
-

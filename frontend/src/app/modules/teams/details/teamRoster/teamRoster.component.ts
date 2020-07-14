@@ -1,5 +1,6 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
+import * as moment from "moment";
 
 @Component({
     selector: 'app-team-roster',
@@ -7,6 +8,9 @@ import {ActivatedRoute, Router} from "@angular/router";
     styleUrls: ['./teamRoster.component.scss']
 })
 export class TeamRosterComponent implements OnInit, OnDestroy {
+
+    @Input('teamRoster') teamRoster: any;
+    tableRoster: any;
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -19,5 +23,4 @@ export class TeamRosterComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
     }
-
 }

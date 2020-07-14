@@ -10,12 +10,14 @@ import {Injector} from "@angular/core";
 import {AuthService} from "../auth/auth.service";
 import {Observable, throwError} from "rxjs";
 import {catchError} from "rxjs/operators";
+import {Router} from "@angular/router";
 
 
 export class RequestInterceptor implements HttpInterceptor {
 
     constructor(
-        private injector: Injector
+        private injector: Injector,
+        private router: Router
     ) {
     }
 
@@ -33,6 +35,8 @@ export class RequestInterceptor implements HttpInterceptor {
                 (err: HttpErrorResponse) => {
                 if (err.status == 401) {
                     authService.logout();
+                } else if (err.status == 404) {
+                    this.router.navigate(["/notFound"])
                 }
 
                 return throwError(err);

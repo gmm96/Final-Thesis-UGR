@@ -1,11 +1,19 @@
 <div class="player-details container-fluid">
     <div class="details-header-intro row align-items-center">
         <div class="header-name col-12 col-md-7 offset-md-1 col-lg-7 offset-lg-1 order-2 order-md-1 text-md-left text-center">
-            <div class="header-name-title">Jose Manuel Calderon Borrallo</div>
-<!--            <div class="header-name-subtitle">XXV Liga de Verano de Baloncesto Cabra 2020</div>-->
+            <div class="header-name-title">{{player?.name + " " + player?.surname}}</div>
+            <div class="header-name-subtitle">
+                <span class="underline" (click)="goToTeamPage()"
+                      matTooltip="Ir a página de equipo {{ player?.team?.name }}" *ngIf="player.team">
+                    {{player?.team?.name}}
+                </span>
+                <span *ngIf="!player.team">
+                    {{ 'Sin equipo' }}
+                </span>
+            </div>
         </div>
         <div class="header-pic col-12 col-md-4 col-lg-4 order-1 order-md-2">
-            <img class="player-pic" mat-card-image src="https://d2cwpp38twqe55.cloudfront.net/req/202006161/images/players/caldejo01.jpg" alt="Photo of a Shiba Inu">
+            <img class="player-pic" mat-card-image [src]="player?.avatar || '/assets/images/defaultuser.png'">
         </div>
     </div>
 
@@ -19,13 +27,16 @@
             <div class="navbar-toggler-content collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
                 <ul class="navbar-links nav navbar-nav text-center">
                     <li [class.active]="currentTabField === getPlayerDetailsTabs().info">
-                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openPlayerInfo()">Información</a>
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn"
+                           (click)="openPlayerInfo()">Información</a>
                     </li>
                     <li [class.active]="currentTabField === getPlayerDetailsTabs().competitions">
-                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openCompetitions()">Competiciones</a>
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn"
+                           (click)="openCompetitions()">Competiciones</a>
                     </li>
                     <li [class.active]="currentTabField === getPlayerDetailsTabs().stats">
-                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openPlayerStats()">Estadísticas</a>
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn"
+                           (click)="openPlayerStats()">Estadísticas</a>
                     </li>
                 </ul>
             </div>
@@ -34,7 +45,7 @@
 
     <div class="competition-details-content w-100" [ngSwitch]="currentTabField" [@avoidAnimatedTabsFirstEvent]>
         <div *ngSwitchCase="getPlayerDetailsTabs().info" [@animatedTabs]>
-            <app-player-info></app-player-info>
+            <app-player-info [player]="player"></app-player-info>
         </div>
         <div *ngSwitchCase="getPlayerDetailsTabs().competitions" [@animatedTabs]>
             <app-player-competitions></app-player-competitions>

@@ -3,9 +3,9 @@ var playerDomain = require( "../../domain/player/playerDomain" );
 var formidable = require( 'formidable' );
 
 
-exports.getPlayerById = async ( req, res ) => {
+exports.getFullPlayerById = async ( req, res ) => {
 	try {
-		let result = ( await playerDomain.getPlayerById( req.params.playerID ) );
+		let result = ( await playerDomain.getFullPlayerById( req.params.playerID ) );
 		res.send( result );
 	} catch ( e ) {
 		apiTools.manageError( req, res, e );

@@ -5,7 +5,7 @@ let ObjectID = require( 'mongodb' ).ObjectID;
 
 
 exports.getPlayerById = async ( playerID ) => {
-	if ( !ObjectID.isValid( playerID ) ) throw { code: 422, message: "Identificador de jugador inválido" };
+	if ( !ObjectID.isValid( playerID ) ) throw { code: 404, message: "Identificador de jugador inválido" };
 	let result = ( await playerCursor.findOne( { _id: ObjectID( playerID.toString() ) } ) );
 	return result;
 };

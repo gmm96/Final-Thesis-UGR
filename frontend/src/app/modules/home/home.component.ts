@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {HomeService} from "../../core/home/home.service";
+import {HomeService} from "../../core/services/home/home.service";
 import {Subscription} from "rxjs";
 import {FormControl} from "@angular/forms";
-import {SearchBoxResultInterface} from "../../core/home/home";
+import {SearchBoxResultInterface} from "../../core/services/home/home";
 
 @Component({
     selector: 'app-home',

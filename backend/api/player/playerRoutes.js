@@ -4,7 +4,7 @@ var passport = require( "passport" );
 
 
 exports.assignRoutes = function ( app ) {
-	app.get("/players/:playerID", player.getPlayerById );
+	app.get("/players/:playerID", player.getFullPlayerById );
 	app.post("/players", player.createPlayer );
 	app.put("/players/:playerID", player.updatePlayer );
 	app.delete("/players/:playerID", player.purgePlayer );

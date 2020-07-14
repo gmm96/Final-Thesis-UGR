@@ -1,4 +1,4 @@
-<div class="table-border table-responsive shadow">
+<div class="table-border table-responsive shadow" *ngIf="dataSource">
     <mat-table [dataSource]="dataSource" class="table-responsive team-stats-table">
         <div class="table-shadow">
             <ng-container matColumnDef="name">

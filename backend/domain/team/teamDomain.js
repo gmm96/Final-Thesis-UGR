@@ -7,8 +7,9 @@ var lodash = require( "lodash" );
 
 exports.getTeamById = async ( id ) => {
 	if ( !id ) throw { code: 422, message: "Identificador de equipo inválido" };
-	let result = ( await teamDatabase.getTeamById( id ) );
-	return result;
+	let team = ( await teamDatabase.getTeamById( id ) );
+	if (!team) throw { code: 404, message: "El equipo especificado no se encuentra en el sistema" };
+	return team;
 };
 
 

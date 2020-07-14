@@ -2,9 +2,9 @@ import {ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnIni
 import {ActivatedRoute, ResolveStart, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {FormControl} from "@angular/forms";
-import {HomeService} from "../../../core/home/home.service";
+import {HomeService} from "../../../core/services/home/home.service";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {SearchBoxResultInterface} from "../../../core/home/home";
+import {SearchBoxResultInterface} from "../../../core/services/home/home";
 
 
 @Component({
@@ -69,9 +69,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     @HostListener('document:click')
     clickout() {
-        if (!this.clickInsideSearchBox) this.openedSearchBox = false;
+        if (!this.clickInsideSearchBox) {
+            if (this.openedSearchBox) this.searchControlHeader.setValue("");
+            this.openedSearchBox = false;
+        }
         this.clickInsideSearchBox = false;
-        this.searchControlHeader.setValue("");
     }
 
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
@@ -90,8 +92,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     private async _filter(value: string) {
         try {
-            this.filteredOptions = (await this.homeService.searchResults(value));
-            // console.log(this.filteredOptions);
+            if (value) this.filteredOptions = (await this.homeService.searchResults(value));
         } catch (e) {
             console.log(e);
         }

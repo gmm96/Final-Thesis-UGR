@@ -6,7 +6,7 @@ let ObjectID = require( 'mongodb' ).ObjectID;
 
 
 exports.getTeamById = async ( id ) => {
-	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Identificador de equipo inválido" };
+	if ( !ObjectID.isValid( id ) ) throw { code: 404, message: "Identificador de equipo inválido" };
 	let result = ( await teamCursor.findOne( { _id: ObjectID( id.toString() ) } ) );
 	return result;
 };

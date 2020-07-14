@@ -25,6 +25,7 @@
     "@mdi/font": "^5.3.45",
     "hammerjs": "^2.0.8",
     "material-components-web": "^6.0.0",
+    "moment": "^2.27.0",
     "ng-click-outside": "^6.0.0",
     "ng-lottie": "^0.3.2",
     "npm-package-arg": "^8.0.1",

@@ -1,7 +1,8 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {Animations} from "../../../shared/animations";
+import {TeamsService} from "../../../core/services/teams/teams.service";
 
 @Component({
     selector: 'app-team-details',
@@ -11,24 +12,28 @@ import {Animations} from "../../../shared/animations";
 })
 export class TeamDetailsComponent implements OnInit, OnDestroy {
 
-    competitionID: string;
+    teamID: string;
+    team: any;
     currentTabField: TeamDetailsTabs = TeamDetailsTabs.info;
     private sub: Subscription;
 
 
     constructor(
         private activatedRoute: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private teamsService: TeamsService,
+        private changeDetectorRef: ChangeDetectorRef
     ) {
     }
 
     ngOnInit() {
-        this.sub = this.activatedRoute.params.subscribe(params => {
-            this.competitionID = params['id'];
-
-            // localStorage.setItem("competitionID", this.competitionID)
-
-            // get competitionID data from backend
+        this.sub = this.activatedRoute.params.subscribe(async params => {
+            this.teamID = params['id'];
+            this.team = (await this.teamsService.getPlayerInformation(this.teamID));
+            if (this.team) {
+                if (this.team.avatar) this.team.avatar = 'http://localhost:3000' + this.team.avatar;
+                this.changeDetectorRef.detectChanges();
+            }
         });
     }
 
