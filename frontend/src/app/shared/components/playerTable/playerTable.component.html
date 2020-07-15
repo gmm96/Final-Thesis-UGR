@@ -30,10 +30,17 @@
                     {{ element.weight }}
                 </mat-cell>
             </ng-container>
+            <ng-container matColumnDef="nodata">
+                <td mat-footer-row *matFooterCellDef [colSpan]="displayedColumns.length"
+                    style="text-align: center;">No Data Available</td>
+            </ng-container>
 
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="goToPlayer(row)"></mat-row>
         </div>
     </mat-table>
-<!--    <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" [pageSize]="10" [hidden]="!showPaginator"></mat-paginator>-->
+    <div class="no-data" *ngIf="!dataSource || dataSource?.filteredData?.length == 0">
+        <span>No hay datos para este filtro</span>
+    </div>
+    <!--    <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" [pageSize]="10" [hidden]="!showPaginator"></mat-paginator>-->
 </div>
