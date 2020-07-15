@@ -64,6 +64,34 @@
             //    width: 40px;
             //    padding: 0;
             //}
+
+            .admin-panel {
+                padding-left: 0;
+                padding-right: 0;
+                font-size: 14px;
+                @include border_radius(15px);
+                position: absolute;
+                right: 25px;
+                background-color: white;
+                z-index: 2;
+                .admin-action{
+                    padding: 3px 10px;
+
+                    &:not(:last-of-type) {
+                        border-bottom: 1px solid grey;
+                        @include border_top-left-radius(15px);
+                        @include border_top-right-radius(15px);
+                    }
+                    &:last-of-type {
+                        @include border-bottom-left-radius(15px);
+                        @include border_bottom-right-radius(15px);
+                    }
+                    &:hover {
+                        cursor: pointer;
+                        background-color: darken(white, 10%);
+                    }
+                }
+            }
         }
     }
 }

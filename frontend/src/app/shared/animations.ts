@@ -34,4 +34,24 @@ export const Animations = {
             animate('.5s ease-out', style({opacity: 0}))
         ])
     ]),
+    floatingSearchBox: trigger('floatingSearchBox', [
+        transition(':enter', [
+            style({transform: 'translateY(-100%) translateX(25%) scale(0)', 'opacity': 0}),
+            animate('350ms ease', style({transform: 'translateY(0) translateX(0) scale(1)', 'opacity': 1}))
+        ]),
+        transition(':leave', [
+            style({transform: 'translateY(0) translateX(0) scale(1)', 'opacity': 1}),
+            animate('350ms ease', style({transform: 'translateY(-100%) translateX(25%) scale(0)', 'opacity': 0})),
+        ])
+    ]),
+    adminPanel: trigger('adminPanel', [
+        transition(':enter', [
+            style({transform: 'translateY(-100%) translateX(50%) scale(0)', 'opacity': 0}),
+            animate('350ms ease', style({transform: 'translateY(0) translateX(0) scale(1)', 'opacity': 1}))
+        ]),
+        transition(':leave', [
+            style({transform: 'translateY(0) translateX(0) scale(1)', 'opacity': 1}),
+            animate('350ms ease', style({transform: 'translateY(-100%) translateX(50%) scale(0)', 'opacity': 0})),
+        ])
+    ])
 }

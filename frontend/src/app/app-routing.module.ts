@@ -34,6 +34,14 @@ const routes: Routes = [
             loadChildren: () => import('./modules/players/players.module').then(m => m.PlayersModule)
         }]
     },
+    {
+        path: 'admin',
+        children: [{
+            'path': '',
+            loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule)
+        }]
+    },
+
     {path: 'login', component: LoginComponent},
     {path: 'notFound', component: NotFoundComponent},
     {path: 'gameControl', component: GameControlComponent},

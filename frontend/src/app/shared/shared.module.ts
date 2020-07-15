@@ -59,6 +59,7 @@ import {ClickOutsideModule} from "ng-click-outside";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {PlayersService} from "../core/services/players/players.service";
 import {TeamsService} from "../core/services/teams/teams.service";
+import {AdminComponent} from "../modules/admin/admin.component";
 
 @NgModule({
     declarations: [
@@ -185,7 +186,7 @@ import {TeamsService} from "../core/services/teams/teams.service";
         MatBadgeModule,
         MatSelectModule,
         ClickOutsideModule,
-        MatSlideToggleModule
+        MatSlideToggleModule,
     ],
     schemas: [],
     entryComponents: [GameControlBottomSheetComponent]

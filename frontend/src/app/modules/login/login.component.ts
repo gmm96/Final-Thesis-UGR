@@ -18,7 +18,6 @@ export class LoginComponent implements OnInit {
     }
 
     loginForm: FormGroup
-
     hide: boolean = true;
 
     ngOnInit() {
@@ -43,7 +42,7 @@ export class LoginComponent implements OnInit {
                     }
                 );
                 let me = await this.loginService.getMe()
-                console.log(me.first_name)
+                this.router.navigate(['/admin']);
             } catch (e) {
                 console.log("ERROR!")
             }

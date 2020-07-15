@@ -5,22 +5,15 @@ import {FormControl} from "@angular/forms";
 import {HomeService} from "../../../core/services/home/home.service";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {SearchBoxResultInterface} from "../../../core/services/home/home";
+import {AuthService} from "../../../core/auth/auth.service";
+import {Animations} from "../../animations";
 
 
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
-    animations: [trigger('myAnimation', [
-        transition(':enter', [
-            style({transform: 'translateY(-100%) translateX(25%) scale(0)', 'opacity': 0}),
-            animate('350ms ease', style({transform: 'translateY(0) translateX(0) scale(1)', 'opacity': 1}))
-        ]),
-        transition(':leave', [
-            style({transform: 'translateY(0) translateX(0) scale(1)', 'opacity': 1}),
-            animate('350ms ease', style({transform: 'translateY(-100%) translateX(25%) scale(0)', 'opacity': 0})),
-        ])
-    ])]
+    animations: [Animations.adminPanel, Animations.floatingSearchBox]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
@@ -33,13 +26,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
     clickInsideSearchBox: boolean = false;
     private static NOT_SEARCH_SHOWN = ["/home"];
     @ViewChild( 'searchbox', {static: false} ) searchBoxInput: ElementRef;
+    openedAdminPanel = false;
 
 
     constructor(
         private activatedRoute: ActivatedRoute,
         private router: Router,
         private homeService: HomeService,
-        private changeDetectorRef: ChangeDetectorRef
+        private changeDetectorRef: ChangeDetectorRef,
+        private loginService: AuthService
     ) {
     }
 
@@ -72,6 +67,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         if (!this.clickInsideSearchBox) {
             if (this.openedSearchBox) this.searchControlHeader.setValue("");
             this.openedSearchBox = false;
+            this.openedAdminPanel = false;
         }
         this.clickInsideSearchBox = false;
     }
@@ -109,9 +105,29 @@ export class HeaderComponent implements OnInit, OnDestroy {
     toggleSearchBox() {
         this.openedSearchBox = !this.openedSearchBox;
         this.changeDetectorRef.detectChanges();
-        if (this.openedSearchBox) this.searchBoxInput.nativeElement.focus();
+        if (this.openedSearchBox) {
+            this.openedAdminPanel = false;
+            this.searchBoxInput.nativeElement.focus();
+        }
         if (!this.openedSearchBox) this.searchControlHeader.setValue("");
-
     }
 
+    toggleAdminPanel() {
+        this.openedAdminPanel = !this.openedAdminPanel;
+        if (this.openedAdminPanel) this.openedSearchBox = false;
+    }
+
+    getUserToken() {
+        return localStorage.getItem('token');
+    }
+
+    logout() {
+        this.openedAdminPanel = false;
+        this.loginService.logout();
+    }
+
+    goToAdminPage() {
+        this.openedAdminPanel = false;
+        this.router.navigate(['/admin']);
+    }
 }
