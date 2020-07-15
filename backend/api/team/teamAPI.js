@@ -1,5 +1,6 @@
 var apiTools = require( "../apiTools" );
 var teamDomain = require( "../../domain/team/teamDomain" );
+var formidable = require( 'formidable' );
 
 
 exports.getTeamById = async ( req, res ) => {
@@ -16,6 +17,7 @@ exports.createTeam = async ( req, res ) => {
 	try {
 		let form = new formidable.IncomingForm();
 		form.parse( req, async function ( err, fields, files ) {
+			debugger;
 			if ( err ) throw err;
 			
 			try {
@@ -31,6 +33,7 @@ exports.createTeam = async ( req, res ) => {
 				};
 				let result = ( await teamDomain.createTeam( newTeam, files.avatar ) );
 				res.send( result );
+				debugger;
 			} catch ( e ) {
 				apiTools.manageError( req, res, e );
 			}

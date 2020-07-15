@@ -49,7 +49,7 @@ export class PlayerTableComponent implements OnInit, OnDestroy {
                     age: (moment(item.birthDate).fromNow(true)).replace(" años", ""),
                     height: item.height,
                     weight: item.weight,
-                    avatar: item.avatar
+                    avatar: item.avatar? "http://localhost:3000" + item.avatar : null
                 }
             });
             this.dataSource = new MatTableDataSource(this.rosterCompatible);

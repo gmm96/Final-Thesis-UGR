@@ -45,7 +45,11 @@ exports.isOdd = async ( num ) => {
 
 
 exports.hasArrayDuplicatedElements = async ( array ) => {
-	return ( new Set( array ) ).size !== array.length;
+	debugger;
+	if (array && array.length) {
+		return ( new Set( array ) ).size !== array.length;
+	}
+	return false;
 };
 
 

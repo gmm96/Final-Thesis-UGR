@@ -8,7 +8,7 @@ var lodash = require( "lodash" );
 exports.getTeamById = async ( id ) => {
 	if ( !id ) throw { code: 422, message: "Identificador de equipo inválido" };
 	let team = ( await teamDatabase.getTeamById( id ) );
-	if (!team) throw { code: 404, message: "El equipo especificado no se encuentra en el sistema" };
+	if ( !team ) throw { code: 404, message: "El equipo especificado no se encuentra en el sistema" };
 	return team;
 };
 
@@ -39,19 +39,21 @@ exports.createTeam = async ( team, avatar ) => {
 		throw { code: 422, message: "El nombre de equipo ya está en uso" };
 	}
 	
-	let teamPlayerIDsCopy = lodash.cloneDeep( team.players );
-	team.players = [];
-	
-	for ( let playerID of teamPlayerIDsCopy ) {
-		let existingPlayer = ( await playerDomain.getPlayerById( playerID ) );
-		if ( existingPlayer ) {
-			if ( !( await exports.hasPlayerAnyTeam( playerID ) ) ) {
-				team.players.push( existingPlayer );
+	if ( team.players ) {
+		let teamPlayerIDsCopy = lodash.cloneDeep( team.players );
+		team.players = [];
+		
+		for ( let playerID of teamPlayerIDsCopy ) {
+			let existingPlayer = ( await playerDomain.getPlayerById( playerID ) );
+			if ( existingPlayer ) {
+				if ( !( await exports.hasPlayerAnyTeam( playerID ) ) ) {
+					team.players.push( existingPlayer );
+				} else {
+					throw { code: 422, message: "El jugador especificado ya se encuentra en un equipo" };
+				}
 			} else {
-				throw { code: 422, message: "El jugador especificado ya se encuentra en un equipo" };
+				throw { code: 422, message: "El jugador especificado no existe en el sistema" };
 			}
-		} else {
-			throw { code: 422, message: "El jugador especificado no existe en el sistema" };
 		}
 	}
 	
@@ -83,24 +85,26 @@ exports.updateTeam = async ( id, team, avatar ) => {
 		}
 	}
 	
-	let teamPlayerIDsCopy = lodash.cloneDeep( team.players );
-	team.players = [];
-	
-	for ( let playerID of teamPlayerIDsCopy ) {
-		let existingPlayer = ( await playerDomain.getPlayerById( playerID ) );
-		if ( existingPlayer ) {
-			let lastPlayerTeam = ( await exports.hasPlayerAnyTeam( playerID ) );
-			if ( !lastPlayerTeam ) {
-				team.players.push( existingPlayer );
-			} else {
-				if ( existingTeam._id.toString() !== lastPlayerTeam._id.toString() ) {
-					throw { code: 422, message: "El jugador especificado ya se encuentra en un equipo" };
-				} else {
+	if ( team.players ) {
+		let teamPlayerIDsCopy = lodash.cloneDeep( team.players );
+		team.players = [];
+		
+		for ( let playerID of teamPlayerIDsCopy ) {
+			let existingPlayer = ( await playerDomain.getPlayerById( playerID ) );
+			if ( existingPlayer ) {
+				let lastPlayerTeam = ( await exports.hasPlayerAnyTeam( playerID ) );
+				if ( !lastPlayerTeam ) {
 					team.players.push( existingPlayer );
+				} else {
+					if ( existingTeam._id.toString() !== lastPlayerTeam._id.toString() ) {
+						throw { code: 422, message: "El jugador especificado ya se encuentra en un equipo" };
+					} else {
+						team.players.push( existingPlayer );
+					}
 				}
+			} else {
+				throw { code: 422, message: "El jugador especificado no existe en el sistema" };
 			}
-		} else {
-			throw { code: 422, message: "El jugador especificado no existe en el sistema" };
 		}
 	}
 	
