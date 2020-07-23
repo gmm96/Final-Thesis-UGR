@@ -29,7 +29,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.sub = this.activatedRoute.params.subscribe(async params => {
             this.teamID = params['id'];
-            this.team = (await this.teamsService.getPlayerInformation(this.teamID));
+            this.team = (await this.teamsService.getTeamInformation(this.teamID));
             if (this.team) {
                 if (this.team.avatar) this.team.avatar = 'http://localhost:3000' + this.team.avatar;
                 this.changeDetectorRef.detectChanges();

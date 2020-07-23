@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatButtonModule} from "@angular/material/button";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -24,7 +24,13 @@ import {StandingsComponent} from "../modules/competitions/details/standings/stan
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {PlayoffsComponent} from "../modules/competitions/details/playoffs/playoffs.component";
-import {MatRippleModule} from "@angular/material/core";
+import {
+    DateAdapter,
+    MAT_DATE_FORMATS,
+    MAT_DATE_LOCALE,
+    MatNativeDateModule,
+    MatRippleModule
+} from "@angular/material/core";
 import {PlayoffsMatchupComponent} from "./components/playoffsMatchup/playoffsMatchup.component";
 import {GameTableComponent} from "./components/gameTable/gameTable.component";
 import {GameTableCollapsibleComponent} from "./components/gameTableCollapsible/gameTableCollapsible.component";
@@ -60,6 +66,15 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {PlayersService} from "../core/services/players/players.service";
 import {TeamsService} from "../core/services/teams/teams.service";
 import {AdminComponent} from "../modules/admin/admin.component";
+import {MatRadioModule} from "@angular/material/radio";
+import {DisableControlDirective} from "../core/directives/disableControl.directive";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MaterialFileInputModule} from "ngx-material-file-input";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {ToastrModule} from "ngx-toastr";
+import {AuthGuardService} from "../core/auth/auth-guard.service";
+import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MomentDateModule} from '@angular/material-moment-adapter';
+
 
 @NgModule({
     declarations: [
@@ -92,6 +107,7 @@ import {AdminComponent} from "../modules/admin/admin.component";
         TeamRosterComponent,
         CompetitionPlayerStatsComponent,
         GameControlBottomSheetComponent,
+        DisableControlDirective,
     ],
     imports: [
         CommonModule,
@@ -120,14 +136,25 @@ import {AdminComponent} from "../modules/admin/admin.component";
         MatBadgeModule,
         MatSelectModule,
         ClickOutsideModule,
-        MatSlideToggleModule
+        MatSlideToggleModule,
+        MatRadioModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MaterialFileInputModule,
+        MatCheckboxModule,
+        ToastrModule.forRoot()
     ],
     providers: [
         AuthService,
+        AuthGuardService,
         HomeService,
         PlayersService,
         TeamsService,
-        {provide: MatPaginatorIntl, useClass: MatPaginatorIntlSpa}
+        {provide: MatPaginatorIntl, useClass: MatPaginatorIntlSpa},
+        { provide: LOCALE_ID, useValue: 'es-ES' },
+        { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     ],
     exports: [
         CommonModule,
@@ -187,6 +214,12 @@ import {AdminComponent} from "../modules/admin/admin.component";
         MatSelectModule,
         ClickOutsideModule,
         MatSlideToggleModule,
+        MatRadioModule,
+        DisableControlDirective,
+        MatDatepickerModule,
+        MaterialFileInputModule,
+        MatCheckboxModule,
+        ToastrModule
     ],
     schemas: [],
     entryComponents: [GameControlBottomSheetComponent]

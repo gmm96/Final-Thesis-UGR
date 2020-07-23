@@ -305,27 +305,27 @@
             </div>
             <div class="modal-body">
                 <form [formGroup]="basketFormGroup">
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="team">
                             <mat-option value="Bar Estrella UCLA Cabra">Bar Estrella UCLA Cabra</mat-option>
                             <mat-option value="Cansaliebres Generali Seguros">Cansaliebres Generali Seguros</mat-option>
                         </mat-select>
                         <mat-label>Equipo</mat-label>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="player">
                             <mat-option value="15">#15</mat-option>
                         </mat-select>
                         <mat-label>Jugador</mat-label>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="points">
                             <mat-option value="Cansaliebres Generali Seguros">2 puntos</mat-option>
                             <mat-option value="Cansaliebres Generali Seguros">3 puntos</mat-option>
                         </mat-select>
                         <mat-label>Tipo de canasta</mat-label>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="minute">
                             <mat-option *ngFor="let element of possibleMinutes" value="{{element}}"> {{ element }} </mat-option>
                         </mat-select>
@@ -336,7 +336,7 @@
             </div>
             <div class="modal-footer">
                 <button mat-flat-button type="button" class="close-button" data-dismiss="modal" color="accent" (click)="resetForm(basketFormGroup)">Cerrar</button>
-                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="warn" (click)="annotateBasket()" [disabled]="!basketFormGroup.valid">Enviar</button>
+                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="primary" (click)="annotateBasket()" [disabled]="!basketFormGroup.valid">Enviar</button>
             </div>
         </div>
     </div>
@@ -351,27 +351,27 @@
             </div>
             <div class="modal-body">
                 <form [formGroup]="freeThrowFormGroup">
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="team">
                             <mat-option value="Bar Estrella UCLA Cabra">Bar Estrella UCLA Cabra</mat-option>
                             <mat-option value="Cansaliebres Generali Seguros">Cansaliebres Generali Seguros</mat-option>
                         </mat-select>
                         <mat-label>Equipo</mat-label>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="player">
                             <mat-option value="15">#15</mat-option>
                         </mat-select>
                         <mat-label>Jugador</mat-label>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="in">
                             <mat-option value="Cansaliebres Generali Seguros">Convertido</mat-option>
                             <mat-option value="Cansaliebres Generali Seguros">Fallado</mat-option>
                         </mat-select>
                         <mat-label>Resultado</mat-label>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="minute">
                             <mat-option *ngFor="let element of possibleMinutes" value="{{element}}"> {{ element }} </mat-option>
                         </mat-select>
@@ -382,7 +382,7 @@
             </div>
             <div class="modal-footer">
                 <button mat-flat-button type="button" class="close-button" data-dismiss="modal" color="accent" (click)="resetForm(freeThrowFormGroup)">Cerrar</button>
-                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="warn" (click)="annotateFreeThrow()" [disabled]="!freeThrowFormGroup.valid">Enviar</button>
+                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="primary" (click)="annotateFreeThrow()" [disabled]="!freeThrowFormGroup.valid">Enviar</button>
             </div>
         </div>
     </div>
@@ -397,20 +397,20 @@
             </div>
             <div class="modal-body">
                 <form [formGroup]="foulFormGroup">
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="team">
                             <mat-option value="Bar Estrella UCLA Cabra">Bar Estrella UCLA Cabra</mat-option>
                             <mat-option value="Cansaliebres Generali Seguros">Cansaliebres Generali Seguros</mat-option>
                         </mat-select>
                         <mat-label>Equipo</mat-label>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="player">
                             <mat-option value="15">#15</mat-option>
                         </mat-select>
                         <mat-label>Jugador</mat-label>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="foulType">
                             <mat-option value="Cansaliebres Generali Seguros">Falta personal en defensa</mat-option>
                             <mat-option value="Cansaliebres Generali Seguros">Falta en ataque</mat-option>
@@ -420,7 +420,7 @@
                         </mat-select>
                         <mat-label>Tipo de falta</mat-label>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="minute">
                             <mat-option *ngFor="let element of possibleMinutes" value="{{element}}"> {{ element }} </mat-option>
                         </mat-select>
@@ -431,7 +431,7 @@
             </div>
             <div class="modal-footer">
                 <button mat-flat-button type="button" class="close-button" data-dismiss="modal" color="accent" (click)="resetForm(foulFormGroup)">Cerrar</button>
-                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="warn" (click)="callForAFoul()" [disabled]="!foulFormGroup.valid">Enviar</button>
+                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="primary" (click)="callForAFoul()" [disabled]="!foulFormGroup.valid">Enviar</button>
             </div>
         </div>
     </div>
@@ -446,14 +446,14 @@
             </div>
             <div class="modal-body">
                 <form [formGroup]="timeoutFormGroup">
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="team">
                             <mat-option value="Bar Estrella UCLA Cabra">Bar Estrella UCLA Cabra</mat-option>
                             <mat-option value="Cansaliebres Generali Seguros">Cansaliebres Generali Seguros</mat-option>
                         </mat-select>
                         <mat-label>Equipo</mat-label>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" color="warn">
+                    <mat-form-field appearance="outline" color="accent">
                         <mat-select required formControlName="minute">
                             <mat-option *ngFor="let element of possibleMinutes" value="{{element}}"> {{ element }} </mat-option>
                         </mat-select>
@@ -464,7 +464,7 @@
             </div>
             <div class="modal-footer">
                 <button mat-flat-button type="button" class="close-button" data-dismiss="modal" color="accent" (click)="resetForm(timeoutFormGroup)">Cerrar</button>
-                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="warn" (click)="callForTimeout()" [disabled]="!timeoutFormGroup.valid">Enviar</button>
+                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="primary" (click)="callForTimeout()" [disabled]="!timeoutFormGroup.valid">Enviar</button>
             </div>
         </div>
     </div>

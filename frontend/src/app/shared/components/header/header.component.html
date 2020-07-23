@@ -27,7 +27,7 @@
                 <mat-icon>account_box</mat-icon>
             </button>
             <button mat-mini-fab color="secondary" class="user-icon" (click)="toggleAdminPanel()" *ngIf="getUserToken()">
-                <mat-icon *ngIf="!openedAdminPanel">build_circle</mat-icon>
+                <mat-icon *ngIf="!openedAdminPanel">build</mat-icon>
                 <mat-icon *ngIf="openedAdminPanel">close</mat-icon>
             </button>
             <div class="admin-panel mat-elevation-z8 col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3 text-center" *ngIf="openedAdminPanel" [@adminPanel]>

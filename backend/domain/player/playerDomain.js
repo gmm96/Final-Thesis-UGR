@@ -3,12 +3,13 @@ var competitionDomain = require( "../competition/competitionDomain" );
 var teamDomain = require( "../team/teamDomain" );
 var competitionPlayerStatsDomain = require( "../competition/competitionPlayerStatsDomain" );
 var playerDatabase = require( '../../db/player/playerDatabase' );
+var lodash = require("lodash");
 
 
 exports.getPlayerById = async ( id ) => {
 	if ( !id ) throw { code: 422, message: "Identificador de jugador inválido" };
 	let player = ( await playerDatabase.getPlayerById( id ) );
-	if (!player) throw { code: 404, message: "El jugador especificado no se encuentra en el sistema" };
+	if ( !player ) throw { code: 404, message: "El jugador especificado no se encuentra en el sistema" };
 	return player;
 };
 
@@ -23,6 +24,12 @@ exports.getFullPlayerById = async ( id ) => {
 exports.getPlayerByNameOrSurname = async ( nameOrSurname ) => {
 	if ( !nameOrSurname ) return [];
 	return ( await playerDatabase.getPlayerByNameOrSurname( nameOrSurname ) );
+}
+
+
+exports.getPlayerArrayByPersonalIdentification = async ( idCard ) => {
+	if ( !idCard ) return [];
+	return ( await playerDatabase.getPlayerArrayByPersonalIdentification( idCard ) );
 }
 
 
@@ -67,7 +74,20 @@ exports.updatePlayer = async ( id, player, avatar ) => {
 		if ( existingPlayer.avatar && player.deleteAvatar ) ( await domainTools.removeUploadedImage( existingPlayer.avatar ) );
 	}
 	
-	return ( await playerDatabase.updatePlayer( id, player ) );
+	player[ 'createdAt' ] = existingPlayer.createdAt;
+	delete player.deleteAvatar;
+	let editedPlayer = await playerDatabase.updatePlayer( id, player );
+	
+	let playerTeam = ( await teamDomain.hasPlayerAnyTeam( id ) );
+	if ( playerTeam ) {
+		let teamPlayersID = playerTeam.players.map( player => {
+			return player._id;
+		})
+		playerTeam.players = teamPlayersID;
+		let editedTeam = ( await teamDomain.updateTeam( playerTeam._id, playerTeam ) );
+	}
+	
+	return ( editedPlayer );
 };
 
 
@@ -84,7 +104,7 @@ exports.purgePlayer = async ( id ) => {
 		throw { code: 422, message: "El jugador especificado no se puede borrar del sistema, se encuentra en un equipo" };
 	}
 	let playerStats = ( await competitionPlayerStatsDomain.hasPlayerPlayedAnyCompetition( id ) );
-	if ( playerStats ) {
+	if ( playerStats.length ) {
 		throw { code: 422, message: "El jugador especificado no se puede borrar del sistema, posee estadísticas de competición" };
 	}
 	

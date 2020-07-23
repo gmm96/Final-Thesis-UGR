@@ -46,21 +46,16 @@ export class RequestInterceptor implements HttpInterceptor {
     }
 
     getSessionHeaders(authService: AuthService) {
-
+        let headers = {
+            "Access-Control-Allow-Origin": "*"
+        }
 
         let token = authService.getToken()
 
         if (token) {
-            return {
-                Authorization: token,
-                "Access-Control-Allow-Origin": "*",
-                "Content-type": "application/json"
-            }
-        } else {
-            return {
-                "Access-Control-Allow-Origin": "*",
-                "Content-type": "application/json"
-            }
+            headers['Authorization'] = token;
         }
+
+        return headers;
     }
 }

@@ -49,7 +49,7 @@ $frontend-primary: mat-palette($mat-my-palette);
 $frontend-accent: mat-palette($mat-blue-gray);
 
 // The warn palette is optional (defaults to red).
-$frontend-warn: mat-palette($mat-indigo, 900);
+$frontend-warn: mat-palette($mat-red, A700);
 
 // Create the theme object (a Sass map containing all of the palettes).
 $frontend-theme: mat-light-theme($frontend-primary, $frontend-accent, $frontend-warn);

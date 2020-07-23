@@ -6,25 +6,25 @@
     <div class="admin-content container">
         <div class="row">
             <div class="admin-actions col-10 offset-1 col-sm-6 offset-sm-0 col-md-3">
-                <div class="admin-action-wrapper">
+                <div class="admin-action-wrapper" (click)="goToManagePlayers()">
                     <div class="action-text">Gestionar jugadores</div>
                     <mat-icon>person</mat-icon>
                 </div>
             </div>
             <div class="admin-actions col-10 offset-1 col-sm-6 offset-sm-0 col-md-3">
-                <div class="admin-action-wrapper">
+                <div class="admin-action-wrapper" (click)="goToManageTeams()">
                     <div class="action-text">Gestionar equipos</div>
                     <mat-icon>people</mat-icon>
                 </div>
             </div>
             <div class="admin-actions col-10 offset-1 col-sm-6 offset-sm-0 col-md-3">
-                <div class="admin-action-wrapper">
+                <div class="admin-action-wrapper" (click)="goToCreateCompetition()">
                     <div class="action-text">Crear competición</div>
                     <mat-icon>emoji_events</mat-icon>
                 </div>
             </div>
             <div class="admin-actions col-10 offset-1 col-sm-6 offset-sm-0 col-md-3">
-                <div class="admin-action-wrapper">
+                <div class="admin-action-wrapper" (click)="goToManageSchedule()">
                     <div class="action-text">Gestionar horarios</div>
                     <mat-icon>date_range</mat-icon>
                 </div>

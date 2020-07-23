@@ -38,6 +38,12 @@ exports.getPlayerByPersonalIdentification = async ( idCard ) => {
 };
 
 
+exports.getPlayerArrayByPersonalIdentification = async ( idCard ) => {
+	let result = ( await dbModule.findResultToArray( playerCursor, { "idCard": new RegExp( idCard, 'i' ) } ) )
+	return result;
+}
+
+
 exports.createPlayer = async ( player ) => {
 	let result = ( await playerCursor.insertOne( player ) );
 	return result.ops[ 0 ];

@@ -115,6 +115,9 @@ exports.updateTeam = async ( id, team, avatar ) => {
 		if ( existingTeam.avatar && team.deleteAvatar ) ( await domainTools.removeUploadedImage( existingTeam.avatar ) );
 	}
 	
+	
+	team['createdAt'] = existingTeam.createdAt;
+	delete team.deleteAvatar;
 	return ( await teamDatabase.updateTeam( id, team ) );
 };
 

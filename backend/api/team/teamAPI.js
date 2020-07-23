@@ -13,6 +13,17 @@ exports.getTeamById = async ( req, res ) => {
 };
 
 
+exports.getTeamArrayByName = async ( req, res ) => {
+	try {
+		let result = ( await teamDomain.getTeamListByName( req.query.q ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
+
 exports.createTeam = async ( req, res ) => {
 	try {
 		let form = new formidable.IncomingForm();
@@ -28,12 +39,11 @@ exports.createTeam = async ( req, res ) => {
 					localJersey: fields.localJersey,
 					visitorJersey: fields.visitorJersey,
 					players: fields.players,
-					createdAt: new Date(),
-					updatedAt: new Date()
+					createdAt: new Date().toISOString(),
+					updatedAt: new Date().toISOString()
 				};
 				let result = ( await teamDomain.createTeam( newTeam, files.avatar ) );
 				res.send( result );
-				debugger;
 			} catch ( e ) {
 				apiTools.manageError( req, res, e );
 			}
@@ -58,9 +68,8 @@ exports.updateTeam = async ( req, res ) => {
 					localJersey: fields.localJersey,
 					visitorJersey: fields.visitorJersey,
 					players: fields.players,
-					deleteAvatar: fields.deleteAvatar,
-					createdAt: new Date(),
-					updatedAt: new Date()
+					deleteAvatar: fields.deleteAvatar === "true",
+					updatedAt: new Date().toISOString()
 				};
 				let result = ( await teamDomain.updateTeam( req.params.teamID, updatedTeam, files.avatar ) );
 				res.send( result );

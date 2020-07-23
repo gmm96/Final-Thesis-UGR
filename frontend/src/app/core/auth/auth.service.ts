@@ -25,6 +25,10 @@ export class AuthService {
         return localStorage.getItem('token')
     }
 
+    isAuthenticated(): boolean {
+        return this.getToken() != null
+    }
+
     private saveToken(result) {
         localStorage.setItem('token', result.token)
     }
