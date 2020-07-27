@@ -1,7 +1,8 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {Animations} from "../../../shared/animations";
+import {CompetitionsService} from "../../../core/services/competitions/competitions.service";
 
 @Component({
     selector: 'app-competition-details',
@@ -11,24 +12,27 @@ import {Animations} from "../../../shared/animations";
 })
 export class CompetitionDetailsComponent implements OnInit, OnDestroy {
 
+    competition: any;
     competitionID: string;
+    competitionNumberOfPlayers: number;
     currentTabField: CompetitionDetailsTabs;
     private sub: Subscription;
 
 
     constructor(
         private activatedRoute: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private changeDetectorRef: ChangeDetectorRef,
+        private competitionsService: CompetitionsService,
     ) {
     }
 
     ngOnInit() {
-        this.sub = this.activatedRoute.params.subscribe(params => {
-            this.competitionID = params['id'];
-
-            // localStorage.setItem("competitionID", this.competitionID)
-
-            // get competitionID data from backend
+        this.sub = this.activatedRoute.params.subscribe(async params => {
+            this.competitionID = params['competitionID'];
+            this.competition = (await this.competitionsService.getFullCompetitionInfo(this.competitionID));
+            this.competitionNumberOfPlayers = this.competition.teams.reduce((sum, current) => sum + current.players.length, 0);
+            this.changeDetectorRef.detectChanges();
         });
         this.currentTabField = CompetitionDetailsTabs.calendar;
     }

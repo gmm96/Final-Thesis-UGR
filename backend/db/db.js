@@ -10,7 +10,7 @@ exports.createDBConnection = async () => {
 	if ( dbCursor )
 		return dbCursor;
 	
-	dbConnection = await MongoClient.connect( url, { useNewUrlParser: true } );
+	dbConnection = await MongoClient.connect( url, { useNewUrlParser: true, useUnifiedTopology: true } );
 	if ( !dbConnection )
 		throw Error( 'Error connecting DB' );
 	

@@ -4,6 +4,12 @@ let playerCursor = db.collection( 'player' );
 let ObjectID = require( 'mongodb' ).ObjectID;
 
 
+exports.getAllPlayers = async () => {
+	let result = (await dbModule.findResultToArray(playerCursor, {}));
+	return result;
+};
+
+
 exports.getPlayerById = async ( playerID ) => {
 	if ( !ObjectID.isValid( playerID ) ) throw { code: 404, message: "Identificador de jugador inválido" };
 	let result = ( await playerCursor.findOne( { _id: ObjectID( playerID.toString() ) } ) );

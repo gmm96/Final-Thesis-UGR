@@ -6,11 +6,13 @@ import {AdminComponent} from "./admin.component";
 import {ManagePlayersComponent} from "./players/managePlayers.component";
 import {ManageTeamsComponent} from "./teams/manageTeams.component";
 import {AuthGuardService} from "../../core/auth/auth-guard.service";
+import {CreateCompetitionComponent} from "./competitions/createCompetition.component";
 
 
 const adminRoutes: Routes = [
     {path: 'players', component: ManagePlayersComponent, canActivate: [AuthGuardService]},
     {path: 'teams', component: ManageTeamsComponent,  canActivate: [AuthGuardService]},
+    {path: 'competitions', component: CreateCompetitionComponent,  canActivate: [AuthGuardService]},
     {path: '**', component: AdminComponent,  canActivate: [AuthGuardService]}
 ];
 
@@ -18,7 +20,8 @@ const adminRoutes: Routes = [
     declarations: [
         AdminComponent,
         ManagePlayersComponent,
-        ManageTeamsComponent
+        ManageTeamsComponent,
+        CreateCompetitionComponent
     ],
     imports: [
         RouterModule.forChild(adminRoutes),
@@ -28,7 +31,8 @@ const adminRoutes: Routes = [
     providers: [
         AdminComponent,
         ManagePlayersComponent,
-        ManageTeamsComponent
+        ManageTeamsComponent,
+        CreateCompetitionComponent
     ],
     exports: [RouterModule]
 })

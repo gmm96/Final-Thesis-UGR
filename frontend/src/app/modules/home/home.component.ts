@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     searchControlHome = new FormControl();
     searchSubscription: Subscription;
-    filteredOptions: SearchBoxResultInterface[];
+    filteredOptions: SearchBoxResultInterface[] = [];
 
     constructor(
         private router: Router,
@@ -50,4 +50,5 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.router.navigate(['/' + selectedOption.type.toLowerCase() + 's/' + selectedOption._id]);
         this.searchControlHome.setValue("");
     }
+
 };

@@ -28,7 +28,6 @@ exports.createTeam = async ( req, res ) => {
 	try {
 		let form = new formidable.IncomingForm();
 		form.parse( req, async function ( err, fields, files ) {
-			debugger;
 			if ( err ) throw err;
 			
 			try {
@@ -38,7 +37,7 @@ exports.createTeam = async ( req, res ) => {
 					address: fields.address,
 					localJersey: fields.localJersey,
 					visitorJersey: fields.visitorJersey,
-					players: fields.players,
+					players: JSON.parse( fields.players ),
 					createdAt: new Date().toISOString(),
 					updatedAt: new Date().toISOString()
 				};
@@ -67,7 +66,7 @@ exports.updateTeam = async ( req, res ) => {
 					address: fields.address,
 					localJersey: fields.localJersey,
 					visitorJersey: fields.visitorJersey,
-					players: fields.players,
+					players: JSON.parse( fields.players ),
 					deleteAvatar: fields.deleteAvatar === "true",
 					updatedAt: new Date().toISOString()
 				};

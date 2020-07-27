@@ -6,6 +6,7 @@ const formidableMiddleware = require('express-formidable');
 
 
 exports.assignRoutes = function ( app ) {
+	app.get( "/players/no-team", player.getPlayersWithNoTeam );
 	app.get( "/players/:playerID", player.getFullPlayerById );
 	app.get( "/players", player.getPlayerArrayByPersonalIdentification );
 	app.post( "/players", player.createPlayer );

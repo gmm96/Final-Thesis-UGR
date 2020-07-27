@@ -1,0 +1,160 @@
+<div class="admin-competitions">
+    <div class="admin-header">
+        <div class="title">Creación de competiciones</div>
+        <div class="disclaimer alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center"
+             role="alert">
+            <mat-icon color="primary">priority_high</mat-icon>
+            <span>Recuerde que necesita crear y/o editar los jugadores necesarios antes de seguir con la gestión de equipos</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="disclaimer alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center"
+             role="alert">
+            <mat-icon color="primary">priority_high</mat-icon>
+            <span>Recuerde que necesita crear y/o editar los equipos necesarios, añadiendo y/o quitando jugadores, antes de seguir con la creación de competiciones</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="disclaimer alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center"
+             role="alert">
+            <mat-icon color="primary">priority_high</mat-icon>
+            <span>Una vez creada la competición, no podrá editar jugadores o equipos, haga sus cambios antes.</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="admin-content container">
+        <div class="row">
+            <div class="form-wrapper col-12 col-md-10 offset-md-1 col-xl-8 offset-xl-2">
+                <div class="form-content mat-elevation-z8 rounded">
+                    <form [formGroup]="competitionForm" class="competition-form" #formDirective="ngForm">
+                        <div class="competition-form-title">Crear competición</div>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Nombre</mat-label>
+                            <input matInput type="text" formControlName="name">
+                            <mat-error *ngIf="errorHandling('name', 'required')">
+                                Debe proporcionar un <strong>nombre</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Organizador</mat-label>
+                            <input matInput type="text" formControlName="organizer">
+                            <mat-error *ngIf="errorHandling('organizer', 'required')">
+                                Debe proporcionar un <strong>organizador</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Temporada</mat-label>
+                            <input matInput type="text" formControlName="season">
+                            <mat-error *ngIf="errorHandling('season', 'required')">
+                                Debe proporcionar una <strong>temporada</strong>
+                            </mat-error>
+                            <mat-error *ngIf="errorHandling('season', 'pattern')">
+                                Debe proporcionar un <strong>número entero positivo</strong> para la temporada. (p.e. 2020)
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Categoría</mat-label>
+                            <input matInput type="text" formControlName="class">
+                            <mat-error *ngIf="errorHandling('class', 'required')">
+                                Debe proporcionar una <strong>categoría</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">￼
+                            <mat-label class="regular-label">Sexo</mat-label>
+                            <input matInput type="text" formControlName="sex">
+                            <mat-error *ngIf="errorHandling('sex', 'required')">
+                                Debe proporcionar un <strong>sexo</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="long-label">Número mínimo de equipos</mat-label>
+                            <input matInput type="text" formControlName="minTeamNumber" autocomplete="off">
+                            <mat-error *ngIf="errorHandling('minTeamNumber', 'required')">
+                                Debe proporcionar un <strong>número mínimo de equipos</strong>
+                            </mat-error>
+                            <mat-error *ngIf="errorHandling('minTeamNumber', 'pattern')">
+                                Debe proporcionar un <strong>número entero positivo</strong>. (p.e. 20)
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="long-label">Número mínimo de jugadores por equipo</mat-label>
+                            <input matInput type="text" formControlName="minPlayerNumberPerTeam" autocomplete="off">
+                            <mat-error *ngIf="errorHandling('minPlayerNumberPerTeam', 'required')">
+                                Debe proporcionar un <strong>número mínimo de jugadores por equipo</strong>
+                            </mat-error>
+                            <mat-error *ngIf="errorHandling('minPlayerNumberPerTeam', 'pattern')">
+                                Debe proporcionar un <strong>número entero positivo</strong>. (p.e. 15)
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="long-label">Número de vueltas de liga</mat-label>
+                            <input matInput type="text" formControlName="leagueFixturesVsSameTeam" autocomplete="off">
+                            <mat-hint align="end">Si valor = 0, no hay liga</mat-hint>
+                            <mat-error *ngIf="errorHandling('leagueFixturesVsSameTeam', 'required')">
+                                Debe proporcionar un <strong>número de vueltas de liga</strong>
+                            </mat-error>
+                            <mat-error *ngIf="errorHandling('leagueFixturesVsSameTeam', 'pattern')">
+                                Debe proporcionar un <strong>número entero positivo</strong>. (p.e. 2)
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="long-label">Partidos máx. de playoffs por ronda</mat-label>
+                            <input matInput type="text" formControlName="playoffsFixturesVsSameTeam" autocomplete="off">
+                            <mat-hint align="end">Si valor = 0, no hay playoffs</mat-hint>
+                            <mat-error *ngIf="errorHandling('playoffsFixturesVsSameTeam', 'required')">
+                                Debe proporcionar un <strong>número máximo de partidos de playoffs por ronda</strong>
+                            </mat-error>
+                            <mat-error *ngIf="errorHandling('playoffsFixturesVsSameTeam', 'pattern')">
+                                Debe proporcionar un <strong>número entero positivo impar</strong>. (p.e. 7)
+                            </mat-error>
+                        </mat-form-field>
+                        <div class="teams-container">
+                            <div class="teams-title">Lista de equipos ({{ competitionTeams.length }})</div>
+                            <mat-form-field class="query col-12" appearance="outline" color="accent">
+                                <mat-icon matPrefix [color]="searchInput.focused ? 'accent' : ''" class="search-icon">search</mat-icon>
+                                <mat-label>Nombre de equipo</mat-label>
+                                <input matInput [(ngModel)]="teamQueryToSearch" [ngModelOptions]="{standalone: true}" #searchInput="matInput" [matAutocomplete]="auto"
+                                       type="text" (input)="searchTeamToAdd($event)" (keydown.enter)="addFirstFilteredOption($event)">
+                            </mat-form-field>
+                            <div class="teams-wrapper" *ngIf="competitionTeams.length">
+                                <div class="team d-flex align-items-center justify-content-between" *ngFor="let team of competitionTeams; index as i">
+                                    <div class="team-counter">
+                                        {{i+1}}
+                                    </div>
+                                    <div class="name" [matTooltip]="team.name + ' ( ' + team.city + ' )'">
+                                        {{team.name}}
+                                    </div>
+                                    <div class="remove-icon d-flex">
+                                        <button mat-icon-button (click)="removeTeamFromList(team.name)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="no-teams teams-wrapper" *ngIf="!competitionTeams.length">No hay equipos aún</div>
+                        </div>
+                        <div class="button-wrapper d-flex justify-content-end align-items-center">
+                            <button mat-flat-button color="accent" type="button" (click)="resetCompetitionForm()">Limpiar</button>
+                            <button mat-flat-button color="primary" type="button" (click)="sendCompetition($event)" [disabled]="!canSendCompetition()">
+                                Enviar
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<mat-autocomplete class="autocomplete-header" #auto="matAutocomplete" (optionSelected)="addTeamToCompetition($event)">
+    <mat-option *ngFor="let option of filteredOptions" [value]="option" class="autocomplete-option">
+        <mat-icon class="icon-type">people</mat-icon>
+        <span class="result-name">{{ option.name + " ( " + option.city + " )"}}</span>
+    </mat-option>
+</mat-autocomplete>

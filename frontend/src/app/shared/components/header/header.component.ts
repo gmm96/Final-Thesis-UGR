@@ -18,7 +18,7 @@ import {Animations} from "../../animations";
 export class HeaderComponent implements OnInit, OnDestroy {
 
     searchControlHeader = new FormControl();
-    filteredOptions: SearchBoxResultInterface[];
+    filteredOptions: SearchBoxResultInterface[] = [];
     private searchSubscription: Subscription;
     private routerSub: Subscription;
     showSearchBox: boolean = true;

@@ -22,7 +22,13 @@ exports.getTeamByName = async ( name ) => {
 exports.getTeamListByName = async ( name ) => {
 	if ( !name ) throw { code: 422, message: "Nombre de equipo inválido" };
 	return ( await teamDatabase.getTeamListByName( name ) );
-}
+};
+
+
+exports.getPlayersWithTeam = async () => {
+	let result = (await teamDatabase.getPlayersWithTeam());
+	return result;
+};
 
 
 exports.hasPlayerAnyTeam = async ( playerID ) => {
@@ -129,10 +135,10 @@ exports.purgeTeam = async ( id ) => {
 	if ( !existingTeam ) {
 		throw { code: 422, message: "El equipo especificado no existe en el sistema" };
 	}
-	
-	if ( existingTeam.player.length ) throw { code: 422, message: "El equipo especificado no se puede borrar, posee aún jugadores" };
+
+	if ( existingTeam.players && existingTeam.players.length ) throw { code: 422, message: "El equipo especificado no se puede borrar, posee aún jugadores" };
 	let playedCompetitions = ( await competitionDomain.hasTeamPlayedAnyCompetition( existingTeam._id ) );
-	if ( !playedCompetitions.length ) throw { code: 422, message: "El equipo especificado no se puede borrar, participa en ciertas competiciones" };
+	if ( playedCompetitions && playedCompetitions.length ) throw { code: 422, message: "El equipo especificado no se puede borrar, participa en ciertas competiciones" };
 	
 	if ( existingTeam.avatar ) {
 		( await domainTools.removeUploadedImage( existingTeam.avatar ) );

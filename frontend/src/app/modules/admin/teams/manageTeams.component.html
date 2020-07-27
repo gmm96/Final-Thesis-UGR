@@ -12,7 +12,7 @@
         <div class="disclaimer alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center"
              role="alert">
             <mat-icon color="primary">priority_high</mat-icon>
-            <span>Recuerde que necesita crear y/o editar los equipos necesarios, añadiendo y/o quitando los jugadores correspondientes, antes de seguir con la creación de campeonatos</span>
+            <span>Recuerde que necesita crear y/o editar los equipos necesarios, añadiendo y/o quitando jugadores, antes de seguir con la creación de competiciones</span>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -39,7 +39,7 @@
                             <mat-icon matPrefix [color]="searchInput.focused ? 'accent' : ''" class="search-icon">search</mat-icon>
                             <mat-label>Nombre de equipo</mat-label>
                             <input matInput formControlName="name" [disableControl]="!canEditOptionSearchBox()"
-                                   #searchInput="matInput" [matAutocomplete]="auto" [readonly]="selectedTeamToEdit">
+                                   #searchInput="matInput" [matAutocomplete]="auto" [readonly]="selectedTeamToEdit" (keydown.enter)="addFirstFilteredOption($event)">
                             <button mat-button *ngIf="selectedTeamToEdit" matSuffix mat-icon-button aria-label="Clear" (click)="clearTeamToEdit()">
                                 <mat-icon>close</mat-icon>
                             </button>
@@ -99,7 +99,8 @@
                                 <mat-icon matPrefix [color]="searchInput.focused ? 'accent' : ''" class="search-icon">search</mat-icon>
                                 <mat-label>Identificación personal</mat-label>
                                 <input matInput [(ngModel)]="playerQueryToSearch" [ngModelOptions]="{standalone: true}" #searchInput="matInput" [matAutocomplete]="autoPlayers"
-                                       [disabled]="canEditOptionSearchBox() && !selectedTeamToEdit" type="text" (input)="searchPlayerToAdd($event)">
+                                       [disabled]="canEditOptionSearchBox() && !selectedTeamToEdit" type="text" (input)="searchPlayerToAdd($event)"
+                                       (keydown.enter)="addFirstFilteredOptionPlayers($event)">
                             </mat-form-field>
                             <div class="players-wrapper" *ngIf="teamPlayers.length">
                                 <div class="player d-flex align-items-center justify-content-between" *ngFor="let player of teamPlayers; index as i">
@@ -110,7 +111,9 @@
                                         {{player.idCard}}
                                     </div>
                                     <div class="remove-icon d-flex">
-                                        <mat-icon>delete</mat-icon>
+                                        <button mat-icon-button (click)="removePlayerFromList(player.idCard)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

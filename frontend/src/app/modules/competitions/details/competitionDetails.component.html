@@ -1,8 +1,8 @@
 <div class="competition-details container-fluid">
     <div class="details-header-intro row align-items-center">
         <div class="header-name col-md-6 col-12 text-md-left text-center">
-            <div class="header-name-title">XXV Liga de Verano de Baloncesto Cabra 2020</div>
-            <div class="header-name-subtitle">Patronato Municipal de Deportes de Cabra</div>
+            <div class="header-name-title">{{ competition?.name }}</div>
+            <div class="header-name-subtitle">{{ competition?.organizer }}</div>
         </div>
         <div class="header-info col-md-6 col-12">
             <div class="row no-gutters">
@@ -10,19 +10,31 @@
                     <div class="header-info-counter">
                         <div class="counter-title">Formato</div>
                         <div class="counter-badge">
-                            <span class="badge">
+                            <span class="badge" *ngIf="competition?.leagueFixturesVsSameTeam && !competition?.playoffsFixturesVsSameTeam">
+                                <mat-icon class="counter-icon">table_chart</mat-icon>
+                            </span>
+                            <div class="counter-value" *ngIf="competition?.leagueFixturesVsSameTeam && !competition?.playoffsFixturesVsSameTeam"> Liga</div>
+
+                            <span class="badge" *ngIf="!competition?.leagueFixturesVsSameTeam && competition?.playoffsFixturesVsSameTeam">
+                                <mat-icon class="counter-icon">merge_type</mat-icon>
+                            </span>
+                            <div class="counter-value" *ngIf="!competition?.leagueFixturesVsSameTeam && competition?.playoffsFixturesVsSameTeam"> Playoffs</div>
+
+                            <span class="badge" *ngIf="competition?.leagueFixturesVsSameTeam && competition?.playoffsFixturesVsSameTeam">
                                 <mat-icon class="counter-icon">table_view</mat-icon>
                             </span>
-                            <div class="counter-value">Mixto</div>
+                            <div class="counter-value" *ngIf="competition?.leagueFixturesVsSameTeam && competition?.playoffsFixturesVsSameTeam"> Mixto</div>
                         </div>
                     </div>
                     <div class="header-info-counter">
                         <div class="counter-title">Estado</div>
                         <div class="counter-badge">
                             <span class="badge">
-                                <mat-icon class="counter-icon">play_circle_filled</mat-icon>
+                                <mat-icon class="counter-icon"
+                                          *ngIf="competition?.inProgress">play_circle_filled</mat-icon>
+                                <mat-icon class="counter-icon" *ngIf="!competition?.inProgress">stop_circle</mat-icon>
                             </span>
-                            <div class="counter-value">En progreso</div>
+                            <div class="counter-value">{{ ( competition?.inProgress ) ? "En progreso" : "Finalizada"}}</div>
                         </div>
                     </div>
                 </div>
@@ -33,7 +45,7 @@
                             <span class="badge">
                                 <mat-icon class="counter-icon">people</mat-icon>
                             </span>
-                            <div class="counter-value">999</div>
+                            <div class="counter-value"> {{ competition?.teams?.length }} </div>
                         </div>
                     </div>
                     <div class="header-info-counter">
@@ -42,7 +54,7 @@
                             <span class="badge">
                                 <mat-icon class="counter-icon">person</mat-icon>
                             </span>
-                            <div class="counter-value">999</div>
+                            <div class="counter-value">{{competitionNumberOfPlayers }}</div>
                         </div>
                     </div>
                 </div>
@@ -60,13 +72,16 @@
             <div class="navbar-toggler-content collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
                 <ul class="navbar-links nav navbar-nav text-center">
                     <li [class.active]="currentTabField === getCompetitionDetailsTabs().calendar">
-                        <a class="nav-item nav-link btn" (click)="openCalendar()" data-toggle="collapse" data-target=".navbar-collapse.show">Calendario</a>
+                        <a class="nav-item nav-link btn" (click)="openCalendar()" data-toggle="collapse"
+                           data-target=".navbar-collapse.show">Calendario</a>
                     </li>
                     <li [class.active]="currentTabField === getCompetitionDetailsTabs().standings">
-                        <a class="nav-item nav-link btn" (click)="openStandings()" data-toggle="collapse" data-target=".navbar-collapse.show">Clasificación</a>
+                        <a class="nav-item nav-link btn" (click)="openStandings()" data-toggle="collapse"
+                           data-target=".navbar-collapse.show">Clasificación</a>
                     </li>
                     <li [class.active]="currentTabField === getCompetitionDetailsTabs().playoffs">
-                        <a class="nav-item nav-link btn" (click)="openPlayoffs()" data-toggle="collapse" data-target=".navbar-collapse.show">Playoffs</a>
+                        <a class="nav-item nav-link btn" (click)="openPlayoffs()" data-toggle="collapse"
+                           data-target=".navbar-collapse.show">Playoffs</a>
                     </li>
                 </ul>
             </div>
@@ -78,7 +93,7 @@
             <app-calendar></app-calendar>
         </div>
         <div *ngSwitchCase="getCompetitionDetailsTabs().standings" [@animatedTabs]>
-            <app-league-table ></app-league-table>
+            <app-league-table></app-league-table>
         </div>
         <div *ngSwitchCase="getCompetitionDetailsTabs().playoffs" [@animatedTabs]>
             <app-playoffs></app-playoffs>

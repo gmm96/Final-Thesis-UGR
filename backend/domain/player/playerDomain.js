@@ -3,7 +3,7 @@ var competitionDomain = require( "../competition/competitionDomain" );
 var teamDomain = require( "../team/teamDomain" );
 var competitionPlayerStatsDomain = require( "../competition/competitionPlayerStatsDomain" );
 var playerDatabase = require( '../../db/player/playerDatabase' );
-var lodash = require("lodash");
+var lodash = require( "lodash" );
 
 
 exports.getPlayerById = async ( id ) => {
@@ -24,13 +24,22 @@ exports.getFullPlayerById = async ( id ) => {
 exports.getPlayerByNameOrSurname = async ( nameOrSurname ) => {
 	if ( !nameOrSurname ) return [];
 	return ( await playerDatabase.getPlayerByNameOrSurname( nameOrSurname ) );
-}
+};
 
 
 exports.getPlayerArrayByPersonalIdentification = async ( idCard ) => {
 	if ( !idCard ) return [];
 	return ( await playerDatabase.getPlayerArrayByPersonalIdentification( idCard ) );
-}
+};
+
+
+exports.getPlayersWithNoTeam = async ( idCard ) => {
+	let playersWithTeam = ( await teamDomain.getPlayersWithTeam() );
+	let allPlayers = ( await playerDatabase.getAllPlayers() );
+	let playerWithoutTeam = lodash.differenceWith( allPlayers, playersWithTeam, lodash.isEqual );
+	playerWithoutTeam = playerWithoutTeam.filter( player => player.idCard.indexOf( idCard ) >= 0 );
+	return playerWithoutTeam;
+};
 
 
 exports.createPlayer = async ( player, avatar ) => {
@@ -82,7 +91,7 @@ exports.updatePlayer = async ( id, player, avatar ) => {
 	if ( playerTeam ) {
 		let teamPlayersID = playerTeam.players.map( player => {
 			return player._id;
-		})
+		} )
 		playerTeam.players = teamPlayersID;
 		let editedTeam = ( await teamDomain.updateTeam( playerTeam._id, playerTeam ) );
 	}

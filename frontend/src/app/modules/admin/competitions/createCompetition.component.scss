@@ -1,6 +1,6 @@
 @import "src/assets/scss/base";
 
-.admin-teams {
+.admin-competitions {
     .admin-header {
         background-color: $blue-grey-800;
         text-align: center;
@@ -22,59 +22,10 @@
 
     .admin-content {
         .form-wrapper {
-            .form-header {
-                margin-top: 1rem;
-                form {
-                    .radio-group {
-                        .radio-button {
-                            margin-right: 20px;
-
-                            &:first-of-type {
-                                margin-left: 20px;
-                            }
-                        }
-                    }
-
-                    ::ng-deep .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
-                        transform: translateY(-1.3em) scale(.75) !important;
-                        width: 133.33333%;
-                    }
-                    .query {
-                        ::ng-deep .mat-form-field-wrapper {
-                            padding-bottom: 0;
-                        }
-
-                        ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
-                            padding: 0.4em 0px 0.4em 0.5em !important;
-                            border-top: 0.65em solid transparent;
-                        }
-
-                        ::ng-deep .mat-form-field-label-wrapper {
-                            top: -1.3em;
-                        }
-
-
-                        input {
-                            padding-left: 5px;
-                            padding-bottom: 3px;
-                        }
-
-                        .search-icon {
-                            margin-top: 7px;
-                        }
-
-                        ::ng-deep .mat-form-field-label {
-                            margin-left: 0.5em;
-                        }
-
-                    }
-                }
-            }
-
             .form-content {
                 margin: 30px 0;
                 padding: 25px 15px;
-                .team-form {
+                .competition-form {
 
                     ::ng-deep .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
                         transform: translateY(-1.1em) scale(.6) !important;
@@ -108,11 +59,8 @@
                             //margin-left: 0.5em;
                         }
                     }
-                    .mat-form-checkbox {
-                        padding-left: 15px;
-                    }
 
-                    .team-form-title {
+                    .competition-form-title {
                         padding-left: 15px;
                         font-size: 24px;
                         font-weight: 600;
@@ -127,9 +75,9 @@
                         }
                     }
 
-                    .players-container {
+                    .teams-container {
                         margin: 15px 0;
-                        .players-title {
+                        .teams-title {
                             margin-bottom: 10px;
                             font-size: 18px;
                             font-weight: 600;
@@ -162,10 +110,10 @@
                                 margin-left: 0.5em;
                             }
                         }
-                        .players-wrapper {
+                        .teams-wrapper {
                             margin-top: 15px;
                             padding: 0 15px;
-                            .player {
+                            .team {
                                 padding: 5px 10px;
                                 &:first-of-type { border-top: 2px solid grey; }
                                 border-bottom: 2px solid grey;

@@ -3,10 +3,12 @@ var competitionDatabase = require( '../../db/competition/competitionDatabase' );
 var teamDomain = require( "../team/teamDomain" );
 var playerDomain = require( "../player/playerDomain" );
 var gameDomain = require( "./competitionGameDomain" );
-var competitionTeamStatsDomain = require( "./competitionTeamStatsDomain" )
-var competitionPlayerStatsDomain = require( "./competitionPlayerStatsDomain" )
+var competitionTeamStatsDomain = require( "./competitionTeamStatsDomain" );
+var competitionPlayerStatsDomain = require( "./competitionPlayerStatsDomain" );
+var competitionPlayoffsRoundDomain = require( "./competitionPlayoffsRoundDomain" );
 var robin = require( "roundrobin" );
 var lodash = require( "lodash" );
+var underscore = require( "underscore" );
 
 
 exports.getCompetitionById = async ( id ) => {
@@ -38,8 +40,11 @@ exports.createCompetition = async ( competition ) => {
 	( await exports.getTeamObjectArray( competition ) );
 	
 	let createdCompetition = ( await competitionDatabase.createCompetition( competition ) );
-	// ( await exports.createStatsObjects( competition ) );
+	
+	( await exports.createStatsObjects( createdCompetition ) );
 	( await exports.generateCompetitionSchedule( createdCompetition ) );
+	
+	return createdCompetition;
 };
 
 
@@ -50,6 +55,10 @@ exports.getTeamObjectArray = async ( competition ) => {
 	for ( let teamID of teamIDsCopy ) {
 		let existingTeam = ( await teamDomain.getTeamById( teamID ) );
 		if ( existingTeam ) {
+			if ( !existingTeam.players || !existingTeam.players.length ) throw {
+				code: 422,
+				message: "Está intentando añadir un equipo sin jugadores. Imposible procesar la operación"
+			};
 			if ( competition.minPlayerNumberPerTeam > existingTeam.players.length ) throw { code: 422, message: "Número de jugadores de equipo inválido" };
 			competition.teams.push( existingTeam );
 		} else {
@@ -69,39 +78,6 @@ exports.createStatsObjects = async ( competition ) => {
 };
 
 
-exports.updateCompetition = async ( id, competition ) => {
-	// ( await exports.competitionParametersValidator( competition ) );
-	// if ( !id ) throw { code: 422, message: "Identificador de competición inválido" };
-	// let existingCompetition = ( await competitionDatabase.getCompetitionById( id ) );
-	// if ( !existingCompetition ) {
-	// 	throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
-	// }
-	// if ( existingCompetition.name !== competition.name ) {
-	// 	let existingCompetitionByName = ( await exports.getCompetitionByName( competition.name ) );
-	// 	if ( existingCompetitionByName ) {
-	// 		if ( existingCompetition._id.toString() !== existingCompetitionByName._id.toString() ) {
-	// 			throw { code: 422, message: "El nombre de competición es inválido, ya se encuentra en uso" };
-	// 		}
-	// 	}
-	// }
-	//
-	// // No se si se updatea o no
-	// return ( await competitionDatabase.updateCompetition( id, competition ) );
-};
-
-
-exports.purgeCompetition = async ( competitionID ) => {
-	// if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
-	//
-	// let existingCompetition = ( await competitionDatabase.getCompetitionById( competitionID ) );
-	// if ( !existingCompetition ) {
-	// 	throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
-	// }
-	//
-	// return ( await competitionDatabase.purgeCompetition( competitionID ) );
-};
-
-
 exports.competitionParametersValidator = async ( competition ) => {
 	if ( !competition.name ) throw { code: 422, message: "Nombre de competición inválido" };
 	if ( !competition.organizer ) throw { code: 422, message: "Organizador de competición inválido" };
@@ -112,6 +88,8 @@ exports.competitionParametersValidator = async ( competition ) => {
 	if ( !competition.leagueFixturesVsSameTeam && !competition.playoffsFixturesVsSameTeam ) throw { code: 422, message: "Formato de competición inválido" };
 	if ( !domainTools.isPositiveInteger( competition.leagueFixturesVsSameTeam ) && !domainTools.isPositiveInteger( competition.playoffsFixturesVsSameTeam ) )
 		throw { code: 422, message: "Formato de competición inválido" };
+	if ( competition.playoffsFixturesVsSameTeam && !domainTools.isOdd( competition.playoffsFixturesVsSameTeam ) )
+		throw { code: 422, message: "El número de partidos de playoffs por ronda debe ser impar" };
 	if ( await domainTools.hasArrayDuplicatedElements( competition.teams ) ) throw { code: 422, message: "Lista de equipos de competición inválida, equipo duplicado" };
 };
 
@@ -137,14 +115,12 @@ exports.generateCompetitionSchedule = async ( competition ) => {
 	} );
 	
 	if ( competition.leagueFixturesVsSameTeam && domainTools.isPositiveInteger( competition.leagueFixturesVsSameTeam ) ) {
-		console.log( 'no deberia de entrar aqui' );
 		let fixtures = ( await exports.generateLeagueFixtures( competition, randomizeTeamsIDs ) );
 		let games = ( await exports.parseFixturesToGames( fixtures, competition._id ) );
-		return games;
-		
+		// return games;
 	} else if ( domainTools.isPositiveInteger( competition.playoffsFixturesVsSameTeam ) ) {
-		let rounds = ( await exports.generatePlayoffsRoundsWithoutLeague( existingCompetition, randomizeTeamsIDs ) );
-		return rounds;
+		let rounds = ( await exports.generatePlayoffsRoundsWithoutLeague( competition, randomizeTeamsIDs ) );
+		// return rounds;
 	}
 	
 };
@@ -200,8 +176,8 @@ exports.generateFixturesChangingLocalVisitor = async ( fixturesArray ) => {
 	}
 	return changedFixtures;
 };
-//
-//
+
+
 exports.parseFixturesToGames = async ( fixturesMatrix, competitionID ) => {
 	let allGames = [];
 	for ( let roundIndex = 0; roundIndex < fixturesMatrix.length; roundIndex += 1 ) {
@@ -231,6 +207,131 @@ exports.parseFixturesToGames = async ( fixturesMatrix, competitionID ) => {
 	
 	return allGames;
 };
+
+
+exports.generatePlayoffsRoundsWithoutLeague = async ( competition, randomizeTeamsIDs ) => {
+	if ( !competition ) throw { code: 422, message: "Invalid competition" };
+	
+	if ( !competition.playoffsFixturesVsSameTeam ) {
+		throw { code: 422, message: "Invalid competition format. Needed playoffs rounds." };
+	} else {
+		let treeStats = ( await exports.calculateTournamentTreeStats( competition ) );
+		
+		let roundMatchups = [];
+		let allMatchups = [];
+		let currentStackTeams = randomizeTeamsIDs.map( id => {
+			return { _id: id, type: "TEAM" }
+		} );
+		
+		for ( let i = 1; i <= treeStats.nRoundLevels; ++i ) {
+			for ( let j = 0; j < treeStats.nMatchupsPerRound[ i ]; ++j ) {
+				let localTeam = ( await domainTools.getRandomElementFromArray( currentStackTeams ) );
+				let visitorTeam = ( await domainTools.getRandomElementFromArray( currentStackTeams ) );
+				
+				let newPlayoffMatchup = {
+					localTeamID: ( localTeam.type == "TEAM" ) ? localTeam._id : null,
+					visitorTeamID: ( visitorTeam.type == "TEAM" ) ? visitorTeam._id : null,
+					competitionID: competition._id,
+					round: 2 ** ( treeStats.nRoundLevels - i ),
+					nextRound: null,
+					prevRoundLocalID: ( localTeam.type == "MATCHUP" ) ? localTeam._id : null,
+					prevRoundVisitorID: ( visitorTeam.type == "MATCHUP" ) ? visitorTeam._id : null,
+					winnerID: null
+				};
+				let createdPlayoffsRound = ( await competitionPlayoffsRoundDomain.createPlayoffsRound( newPlayoffMatchup ) );
+				
+				if ( createdPlayoffsRound.prevRoundLocalID || createdPlayoffsRound.prevRoundVisitorID ) {
+					let editedRound;
+					if ( createdPlayoffsRound.prevRoundLocalID ) {
+						editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundLocalID, createdPlayoffsRound._id ) );
+					} else if ( createdPlayoffsRound.prevRoundVisitorID ) {
+						editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundVisitorID, createdPlayoffsRound._id ) );
+					}
+					let index = allMatchups.findIndex( round => round._id.toString() === editedRound._id.toString() );
+					allMatchups[ index ] = editedRound;
+				}
+				
+				roundMatchups.push( { _id: createdPlayoffsRound._id, type: "MATCHUP" } );
+				allMatchups.push( createdPlayoffsRound );
+			}
+			currentStackTeams = [ ...currentStackTeams, ...roundMatchups ];
+			roundMatchups = [];
+		}
+		competition[ 'games' ] = ( await exports.parsePlayoffsRoundToGames( competition._id, 2 ** ( treeStats.nRoundLevels - 1 ) ) );
+		competition[ 'playoffsRounds' ] = allMatchups;
+		return allMatchups;
+	}
+	
+};
+
+
+exports.parsePlayoffsRoundToGames = async ( competitionID, round ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !round ) throw { code: 422, message: "Ronda inválida" };
+	let competition = ( await competitionDatabase.getCompetitionById( competitionID ) );
+	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	
+	let playoffsRounds = ( await competitionPlayoffsRoundDomain.getPlayoffsRoundsByCompetitionAndRound( competitionID, round ) );
+	if ( !playoffsRounds || !playoffsRounds.length ) throw { code: 422, message: "Las rondas de playoffs especificadas no se encuentran en el sistema" };
+	
+	let allRoundGames = [];
+	for ( let round of playoffsRounds ) {
+		for ( let index of underscore.range( 1, competition.playoffsFixturesVsSameTeam + 1 ) ) {
+			let game = {
+				competitionID: competition._id,
+				winner: null,
+				loser: null,
+				localTeamInfo: {
+					_id: round.localTeamID,
+					playerStats: null,
+					quarterStats: null
+				},
+				visitorTeamInfo: {
+					_id: round.visitorTeamID,
+					playerStats: null,
+					quarterStats: null
+				},
+				fixture: index,
+				round: round._id,
+			};
+			let createdGame = ( await gameDomain.createGame( game ) );
+			allRoundGames.push( createdGame );
+		}
+	}
+	return allRoundGames;
+};
+
+
+exports.calculateTournamentTreeStats = async ( competition ) => {
+	if ( !competition ) throw { code: 422, message: "Invalid competition" };
+	
+	let result = {};
+	result.nTeams = competition.teams.length;
+	result.nMatchups = result.nTeams - 1;
+	result.nRoundLevels = Math.ceil( Math.log( result.nTeams ) / Math.log( 2 ) );
+	
+	result.nMatchupsPerRound = {};
+	let matchupCount = 0;
+	
+	for ( let i = result.nRoundLevels; i > 1; --i ) {
+		result.nMatchupsPerRound[ i ] = 2 ** ( result.nRoundLevels - i );
+		matchupCount += result.nMatchupsPerRound[ i ];
+	}
+	result.nMatchupsPerRound[ 1 ] = result.nMatchups - matchupCount;
+	
+	return result;
+};
+
+
+exports.getCompetitionLeagueTable = async ( competitionID ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador competición inválido" };
+	
+	let result = ( await competitionTeamStatsDomain.getCompetitionTeamStatsByCompetition( competitionID ) );
+	debugger;
+	return result;
+};
+
+
 //
 //
 // exports.deleteCompetitionSchedule = async ( competitionID ) => {
@@ -245,77 +346,3 @@ exports.parseFixturesToGames = async ( fixturesMatrix, competitionID ) => {
 // };
 //
 //
-// exports.generatePlayoffsRoundsWithoutLeague = async ( competition, randomizeTeamsIDs ) => {
-// 	if ( !competition ) throw { code: 422, message: "Invalid competition" };
-//
-// 	if ( !competition.playoffsFixturesVsSameTeam ) {
-// 		throw { code: 422, message: "Invalid competition format. Needed playoffs rounds." };
-// 	} else {
-// 		let treeStats = ( await exports.calculateTournamentTreeStats( competition ) );
-// 		// let matchups = {};
-// 		// let matchupKeys = [ ...Array( competition.playoffsFixturesVsSameTeam ).keys() ];
-// 		// matchupKeys.every( function ( key ) {
-// 		// 	return ++matchupKeys[ key ];
-// 		// } );
-// 		// for ( let key of matchupKeys ) matchups[ key ] = [];
-//
-// 		let raffledRounds = [];
-// 		let allMatchups = [];
-// 		for ( let i = 1; i <= treeStats.nRoundLevels; ++i ) {
-// 			for ( let j = 0; j < treeStats.nMatchupsPerRound[ i ]; ++j ) {
-// 				let localTeam = ( await domainTools.getRandomElementFromArray( randomizeTeamsIDs ) );
-// 				let visitorTeam = ( await domainTools.getRandomElementFromArray( randomizeTeamsIDs ) );
-//
-// 				let newPlayoffMatchup = {
-// 					competitionID: competition._id,
-// 					round: i,
-// 					nextRoundID: null,
-// 				};
-//
-// 				if ( 'type' in localTeam )
-// 					newPlayoffMatchup.localID = { type: domainTools.playoffMatchupCompetitorType.matchup, id: localTeam[ 'id' ] };
-// 				else
-// 					newPlayoffMatchup.localID = { type: domainTools.playoffMatchupCompetitorType.team, id: localTeam };
-//
-// 				if ( 'type' in visitorTeam )
-// 					newPlayoffMatchup.visitorID = { type: domainTools.playoffMatchupCompetitorType.matchup, id: localTeam[ 'id' ] };
-// 				else
-// 					newPlayoffMatchup.visitorID = { type: domainTools.playoffMatchupCompetitorType.team, id: localTeam };
-//
-// 				newPlayoffMatchup.previousRoundsIDs = ( newPlayoffMatchup.round == 1 ) ? null : [];
-//
-// 				let createdPlayoffsMatchup = playoffsMatchupDomain.createPlayoffsMatchup( newPlayoffMatchup );
-//
-// 				raffledRounds.push( createdPlayoffsMatchup );
-// 				allMatchups.push( createdPlayoffsMatchup );
-// 			}
-// 			randomizeTeamsIDs = [ ...randomizeTeamsIDs, ...raffledRounds ];
-// 			raffledRounds = [];
-// 		}
-// 		console.log( allMatchups );
-// 		return allMatchups;
-// 	}
-//
-// };
-//
-//
-// exports.calculateTournamentTreeStats = async ( competition ) => {
-// 	if ( !competition ) throw { code: 422, message: "Invalid competition" };
-//
-// 	let result = {};
-// 	result.nTeams = ( await teamDomain.countTeamsInCompetition( competition._id ) );
-// 	result.nMatchups = result.nTeams - 1;
-// 	result.nRoundLevels = Math.ceil( Math.log( result.nTeams ) / Math.log( 2 ) );
-//
-// 	result.nMatchupsPerRound = {};
-// 	let matchupCount = 0;
-//
-// 	for ( let i = result.nRoundLevels; i > 1; --i ) {
-// 		result.nMatchupsPerRound[ i ] = 2 ** ( result.nRoundLevels - i );
-// 		matchupCount += result.nMatchupsPerRound[ i ];
-// 	}
-// 	result.nMatchupsPerRound[ 1 ] = result.nMatchups - matchupCount;
-// 	// if ( result.nMatchupsPerRound[ 1 ] != 1 ) throw { code: 422, message: "Invalid competition format. An error occurred pairing teams." };
-//
-// 	return result;
-// };

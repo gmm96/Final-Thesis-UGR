@@ -23,6 +23,16 @@ exports.getPlayerArrayByPersonalIdentification = async ( req, res ) => {
 };
 
 
+exports.getPlayersWithNoTeam = async ( req, res ) => {
+	try {
+		let result = ( await playerDomain.getPlayersWithNoTeam( req.query.q ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
 exports.createPlayer = async ( req, res ) => {
 	try {
 		let form = new formidable.IncomingForm();

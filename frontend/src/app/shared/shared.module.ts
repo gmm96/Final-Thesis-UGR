@@ -74,6 +74,8 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import {ToastrModule} from "ngx-toastr";
 import {AuthGuardService} from "../core/auth/auth-guard.service";
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MomentDateModule} from '@angular/material-moment-adapter';
+import {CreateCompetitionComponent} from "../modules/admin/competitions/createCompetition.component";
+import {CompetitionsService} from "../core/services/competitions/competitions.service";
 
 
 @NgModule({
@@ -150,6 +152,7 @@ import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdap
         HomeService,
         PlayersService,
         TeamsService,
+        CompetitionsService,
         {provide: MatPaginatorIntl, useClass: MatPaginatorIntlSpa},
         { provide: LOCALE_ID, useValue: 'es-ES' },
         { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },

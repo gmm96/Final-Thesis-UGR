@@ -11,22 +11,33 @@ exports.getCompetitionByID = async ( req, res ) => {
 	}
 };
 
+
+exports.getCompetitionLeagueTable = async ( req, res ) => {
+	try {
+		let result = ( await competitionDomain.getCompetitionLeagueTable( req.params.competitionID ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
 exports.createCompetition = async ( req, res ) => {
 	try {
 		let newCompetition = {
 			name: req.body.name,
 			organizer: req.body.organizer,
-			season: req.body.season,
+			season: parseInt( req.body.season ),
 			class: req.body.class,
 			sex: req.body.sex,
-			minTeamNumber: req.body.minTeamNumber,
-			minPlayerNumberPerTeam: req.body.minPlayerNumberPerTeam,
-			leagueFixturesVsSameTeam: req.body.leagueFixturesVsSameTeam,
-			playoffsFixturesVsSameTeam: req.body.playoffsFixturesVsSameTeam,
+			minTeamNumber: parseInt( req.body.minTeamNumber ),
+			minPlayerNumberPerTeam: parseInt( req.body.minPlayerNumberPerTeam ),
+			leagueFixturesVsSameTeam: parseInt( req.body.leagueFixturesVsSameTeam ),
+			playoffsFixturesVsSameTeam: parseInt( req.body.playoffsFixturesVsSameTeam ),
 			inProgress: true,
 			teams: req.body.teams,
-			createdAt: new Date(),
-			updatedAt: new Date()
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString()
 		};
 		let result = ( await competitionDomain.createCompetition( newCompetition ) );
 		res.send( result );
@@ -36,24 +47,24 @@ exports.createCompetition = async ( req, res ) => {
 };
 
 exports.updateCompetition = async ( req, res ) => {
-	try {
-		let updatedCompetition = {
-			name: req.body.name,
-			organizer: req.body.organizer,
-			season: req.body.season,
-			minTeamNumber: req.body.minTeamNumber,
-			minPlayerNumberPerTeam: req.body.minPlayerNumberPerTeam,
-			leagueFixturesVsSameTeam: req.body.leagueFixturesVsSameTeam,
-			playoffsFixturesVsSameTeam: req.body.playoffsFixturesVsSameTeam,
-			inProgress: req.body.inProgress,
-			teams: req.body.teams,
-			updatedAt: new Date()
-		};
-		let result = ( await competitionDomain.updateCompetition( req.params.competitionID, updatedCompetition ) );
-		res.send( result );
-	} catch ( e ) {
-		apiTools.manageError( req, res, e );
-	}
+	// try {
+	// 	let updatedCompetition = {
+	// 		name: req.body.name,
+	// 		organizer: req.body.organizer,
+	// 		season: req.body.season,
+	// 		minTeamNumber: req.body.minTeamNumber,
+	// 		minPlayerNumberPerTeam: req.body.minPlayerNumberPerTeam,
+	// 		leagueFixturesVsSameTeam: req.body.leagueFixturesVsSameTeam,
+	// 		playoffsFixturesVsSameTeam: req.body.playoffsFixturesVsSameTeam,
+	// 		inProgress: req.body.inProgress,
+	// 		teams: req.body.teams,
+	// 		updatedAt: new Date()
+	// 	};
+	// 	let result = ( await competitionDomain.updateCompetition( req.params.competitionID, updatedCompetition ) );
+	// 	res.send( result );
+	// } catch ( e ) {
+	// 	apiTools.manageError( req, res, e );
+	// }
 };
 
 exports.purgeCompetition = async ( req, res ) => {

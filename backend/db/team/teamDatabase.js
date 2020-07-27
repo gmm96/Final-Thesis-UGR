@@ -13,7 +13,7 @@ exports.getTeamById = async ( id ) => {
 
 
 exports.getTeamByName = async ( name ) => {
-	let result = ( await teamCursor.findOne( { name: name} ));
+	let result = ( await teamCursor.findOne( { name: name } ) );
 	return result;
 }
 
@@ -25,8 +25,22 @@ exports.getTeamListByName = async ( name ) => {
 
 
 exports.getPlayerTeam = async ( playerID ) => {
-	let result = ( await teamCursor.findOne( { players: { $elemMatch: { _id: ObjectID( playerID.toString() ) } } } ));
+	let result = ( await teamCursor.findOne( { players: { $elemMatch: { _id: ObjectID( playerID.toString() ) } } } ) );
 	return result;
+}
+
+
+exports.getPlayersWithTeam = async () => {
+	let result = ( await teamCursor.aggregate( [
+		{ $unwind: "$players" },
+		{ $group: { _id: 1, players: { $addToSet: "$players" } } },
+		{ $project: { players: 1, _id: 0 } }
+	] ).toArray() );
+	if ( result[0].players && result[0].players.length ) {
+		return result[0].players;
+	} else {
+		return [];
+	}
 }
 
 

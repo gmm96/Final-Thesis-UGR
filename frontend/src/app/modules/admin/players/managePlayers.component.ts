@@ -142,6 +142,14 @@ export class ManagePlayersComponent implements OnInit, OnDestroy {
         this.playerForm.controls['deleteAvatar'].setValue(false);
     }
 
+    addFirstFilteredOption(event) {
+        event.preventDefault();
+        if (this.filteredOptions.length && this.optionForm.value.idCard && this.optionForm.value.idCard.length) {
+            event.option = {value: this.filteredOptions[0]};
+            this.setPlayerToEdit(event);
+        }
+    }
+
     clearPlayerToEdit() {
         this.optionForm.controls["idCard"].reset();
         this.selectedPlayerToEdit = null;

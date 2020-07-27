@@ -31,7 +31,7 @@
                             <mat-icon matPrefix [color]="searchInput.focused ? 'accent' : ''" class="search-icon">search</mat-icon>
                             <mat-label>Identificación personal</mat-label>
                             <input matInput formControlName="idCard" [disableControl]="!canEditOptionSearchBox()"
-                                   #searchInput="matInput" [matAutocomplete]="auto" [readonly]="selectedPlayerToEdit">
+                                   #searchInput="matInput" [matAutocomplete]="auto" [readonly]="selectedPlayerToEdit" (keydown.enter)="addFirstFilteredOption($event)">
                             <button mat-button *ngIf="selectedPlayerToEdit" matSuffix mat-icon-button aria-label="Clear" (click)="clearPlayerToEdit()">
                                 <mat-icon>close</mat-icon>
                             </button>
@@ -84,7 +84,7 @@
                         </mat-form-field>
                         <mat-form-field class="col-sm-12" appearance="outline" color="accent">
                             <mat-label class="regular-label">Altura (m)</mat-label>
-                            <input matInput type="text" formControlName="height" [disableControl]="canEditOptionSearchBox() && !selectedPlayerToEdit" step="0.01" lang="es-ES">
+                            <input matInput type="text" formControlName="height" [disableControl]="canEditOptionSearchBox() && !selectedPlayerToEdit" autocomplete="off">
                             <mat-error *ngIf="errorHandling('height', 'required')">
                                 Debe proporcionar una <strong>altura</strong>
                             </mat-error>
@@ -94,7 +94,7 @@
                         </mat-form-field>
                         <mat-form-field class="col-sm-12" appearance="outline" color="accent">
                             <mat-label class="regular-label">Peso (Kg)</mat-label>
-                            <input matInput type="text" formControlName="weight" [disableControl]="canEditOptionSearchBox() && !selectedPlayerToEdit">
+                            <input matInput type="text" formControlName="weight" [disableControl]="canEditOptionSearchBox() && !selectedPlayerToEdit" autocomplete="off">
                             <mat-error *ngIf="errorHandling('weight', 'required')">
                                 Debe proporcionar un <strong>peso</strong>
                             </mat-error>

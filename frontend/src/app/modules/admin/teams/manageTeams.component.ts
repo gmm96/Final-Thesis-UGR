@@ -14,17 +14,18 @@ import {ToastrService} from "ngx-toastr";
 })
 export class ManageTeamsComponent implements OnInit, OnDestroy {
 
-    optionForm: FormGroup
-    teamForm: FormGroup
+    optionForm: FormGroup;
+    teamForm: FormGroup;
     @ViewChild('formDirective', {static: true}) formDirective: FormGroupDirective;
     deleteAvatarSub: Subscription;
     setTeamToEditSub: Subscription;
     createEditSub: Subscription;
-    filteredOptions: any;
-    filteredOptionsPlayers: any;
+    filteredOptions: any = [];
+    filteredOptionsPlayers: any = [];
     selectedTeamToEdit: any;
     playerQueryToSearch: string;
     teamPlayers: Array<any> = [];
+    initalTeamPlayer: Array<any> = [];
 
 
     constructor(
@@ -83,15 +84,15 @@ export class ManageTeamsComponent implements OnInit, OnDestroy {
     async sendTeam(event) {
         let teamData = lodash.cloneDeep(this.teamForm.value);
         delete teamData.avatar;
-        teamData.players = this.teamPlayers.map( player => {
+        teamData.players = this.teamPlayers.map(player => {
             return player._id
         });
         let avatar = (this.teamForm.value.avatar) ? this.teamForm.value.avatar.files[0] : null;
 
         if (!this.canEditOptionSearchBox()) {
             try {
-                // let newTeam = (await this.teamsService.createTeam(teamData, avatar));
-                // this.toastr.success("Equipo con nombre " + newTeam.name + " creado correctamente.", "Operación satisfactoria");
+                let newTeam = (await this.teamsService.createTeam(teamData, avatar));
+                this.toastr.success("Equipo con nombre " + newTeam.name + " creado correctamente.", "Operación satisfactoria");
                 this.resetTeamForm();
             } catch (e) {
                 this.toastr.error((e && e.error && e.error.message) ? e.error.message : "Error desconococido, vuelva a intentarlo.", "Error");
@@ -102,6 +103,7 @@ export class ManageTeamsComponent implements OnInit, OnDestroy {
                 this.toastr.success("Equipo con nombre " + editedTeam.name + " editado correctamente.", "Operación satisfactoria");
                 this.clearTeamToEdit();
             } catch (e) {
+                console.log(e);
                 this.toastr.error((e && e.error && e.error.message) ? e.error.message : "Error desconococido, vuelva a intentarlo.", "Error");
             }
         }
@@ -112,7 +114,7 @@ export class ManageTeamsComponent implements OnInit, OnDestroy {
         try {
             let resultConfirm = confirm("¿ Realmente desea borrar el equipo con nombre '" + this.selectedTeamToEdit.name + "' ?")
             if (resultConfirm) {
-                // let result = (await this.teamsService.deleteTeam(this.selectedTeamToEdit._id));
+                let result = (await this.teamsService.deleteTeam(this.selectedTeamToEdit._id));
                 this.toastr.success("Equipo con nombre '" + this.selectedTeamToEdit.name + "' borrado correctamente.", "Operación satisfactoria");
                 this.clearTeamToEdit();
             }
@@ -132,7 +134,15 @@ export class ManageTeamsComponent implements OnInit, OnDestroy {
 
     async searchPlayerToAdd(event) {
         try {
-            // if (event.target.value) this.filteredOptions = (await this.playersService.getPlayerArrayByPersonalIdentification(event.target.value));
+            if (event.target.value) {
+                this.filteredOptionsPlayers = (await this.playersService.getPlayersWithoutTeam(event.target.value));
+                if (this.initalTeamPlayer) {
+                    this.filteredOptionsPlayers = this.filteredOptionsPlayers.concat(this.initalTeamPlayer);
+                    this.filteredOptionsPlayers = this.filteredOptionsPlayers.filter(player => player.idCard.indexOf(event.target.value) >= 0);
+                }
+            } else {
+                this.filteredOptionsPlayers = [];
+            }
         } catch (e) {
             console.log(e);
         }
@@ -149,10 +159,37 @@ export class ManageTeamsComponent implements OnInit, OnDestroy {
         this.teamForm.controls['visitorJersey'].setValue(this.selectedTeamToEdit.visitorJersey);
         this.teamForm.controls['deleteAvatar'].setValue(false);
         this.teamPlayers = this.selectedTeamToEdit.players;
+        this.initalTeamPlayer = lodash.cloneDeep( this.selectedTeamToEdit.players );
     }
 
     addPlayerToTeam(event) {
+        let playerToAdd = event.option.value;
+        if (!this.teamPlayers.some(player => player.idCard == playerToAdd.idCard)) this.teamPlayers.push(event.option.value);
+        this.playerQueryToSearch = "";
+        this.filteredOptionsPlayers = [];
+        this.changeDetectorRef.detectChanges();
+    }
 
+    addFirstFilteredOption(event) {
+        event.preventDefault();
+        if (this.filteredOptions.length && this.optionForm.value.name && this.optionForm.value.name.length) {
+            event.option = {value: this.filteredOptions[0]};
+            this.setTeamToEdit(event);
+        }
+    }
+
+    addFirstFilteredOptionPlayers(event) {
+        event.preventDefault();
+        if (this.filteredOptionsPlayers.length && this.playerQueryToSearch.length) {
+            event.option = {value: this.filteredOptionsPlayers[0]};
+            this.addPlayerToTeam(event);
+        }
+    }
+
+    removePlayerFromList(idCard) {
+        this.teamPlayers = this.teamPlayers.filter(player => {
+            return player.idCard !== idCard;
+        });
     }
 
     clearTeamToEdit() {
@@ -165,6 +202,7 @@ export class ManageTeamsComponent implements OnInit, OnDestroy {
     resetTeamForm() {
         this.formDirective.resetForm();
         this.teamPlayers = [];
+        this.initalTeamPlayer = [];
     }
 
     public errorHandling = (control: string, error: string) => {

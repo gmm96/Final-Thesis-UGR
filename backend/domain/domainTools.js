@@ -43,15 +43,12 @@ exports.isOdd = async ( num ) => {
 	return num % 2;
 };
 
-
 exports.hasArrayDuplicatedElements = async ( array ) => {
-	debugger;
 	if (array && array.length) {
 		return ( new Set( array ) ).size !== array.length;
 	}
 	return false;
 };
-
 
 exports.checkUploadedImage = async ( file ) => {
 	let acceptedMimeTypes = [ 'image/jpeg', 'image/png', 'image/gif' ];
