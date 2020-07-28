@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {Animations} from "../../../shared/animations";
 import {TeamsService} from "../../../core/services/teams/teams.service";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-team-details',
@@ -22,7 +23,8 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private router: Router,
         private teamsService: TeamsService,
-        private changeDetectorRef: ChangeDetectorRef
+        private changeDetectorRef: ChangeDetectorRef,
+        private titleService: Title
     ) {
     }
 
@@ -30,6 +32,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
         this.sub = this.activatedRoute.params.subscribe(async params => {
             this.teamID = params['id'];
             this.team = (await this.teamsService.getTeamInformation(this.teamID));
+            this.titleService.setTitle((this.team) ? this.team.name : "Equipos");
             if (this.team) {
                 if (this.team.avatar) this.team.avatar = 'http://localhost:3000' + this.team.avatar;
                 this.changeDetectorRef.detectChanges();

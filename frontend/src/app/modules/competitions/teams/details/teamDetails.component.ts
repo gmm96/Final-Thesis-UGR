@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {Animations} from "../../../../shared/animations";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-competition-team-details',
@@ -18,7 +19,8 @@ export class CompetitionTeamDetailsComponent implements OnInit, OnDestroy {
 
     constructor(
         private activatedRoute: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private titleService: Title
     ) {
     }
 

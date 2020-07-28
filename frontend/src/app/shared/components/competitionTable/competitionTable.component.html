@@ -23,10 +23,10 @@
                     {{ element.season }}
                 </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="category">
+            <ng-container matColumnDef="class">
                 <mat-header-cell *matHeaderCellDef>Categoría</mat-header-cell>
-                <mat-cell class="category" *matCellDef="let element" [matTooltip]="element.category">
-                    {{ element.category }}
+                <mat-cell class="category" *matCellDef="let element" [matTooltip]="element.class">
+                    {{ element.class }}
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="sex" class="hidden-sm">
@@ -38,8 +38,12 @@
 
 
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="goToPageInCompetition(row)"></mat-row>
         </div>
     </mat-table>
-<!--    <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" [pageSize]="10" [hidden]="!showPaginator"></mat-paginator>-->
+    <div class="no-data" *ngIf="!dataSource || dataSource?.filteredData?.length == 0">
+        <span>No hay datos para este filtro</span>
+    </div>
+
+<!--    <mat-paginator [pageSizeOptions]="[10, 25, 50]" [pageSize]="25"></mat-paginator>-->
 </div>

@@ -1,5 +1,4 @@
 var competition = require( "./competitionAPI" );
-var team = require( "./teamAPI" );
 var permissions = require( "../permissions" );
 var passport = require( "passport" );
 

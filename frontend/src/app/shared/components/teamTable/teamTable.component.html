@@ -1,0 +1,40 @@
+<mat-form-field class="table-filter w-100">
+    <mat-label>Filtro</mat-label>
+    <input matInput (keyup)="applyFilter($event)">
+</mat-form-field>
+<div class="table-border table-responsive shadow">
+    <mat-table [dataSource]="dataSource" class="table-responsive team-table">
+        <div class="table-shadow">
+            <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
+                <mat-cell class="team-name" *matCellDef="let element">
+                    <img mat-card-image [src]="element.avatar || '/assets/images/defaultteam.png'">
+                    {{ element.name }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="city">
+                <mat-header-cell *matHeaderCellDef>Ciudad</mat-header-cell>
+                <mat-cell class="team-city" *matCellDef="let element">
+                    {{ element.city }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="playersLength">
+                <mat-header-cell *matHeaderCellDef>Jugadores</mat-header-cell>
+                <mat-cell class="team-players-length" *matCellDef="let element">
+                    {{ element.playersLength }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="nodata">
+                <td mat-footer-row *matFooterCellDef [colSpan]="displayedColumns.length"
+                    style="text-align: center;">No hay datos disponibles</td>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="goToPlayer(row)"></mat-row>
+        </div>
+    </mat-table>
+    <div class="no-data" *ngIf="!dataSource || dataSource?.filteredData?.length == 0">
+        <span>No hay datos para este filtro</span>
+    </div>
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" [pageSize]="25"></mat-paginator>
+</div>

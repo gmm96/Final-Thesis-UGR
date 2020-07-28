@@ -1,5 +1,6 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
+import {TeamsService} from "../../../../core/services/teams/teams.service";
 
 @Component({
     selector: 'app-team-competitions',
@@ -8,13 +9,24 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class TeamCompetitionsComponent implements OnInit, OnDestroy {
 
+    @Input('teamID') teamID: any;
+    competitions: Array<any> = [];
+
     constructor(
         private activatedRoute: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private teamsService: TeamsService
     ) {
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        if (this.teamID) {
+            try {
+                this.competitions = (await this.teamsService.getTeamCompetitions(this.teamID));
+            } catch (e) {
+                console.error(e);
+            }
+        }
     }
 
     ngOnDestroy() {

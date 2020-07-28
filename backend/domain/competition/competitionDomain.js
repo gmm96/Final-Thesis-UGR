@@ -324,10 +324,20 @@ exports.calculateTournamentTreeStats = async ( competition ) => {
 
 
 exports.getCompetitionLeagueTable = async ( competitionID ) => {
-	if ( !competitionID ) throw { code: 422, message: "Identificador competición inválido" };
-	
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
 	let result = ( await competitionTeamStatsDomain.getCompetitionTeamStatsByCompetition( competitionID ) );
-	debugger;
+	if ( result ) result.sort( function ( a, b ) {
+		if ( a.stats.wonGames < b.stats.wonGames ) return 1;
+		if ( a.stats.wonGames > b.stats.wonGames ) return -1;
+		return 0;
+	} );
+	return result;
+};
+
+
+exports.getPlayerCompetitions = async ( playerID ) => {
+	if ( !playerID ) throw { code: 422, message: "Identificador de jugador inválido" };
+	let result = ( await competitionDatabase.getPlayerCompetitions( playerID ) );
 	return result;
 };
 

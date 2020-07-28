@@ -33,6 +33,16 @@ exports.getPlayersWithNoTeam = async ( req, res ) => {
 };
 
 
+exports.getPlayerCompetitions = async ( req, res ) => {
+	try {
+		let result = ( await playerDomain.getPlayerCompetitions( req.params.playerID ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
 exports.createPlayer = async ( req, res ) => {
 	try {
 		let form = new formidable.IncomingForm();

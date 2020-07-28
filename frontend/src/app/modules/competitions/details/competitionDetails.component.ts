@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {Animations} from "../../../shared/animations";
 import {CompetitionsService} from "../../../core/services/competitions/competitions.service";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-competition-details',
@@ -14,6 +15,7 @@ export class CompetitionDetailsComponent implements OnInit, OnDestroy {
 
     competition: any;
     competitionID: string;
+    teamStats: any;
     competitionNumberOfPlayers: number;
     currentTabField: CompetitionDetailsTabs;
     private sub: Subscription;
@@ -24,6 +26,7 @@ export class CompetitionDetailsComponent implements OnInit, OnDestroy {
         private router: Router,
         private changeDetectorRef: ChangeDetectorRef,
         private competitionsService: CompetitionsService,
+        private titleService: Title
     ) {
     }
 
@@ -32,9 +35,11 @@ export class CompetitionDetailsComponent implements OnInit, OnDestroy {
             this.competitionID = params['competitionID'];
             this.competition = (await this.competitionsService.getFullCompetitionInfo(this.competitionID));
             this.competitionNumberOfPlayers = this.competition.teams.reduce((sum, current) => sum + current.players.length, 0);
+            this.teamStats = (await this.competitionsService.getCompetitionStandings(this.competitionID));
+            this.titleService.setTitle((this.competition) ? this.competition.name : "Competiciones");
             this.changeDetectorRef.detectChanges();
         });
-        this.currentTabField = CompetitionDetailsTabs.calendar;
+        this.currentTabField = CompetitionDetailsTabs.teams;
     }
 
     ngOnDestroy() {
@@ -53,6 +58,10 @@ export class CompetitionDetailsComponent implements OnInit, OnDestroy {
         this.currentTabField = CompetitionDetailsTabs.playoffs
     }
 
+    openTeamList() {
+        this.currentTabField = CompetitionDetailsTabs.teams;
+    }
+
     getCompetitionDetailsTabs() {
         return CompetitionDetailsTabs;
     }
@@ -61,5 +70,6 @@ export class CompetitionDetailsComponent implements OnInit, OnDestroy {
 export enum CompetitionDetailsTabs {
     calendar = "CALENDARIO",
     standings = "CLASIFICACIÓN",
-    playoffs = "PLAYOFFS"
+    playoffs = "PLAYOFFS",
+    teams = "EQUIPOS"
 }

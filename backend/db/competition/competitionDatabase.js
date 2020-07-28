@@ -30,6 +30,12 @@ exports.getCompetitionPlayedByTeam = async ( teamID ) => {
 };
 
 
+exports.getPlayerCompetitions = async ( playerID ) => {
+	if ( !ObjectID.isValid( playerID ) ) throw { code: 422, message: "Identificador de jugador inválido" };
+	let result = ( await dbModule.findResultToArray( competitionCursor, { "teams.players": { $elemMatch: { _id: ObjectID( playerID ) } } } ) );
+	return result;
+};
+
 exports.createCompetition = async ( competition ) => {
 	let result = ( await competitionCursor.insertOne( competition ) );
 	return result.ops[ 0 ];

@@ -21,6 +21,10 @@ export class PlayersService {
         return (await this.http.get("http://localhost:3000/players/no-team?q=" + idCard).toPromise());
     }
 
+    getPlayerCompetitions(playerID: string): Promise<any> {
+        return (this.http.get("http://localhost:3000/players/" + playerID + "/competitions").toPromise());
+    }
+
     async createPlayer(player: any, avatar?: File): Promise<any> {
         let formData = new FormData();
 

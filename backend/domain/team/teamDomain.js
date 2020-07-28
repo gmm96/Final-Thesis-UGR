@@ -26,7 +26,7 @@ exports.getTeamListByName = async ( name ) => {
 
 
 exports.getPlayersWithTeam = async () => {
-	let result = (await teamDatabase.getPlayersWithTeam());
+	let result = ( await teamDatabase.getPlayersWithTeam() );
 	return result;
 };
 
@@ -36,6 +36,19 @@ exports.hasPlayerAnyTeam = async ( playerID ) => {
 	let result = ( await teamDatabase.getPlayerTeam( playerID ) );
 	return result;
 }
+
+
+exports.getTeamCompetitions = async ( teamID ) => {
+	if ( !teamID ) throw { code: 422, message: "Identificador de equipo inválido" };
+	let result = ( await competitionDomain.hasTeamPlayedAnyCompetition( teamID ) );
+	let parsedResult = result.map( ( competition ) => {
+		let parsedCompetition = lodash.cloneDeep( competition );
+		delete parsedCompetition.teams;
+		parsedCompetition.team = competition.teams.find( team => team._id.toString() === teamID.toString() );
+		return parsedCompetition;
+	} );
+	return parsedResult;
+};
 
 
 exports.createTeam = async ( team, avatar ) => {
@@ -122,7 +135,7 @@ exports.updateTeam = async ( id, team, avatar ) => {
 	}
 	
 	
-	team['createdAt'] = existingTeam.createdAt;
+	team[ 'createdAt' ] = existingTeam.createdAt;
 	delete team.deleteAvatar;
 	return ( await teamDatabase.updateTeam( id, team ) );
 };
@@ -135,7 +148,7 @@ exports.purgeTeam = async ( id ) => {
 	if ( !existingTeam ) {
 		throw { code: 422, message: "El equipo especificado no existe en el sistema" };
 	}
-
+	
 	if ( existingTeam.players && existingTeam.players.length ) throw { code: 422, message: "El equipo especificado no se puede borrar, posee aún jugadores" };
 	let playedCompetitions = ( await competitionDomain.hasTeamPlayedAnyCompetition( existingTeam._id ) );
 	if ( playedCompetitions && playedCompetitions.length ) throw { code: 422, message: "El equipo especificado no se puede borrar, participa en ciertas competiciones" };

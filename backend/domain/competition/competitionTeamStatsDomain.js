@@ -11,6 +11,7 @@ exports.getCompetitionTeamStatsById = async ( id ) => {
 exports.getCompetitionTeamStatsByCompetition = async ( competitionID ) => {
 	if ( !competitionID ) throw { code: 422, message: "Identificador de estadísticas de equipo inválido" };
 	let result = ( await competitionTeamStatsDatabase.getCompetitionTeamStatsByCompetition( competitionID ) );
+	return result;
 };
 
 

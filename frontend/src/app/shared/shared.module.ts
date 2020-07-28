@@ -76,6 +76,8 @@ import {AuthGuardService} from "../core/auth/auth-guard.service";
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MomentDateModule} from '@angular/material-moment-adapter';
 import {CreateCompetitionComponent} from "../modules/admin/competitions/createCompetition.component";
 import {CompetitionsService} from "../core/services/competitions/competitions.service";
+import {TeamTableComponent} from "./components/teamTable/teamTable.component";
+import {TeamListComponent} from "../modules/competitions/details/teamList/teamList.component";
 
 
 @NgModule({
@@ -110,6 +112,8 @@ import {CompetitionsService} from "../core/services/competitions/competitions.se
         CompetitionPlayerStatsComponent,
         GameControlBottomSheetComponent,
         DisableControlDirective,
+        TeamTableComponent,
+        TeamListComponent
     ],
     imports: [
         CommonModule,
@@ -222,7 +226,9 @@ import {CompetitionsService} from "../core/services/competitions/competitions.se
         MatDatepickerModule,
         MaterialFileInputModule,
         MatCheckboxModule,
-        ToastrModule
+        ToastrModule,
+        TeamTableComponent,
+        TeamListComponent
     ],
     schemas: [],
     entryComponents: [GameControlBottomSheetComponent]

@@ -14,6 +14,7 @@ exports.getCompetitionTeamStatsById = async ( competitionTeamStatsID ) => {
 exports.getCompetitionTeamStatsByCompetition = async (competitionID) => {
 	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
 	let result = (await dbModule.findResultToArray(competitionTeamStatsCursor, {competitionID: ObjectID( competitionID.toString() ) }));
+	debugger;
 	return result;
 };
 

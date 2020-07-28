@@ -13,17 +13,20 @@
                             <span class="badge" *ngIf="competition?.leagueFixturesVsSameTeam && !competition?.playoffsFixturesVsSameTeam">
                                 <mat-icon class="counter-icon">table_chart</mat-icon>
                             </span>
-                            <div class="counter-value" *ngIf="competition?.leagueFixturesVsSameTeam && !competition?.playoffsFixturesVsSameTeam"> Liga</div>
+                            <div class="counter-value" *ngIf="competition?.leagueFixturesVsSameTeam && !competition?.playoffsFixturesVsSameTeam"
+                                matTooltip="Liga">Liga</div>
 
                             <span class="badge" *ngIf="!competition?.leagueFixturesVsSameTeam && competition?.playoffsFixturesVsSameTeam">
                                 <mat-icon class="counter-icon">merge_type</mat-icon>
                             </span>
-                            <div class="counter-value" *ngIf="!competition?.leagueFixturesVsSameTeam && competition?.playoffsFixturesVsSameTeam"> Playoffs</div>
+                            <div class="counter-value" *ngIf="!competition?.leagueFixturesVsSameTeam && competition?.playoffsFixturesVsSameTeam"
+                                matTooltip="Playoffs">Playoffs</div>
 
                             <span class="badge" *ngIf="competition?.leagueFixturesVsSameTeam && competition?.playoffsFixturesVsSameTeam">
                                 <mat-icon class="counter-icon">table_view</mat-icon>
                             </span>
-                            <div class="counter-value" *ngIf="competition?.leagueFixturesVsSameTeam && competition?.playoffsFixturesVsSameTeam"> Mixto</div>
+                            <div class="counter-value" *ngIf="competition?.leagueFixturesVsSameTeam && competition?.playoffsFixturesVsSameTeam"
+                                matTooltip="Mixto: liga y playoffs">Mixto</div>
                         </div>
                     </div>
                     <div class="header-info-counter">
@@ -34,7 +37,9 @@
                                           *ngIf="competition?.inProgress">play_circle_filled</mat-icon>
                                 <mat-icon class="counter-icon" *ngIf="!competition?.inProgress">stop_circle</mat-icon>
                             </span>
-                            <div class="counter-value">{{ ( competition?.inProgress ) ? "En progreso" : "Finalizada"}}</div>
+                            <div class="counter-value" [matTooltip]="( competition?.inProgress ) ? 'Jugando' : 'Finalizada'">
+                                {{ ( competition?.inProgress ) ? "Jugando" : "Finalizada"}}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -71,15 +76,19 @@
             </button>
             <div class="navbar-toggler-content collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
                 <ul class="navbar-links nav navbar-nav text-center">
-                    <li [class.active]="currentTabField === getCompetitionDetailsTabs().calendar">
+                    <li [class.active]="currentTabField === getCompetitionDetailsTabs().teams">
+                        <a class="nav-item nav-link btn" (click)="openTeamList()" data-toggle="collapse"
+                           data-target=".navbar-collapse.show">Equipos</a>
+                    </li>
+                    <li [class.active]="currentTabField === getCompetitionDetailsTabs().calendar" *ngIf="competition?.leagueFixturesVsSameTeam">
                         <a class="nav-item nav-link btn" (click)="openCalendar()" data-toggle="collapse"
                            data-target=".navbar-collapse.show">Calendario</a>
                     </li>
-                    <li [class.active]="currentTabField === getCompetitionDetailsTabs().standings">
+                    <li [class.active]="currentTabField === getCompetitionDetailsTabs().standings" *ngIf="competition?.leagueFixturesVsSameTeam">
                         <a class="nav-item nav-link btn" (click)="openStandings()" data-toggle="collapse"
                            data-target=".navbar-collapse.show">Clasificación</a>
                     </li>
-                    <li [class.active]="currentTabField === getCompetitionDetailsTabs().playoffs">
+                    <li [class.active]="currentTabField === getCompetitionDetailsTabs().playoffs" *ngIf="competition?.playoffsFixturesVsSameTeam">
                         <a class="nav-item nav-link btn" (click)="openPlayoffs()" data-toggle="collapse"
                            data-target=".navbar-collapse.show">Playoffs</a>
                     </li>
@@ -89,6 +98,9 @@
     </div>
 
     <div class="competition-details-content w-100 panel" [ngSwitch]="currentTabField" [@avoidAnimatedTabsFirstEvent]>
+        <div *ngSwitchCase="getCompetitionDetailsTabs().teams" [@animatedTabs]>
+            <app-team-list [teams]="competition?.teams"></app-team-list>
+        </div>
         <div *ngSwitchCase="getCompetitionDetailsTabs().calendar" [@animatedTabs]>
             <app-calendar></app-calendar>
         </div>

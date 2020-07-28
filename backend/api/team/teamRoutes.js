@@ -4,6 +4,7 @@ var passport = require( "passport" );
 
 
 exports.assignRoutes = function ( app ) {
+	app.get( "/teams/:teamID/competitions", team.getTeamCompetitions );
 	app.get( "/teams/:teamID", team.getTeamById );
 	app.get( "/teams", team.getTeamArrayByName );
 	app.post( "/teams", team.createTeam );

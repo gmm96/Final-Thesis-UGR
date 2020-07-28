@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
@@ -10,10 +10,11 @@ import {MatPaginator} from "@angular/material/paginator";
 })
 export class CompetitionTableComponent implements OnInit, OnDestroy {
 
+    @Input('competitions') competitions: Array<any>;
+    competitionsCompatible: any;
     displayedColumns: string[];
     dataSource: MatTableDataSource<any>;
     @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -22,9 +23,9 @@ export class CompetitionTableComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.dataSource = new MatTableDataSource(ELEMENT_DATA);
-        this.dataSource.paginator = this.paginator;
-        this.displayedColumns = ['teamName', 'competitionName', 'season', 'category', 'sex'];
+        // this.dataSource = new MatTableDataSource(ELEMENT_DATA);
+        // this.dataSource.paginator = this.paginator;
+        this.displayedColumns = ['teamName', 'competitionName', 'season', 'class', 'sex'];
     }
 
     ngOnDestroy() {
@@ -35,19 +36,33 @@ export class CompetitionTableComponent implements OnInit, OnDestroy {
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
 
+    ngOnChanges(changes: SimpleChanges) {
+        this.setDataTable();
+    }
+
+    setDataTable() {
+        if (this.competitions && this.competitions.length) {
+            this.competitionsCompatible = this.competitions.map(item => {
+                return {
+                    competitionID: item._id,
+                    competitionName: item.name,
+                    teamID: item.team._id,
+                    teamName: item.team.name,
+                    playerID: (item.player) ? item.player._id : null,
+                    season: item.season,
+                    class: item.class,
+                    sex: item.sex.charAt(0).toUpperCase(),
+                }
+            });
+            this.dataSource = new MatTableDataSource(this.competitionsCompatible);
+            this.dataSource.paginator = this.paginator;
+        }
+    }
+
+    goToPageInCompetition(row) {
+        if (row.playerID)
+            this.router.navigate(["/competitions/" + row.competitionID + "/teams/" + row.teamID + "/players/" + row.playerID]);
+        else
+            this.router.navigate(["/competitions/" + row.competitionID + "/teams/" + row.teamID]);
+    }
 };
-
-export interface CompetitionInterface {
-    teamName: string;
-    competitionName: string;
-    season: number
-    category: string;
-    sex: string;
-}
-
-const ELEMENT_DATA: CompetitionInterface[] = [
-    {teamName: "Tropics", competitionName: "XXV Liga de verano 2026", season: 2026, category: "Senior", sex:'M'},
-    {teamName: "Tropics", competitionName: "XXV Competición Benefica Felipe Reyes", season: 2026, category: "Senior", sex:'M'},
-    {teamName: "Tropics", competitionName: "XXV Liga de verano 2026", season: 2026, category: "Senior", sex:'M'}
-];
-

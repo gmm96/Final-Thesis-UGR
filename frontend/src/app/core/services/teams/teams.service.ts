@@ -17,6 +17,10 @@ export class TeamsService {
         return this.http.get("http://localhost:3000/teams?q=" + name).toPromise();
     }
 
+    getTeamCompetitions(teamID: string): Promise<any> {
+        return (this.http.get("http://localhost:3000/teams/" + teamID + "/competitions").toPromise());
+    }
+
     async createTeam(team: any, avatar?: File): Promise<any> {
         let formData = new FormData();
 

@@ -43,7 +43,7 @@ export class CreateCompetitionComponent implements OnInit, OnDestroy {
             'minTeamNumber': [null, Validators.compose([Validators.required, Validators.pattern("^\\d+$")])],
             'minPlayerNumberPerTeam': [null, Validators.compose([Validators.required, Validators.pattern("^\\d+$")])],
             'leagueFixturesVsSameTeam': [null, Validators.compose([Validators.required, Validators.pattern("^\\d+$")])],
-            'playoffsFixturesVsSameTeam': [null, Validators.compose([Validators.required, Validators.pattern("^\\d*[13579]$")])],
+            'playoffsFixturesVsSameTeam': [null, Validators.compose([Validators.required, Validators.pattern("^(\\d*[13579]|0)$")])],
         });
     }
 

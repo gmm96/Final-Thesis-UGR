@@ -3,43 +3,47 @@
 .table-border {
     @include border_radius(10px);
 
-    .competition-table {
+    .team-table {
         display: table;
-        overflow-x: scroll;
-
-
-        .mat-cell, .mat-header-cell {
-            word-wrap: initial;
-            vertical-align: middle;
-        }
+        overflow-x: auto;
 
         .mat-row {
             background-color: white;
-            &:last-of-type {
-                border-bottom: 0;
-            }
-            &:hover {
-                cursor: pointer;
-            }
         }
         .mat-row:nth-child(even) {
             background-color: rgba(0, 0, 0, .05);
         }
-
-        ::ng-deep .cdk-column-teamName {
-            min-width: 100px !important;
-        }
-        ::ng-deep .cdk-column-competitionName{
-            min-width: 150px !important;
+        .mat-row:hover {
+            cursor: pointer;
         }
 
-        mat-cell, mat-header-cell {
+        .team-name {
+            flex: none;
+            width: 60%;
+            img {
+                @include border_radius(5px);
+                width: 40px;
+                height: 40px;
+                margin: 8px 12px 8px 0;
+            }
+        }
+
+        mat-cell {
+            $mat-cell-padding: 5px;
+            padding-top: $mat-cell-padding;
+            padding-bottom: $mat-cell-padding;
+        }
+        mat-header-cell:first-of-type {
+            justify-content: flex-start;
+            flex: none;
+            width: 60%;
+            padding-left: 76px !important;
+        }
+        mat-header-cell {
             justify-content: center;
-            align-items: center;
-            margin: 3px 5px;
-            min-width: 64px;
-            word-wrap: initial;
-            vertical-align: middle;
+        }
+        .team-city, .team-players-length {
+            justify-content: center;
         }
         .mat-header-row {
             background-color: $indigo-900;
@@ -50,15 +54,18 @@
             }
         }
         mat-header-cell:last-of-type, mat-cell:last-of-type {
-            padding-right: 12px;
+            padding-right: 3px;
         }
+        mat-header-cell:first-of-type, mat-cell:first-of-type {
+            padding-left: 12px;
+        }
+
     }
 
     .no-data {
         font-size: 14px;
         padding: 10px 24px;
     }
-
 }
 
 $filer-color: $orange;

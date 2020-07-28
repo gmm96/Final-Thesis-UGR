@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {Animations} from "../../../shared/animations";
 import {PlayersService} from "../../../core/services/players/players.service";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-player-details',
@@ -22,7 +23,8 @@ export class PlayerDetailsComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private router: Router,
         private playersService: PlayersService,
-        private changeDetectorRef: ChangeDetectorRef
+        private changeDetectorRef: ChangeDetectorRef,
+        private titleService: Title
     ) {
     }
 
@@ -30,6 +32,7 @@ export class PlayerDetailsComponent implements OnInit, OnDestroy {
         this.sub = this.activatedRoute.params.subscribe(async params => {
             this.playerID = params['id'];
             this.player = (await this.playersService.getPlayerInformation(this.playerID));
+            this.titleService.setTitle((this.player) ? this.player.name + " " + this.player.surname : "Jugadores");
             if (this.player) {
                 if (this.player.avatar) this.player.avatar = 'http://localhost:3000' + this.player.avatar;
                 this.changeDetectorRef.detectChanges();

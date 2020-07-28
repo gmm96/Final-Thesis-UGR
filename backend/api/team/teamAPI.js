@@ -23,6 +23,16 @@ exports.getTeamArrayByName = async ( req, res ) => {
 };
 
 
+exports.getTeamCompetitions = async ( req, res ) => {
+	try {
+		let result = ( await teamDomain.getTeamCompetitions( req.params.teamID ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
 
 exports.createTeam = async ( req, res ) => {
 	try {

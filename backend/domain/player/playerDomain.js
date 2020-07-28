@@ -42,6 +42,21 @@ exports.getPlayersWithNoTeam = async ( idCard ) => {
 };
 
 
+exports.getPlayerCompetitions = async ( playerID ) => {
+	if ( !playerID ) throw { code: 422, message: "Identificador de jugador inválido" };
+	let result = ( await competitionDomain.getPlayerCompetitions( playerID ) );
+	let parsedResult = result.map( ( competition ) => {
+		let parsedCompetition = lodash.cloneDeep( competition );
+		delete parsedCompetition.teams;
+		
+		parsedCompetition.team = competition.teams.find( team => team.players.some( player => player._id.toString() === playerID.toString() ) );
+		parsedCompetition.player = parsedCompetition.team.players.find( player => player._id.toString() === playerID.toString() );
+		return parsedCompetition;
+	} );
+	return parsedResult;
+};
+
+
 exports.createPlayer = async ( player, avatar ) => {
 	( await exports.playerParametersValidator( player, avatar ) );
 	
