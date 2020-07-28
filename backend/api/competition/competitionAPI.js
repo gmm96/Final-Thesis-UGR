@@ -22,6 +22,36 @@ exports.getCompetitionLeagueTable = async ( req, res ) => {
 };
 
 
+exports.getGamesByCompetitionAndFixture = async ( req, res ) => {
+	try {
+		let result = ( await competitionDomain.getGamesByCompetitionAndFixture( req.params.competitionID, parseInt( req.params.fixtureNumber ) ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
+exports.getCurrentFixture = async ( req, res ) => {
+	try {
+		let result = ( await competitionDomain.getCurrentFixture( req.params.competitionID ) );
+		res.send( JSON.stringify( result ) );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
+exports.getAllAvailablePlayoffsRoundsByCompetition = async ( req, res ) => {
+	try {
+		let result = ( await competitionDomain.getAllAvailablePlayoffsRoundsByCompetition( req.params.competitionID ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
 exports.createCompetition = async ( req, res ) => {
 	try {
 		let newCompetition = {

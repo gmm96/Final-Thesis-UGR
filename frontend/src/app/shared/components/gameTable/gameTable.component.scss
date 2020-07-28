@@ -8,6 +8,8 @@
 
         mat-cell {
             font-size: 16px;
+            padding-top: 5px;
+            padding-bottom: 5px;
         }
 
         .mat-row {
@@ -24,6 +26,11 @@
 
         .gameStatus {
             justify-content: center;
+            font-size: 12px;
+
+            .dash {
+                font-size: 20px;
+            }
         }
 
         .visitor-team {

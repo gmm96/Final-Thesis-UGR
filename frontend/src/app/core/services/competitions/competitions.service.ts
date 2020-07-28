@@ -13,8 +13,20 @@ export class CompetitionsService {
         return this.http.get("http://localhost:3000/competitions/" + competitionID).toPromise();
     }
 
-    getCompetitionStandings (competitionID: string): Promise<any> {
+    getCompetitionStandings(competitionID: string): Promise<any> {
         return this.http.get("http://localhost:3000/competitions/" + competitionID + "/league-table").toPromise();
+    }
+
+    getCurrentFixture(competitionID: string): Promise<any> {
+        return this.http.get("http://localhost:3000/competitions/" + competitionID + "/current-fixture").toPromise();
+    }
+
+    getGameByCompetitionAndFixture(competitionID: string, fixture: number): Promise<any> {
+        return this.http.get("http://localhost:3000/competitions/" + competitionID + "/fixture/" + fixture).toPromise();
+    }
+
+    getAllAvailablePlayoffsRoundsByCompetition(competitionID: string): Promise<any> {
+        return this.http.get("http://localhost:3000/competitions/" + competitionID + "/all-playoffs/").toPromise();
     }
 
     async createCompetition(competition: any): Promise<any> {

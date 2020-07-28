@@ -30,7 +30,7 @@
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="goToPlayer(row)"></mat-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="goToTeamInCompetition(row)"></mat-row>
         </div>
     </mat-table>
     <div class="no-data" *ngIf="!dataSource || dataSource?.filteredData?.length == 0">

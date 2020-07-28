@@ -6,10 +6,46 @@ let ObjectID = require( 'mongodb' ).ObjectID;
 
 
 exports.getGameById = async ( id ) => {
-	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid game id" };
+	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Identificador de partido inválido" };
 	let result = ( await gameCursor.findOne( { _id: ObjectID( id.toString() ) } ) );
 	return result;
 };
+
+
+exports.getGamesByCompetitionAndFixture = async ( competitionID, fixture ) => {
+	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
+	// let result = ( await dbModule.findResultToArray( gameCursor, { competitionID: ObjectID( competitionID.toString() ), fixture: fixture } ) );
+	let result = ( await gameCursor.aggregate( [
+		{ $match: { competitionID: ObjectID( competitionID.toString() ), fixture: fixture } },
+		{
+			$lookup: {
+				from: 'team',
+				localField: 'localTeamInfo._id',
+				foreignField: '_id',
+				as: 'localTeamInfo.team'
+			}
+		},
+		{
+			$lookup: {
+				from: 'team',
+				localField: 'visitorTeamInfo._id',
+				foreignField: '_id',
+				as: 'visitorTeamInfo.team'
+			}
+		},
+		{ $unwind: "$localTeamInfo.team" },
+		{ $unwind: "$visitorTeamInfo.team" }
+	] ).toArray() );
+	return result;
+};
+
+
+exports.getCurrentFixture = async ( competitionID ) => {
+	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
+	let result = ( await gameCursor.find( { competitionID: ObjectID( competitionID.toString() ), winner: null } ).sort( { fixture: 1 } ).limit( 1 ).toArray() );
+	return result[ 0 ].fixture;
+};
+
 
 exports.createGame = async ( game ) => {
 	let result = ( await gameCursor.insertOne( game ) );
@@ -17,19 +53,19 @@ exports.createGame = async ( game ) => {
 };
 
 exports.updateGame = async ( id, game ) => {
-	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid game id" };
+	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Identificador de partido inválido" };
 	let result = ( await gameCursor.findOneAndUpdate( { _id: ObjectID( id.toString() ) }, { $set: game }, { returnOriginal: false } ) );
 	return result.value;
 };
 
 exports.purgeGame = async ( id ) => {
-	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Invalid game id" };
+	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Identificador de partido inválido" };
 	let result = ( await gameCursor.deleteOne( { _id: ObjectID( id.toString() ) } ) );
 	return ( result.result.n === 1 && result.result.ok === 1 );
 };
 
 exports.deleteGamesByCompetition = async ( competitionID ) => {
-	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Invalid competition id" };
+	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
 	let result = ( await gameCursor.deleteMany( { competitionID: ObjectID( competitionID.toString() ) } ) );
 	return ( !!result.result.n && !!result.result.ok );
 };

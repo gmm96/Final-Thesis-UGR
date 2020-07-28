@@ -14,7 +14,7 @@ export class TeamTableComponent implements OnInit, OnDestroy {
     displayedColumns: string[];
     dataSource: MatTableDataSource<any>;
     @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-    @Input('teams') teams: any;
+    @Input('competition') competition: any;
     teamsCompatible: any;
 
     constructor(
@@ -41,8 +41,8 @@ export class TeamTableComponent implements OnInit, OnDestroy {
     }
 
     setDataTable() {
-        if (this.teams) {
-            this.teamsCompatible = this.teams.map(item => {
+        if (this.competition) {
+            this.teamsCompatible = this.competition.teams.map(item => {
                 return {
                     _id: item._id,
                     name: item.name,
@@ -56,7 +56,7 @@ export class TeamTableComponent implements OnInit, OnDestroy {
         }
     }
 
-    goToPlayer(player) {
-        this.router.navigate([/teams/ + player._id]);
+    goToTeamInCompetition(team) {
+        this.router.navigate(["/competitions/" + this.competition._id + "/teams/" + team._id]);
     }
 };

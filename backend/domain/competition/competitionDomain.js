@@ -342,6 +342,27 @@ exports.getPlayerCompetitions = async ( playerID ) => {
 };
 
 
+exports.getGamesByCompetitionAndFixture = async ( competitionID, fixtureNumber ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !fixtureNumber ) throw { code: 422, message: "Número de jornada inválido" };
+	let result = ( await gameDomain.getGamesByCompetitionAndFixture( competitionID, fixtureNumber ) );
+	return result;
+};
+
+
+exports.getCurrentFixture = async ( competitionID ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	let result = ( await gameDomain.getCurrentFixture( competitionID ) );
+	return result;
+};
+
+
+exports.getAllAvailablePlayoffsRoundsByCompetition = async (competitionID) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	let result = ( await competitionPlayoffsRoundDomain.getAllAvailablePlayoffsRoundsByCompetition( competitionID ) );
+	return result;
+};
+
 //
 //
 // exports.deleteCompetitionSchedule = async ( competitionID ) => {

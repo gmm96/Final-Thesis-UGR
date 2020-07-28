@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 
@@ -9,6 +9,7 @@ import {MatTableDataSource} from "@angular/material/table";
 })
 export class PlayoffsMatchupComponent implements OnInit, OnDestroy {
 
+    @Input('games') games;
     displayedColumns: string[] = ['teamAName', 'gameStatus', 'teamBName'];
     dataSource = new MatTableDataSource(ELEMENT_DATA);
 

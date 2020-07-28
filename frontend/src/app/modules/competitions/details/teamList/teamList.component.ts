@@ -9,7 +9,7 @@ import * as moment from "moment";
 })
 export class TeamListComponent implements OnInit, OnDestroy {
 
-    @Input('teams') teams: any;
+    @Input('competition') competition: any;
 
     constructor(
         private activatedRoute: ActivatedRoute,

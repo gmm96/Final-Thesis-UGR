@@ -16,6 +16,29 @@ exports.getPlayoffsRoundsByCompetitionAndRound = async ( competitionID, round ) 
 	return result;
 };
 
+
+exports.getAllAvailablePlayoffsRoundsByCompetition = async ( competitionID ) => {
+	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
+	let result = ( await playoffsCursor.aggregate( [
+		{
+			$lookup: {
+				from: 'comp_game',
+				localField: '_id',
+				foreignField: 'round',
+				as: 'games'
+			}
+		},
+		{
+			$match: { competitionID: ObjectID( competitionID.toString() ) }
+		},
+		{
+			$match: { $expr: { $gt: [ { $size: "$games" }, 0 ] } }
+		}
+	] ).toArray() );
+	return result;
+};
+
+
 exports.createPlayoffsRound = async ( playoffsRound ) => {
 	let result = ( await playoffsCursor.insertOne( playoffsRound ) );
 	return result.ops[ 0 ];

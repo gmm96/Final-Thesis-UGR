@@ -99,16 +99,16 @@
 
     <div class="competition-details-content w-100 panel" [ngSwitch]="currentTabField" [@avoidAnimatedTabsFirstEvent]>
         <div *ngSwitchCase="getCompetitionDetailsTabs().teams" [@animatedTabs]>
-            <app-team-list [teams]="competition?.teams"></app-team-list>
+            <app-team-list [competition]="competition"></app-team-list>
         </div>
         <div *ngSwitchCase="getCompetitionDetailsTabs().calendar" [@animatedTabs]>
-            <app-calendar></app-calendar>
+            <app-calendar [competition]="competition"></app-calendar>
         </div>
         <div *ngSwitchCase="getCompetitionDetailsTabs().standings" [@animatedTabs]>
             <app-league-table></app-league-table>
         </div>
         <div *ngSwitchCase="getCompetitionDetailsTabs().playoffs" [@animatedTabs]>
-            <app-playoffs></app-playoffs>
+            <app-playoffs [competition]="competition"></app-playoffs>
         </div>
     </div>
 </div>

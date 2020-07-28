@@ -18,6 +18,13 @@ exports.getPlayoffsRoundsByCompetitionAndRound = async ( competitionID, round ) 
 };
 
 
+exports.getAllAvailablePlayoffsRoundsByCompetition = async ( competitionID ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	
+	return ( await playoffsRoundDatabase.getAllAvailablePlayoffsRoundsByCompetition( competitionID ) );
+}
+
+
 exports.createPlayoffsRound = async ( playoffsRound ) => {
 	( await exports.playoffsRoundParametersValidator( playoffsRound ) );
 	( await exports.checkIfPlayoffRoundParametersExists( playoffsRound ) );

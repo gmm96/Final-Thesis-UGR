@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
@@ -10,6 +10,10 @@ import {MatPaginator} from "@angular/material/paginator";
 })
 export class GameTableComponent implements OnInit, OnDestroy {
 
+    @Input('games') games;
+    gameCompatible: any = [];
+    minDate: string;
+    maxDate: string;
     displayedColumns: string[];
     dataSource: MatTableDataSource<any>;
     @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -24,37 +28,47 @@ export class GameTableComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.dataSource = new MatTableDataSource(ELEMENT_DATA);
-        this.dataSource.paginator = this.paginator;
-        this.displayedColumns = ['teamAName', 'gameStatus', 'teamBName'];
+        this.displayedColumns = ['localTeamName', 'gameStatus', 'visitorTeamName'];
     }
 
     ngOnDestroy() {
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        this.setDataTable();
     }
 
     applyFilter(event: Event) {
         const filterValue = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
+
+    setDataTable() {
+        if (this.games && this.games.length) {
+            this.gameCompatible = this.games.map(item => {
+                return {
+                    _id: item._id,
+                    competitionID: item.competitionID,
+                    localTeamName: item.localTeamInfo.team.name,
+                    visitorTeamName: item.visitorTeamInfo.team.name,
+                    // gameStatus: (item.winner == null) ? ((item.time) ? new Date(item.time).toLocaleDateString("es-ES") + " " + " algo" : "-") : "TODO",
+                    gameStatus: {
+                        date: (item.winner == null) ? ((item.time) ? new Date(item.time).toLocaleDateString("es-ES") : null) : null,
+                        time: (item.winner == null) ? ((item.time) ? new Date(item.time).toLocaleTimeString("es-ES", {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) : null) : null,
+                        result: (item.winner == null)? ((item.time)? null : " - ") : "TODO",
+                    },
+                    fixture: item.fixture
+                }
+            });
+            let maxDateNumber = Math.max.apply(Math, this.games.map((game) => new Date(game.time)));
+            let minDateNumber = Math.min.apply(Math, this.games.map((game) => new Date(game.time)));
+            this.maxDate = (maxDateNumber) ? new Date(maxDateNumber).toLocaleDateString("es-ES") : null;
+            this.minDate = (minDateNumber) ? new Date(minDateNumber).toLocaleDateString("es-ES") : null;
+            this.dataSource = new MatTableDataSource(this.gameCompatible);
+            this.dataSource.paginator = this.paginator;
+        }
+    }
 }
-
-export interface PeriodicElement {
-    teamAName: string;
-    gameStatus: string;
-    teamBName: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-    {teamAName: "Barcelona", gameStatus: '65-98', teamBName: "Madrid"},
-    {teamAName: "Barcelona", gameStatus: '65-98', teamBName: "Madrid"},
-    {teamAName: "Barcelona", gameStatus: '65-98', teamBName: "Madrid"},
-    {teamAName: "Valencia", gameStatus: '65-98', teamBName: "Madrid"},
-    {teamAName: "Barcelona", gameStatus: '65-98', teamBName: "Madrid"},
-    {teamAName: "Barcelona", gameStatus: '65-98', teamBName: "Baskonia"},
-    {teamAName: "Barcelona", gameStatus: '65-98', teamBName: "Madrid"},
-    {teamAName: "Unicaja", gameStatus: '58-96', teamBName: "Madrid"},
-    {teamAName: "Barcelona", gameStatus: '65-98', teamBName: "Madrid"},
-    {teamAName: "Barcelona", gameStatus: '65-98', teamBName: "Madrid"}
-];
-
-
