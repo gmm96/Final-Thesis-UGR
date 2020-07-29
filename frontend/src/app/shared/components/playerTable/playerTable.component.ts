@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
@@ -13,13 +13,15 @@ export class PlayerTableComponent implements OnInit, OnDestroy {
 
     displayedColumns: string[];
     dataSource: MatTableDataSource<any>;
-    @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
     @Input('roster') roster: any;
+    @Input('teamID') teamID: string;
+    @Input('competitionID') competitionID;
     rosterCompatible: any;
 
     constructor(
         private activatedRoute: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private changeDetectorRef: ChangeDetectorRef
     ) {
     }
 
@@ -46,26 +48,22 @@ export class PlayerTableComponent implements OnInit, OnDestroy {
                 return {
                     _id: item._id,
                     name: item.name + " " + item.surname,
-                    age: (moment(item.birthDate).fromNow(true)).replace(" años", ""),
+                    age: (moment(item.birthDate).locale("es-ES").fromNow(true)).replace(" años", ""),
                     height: item.height,
                     weight: item.weight,
-                    avatar: item.avatar? "http://localhost:3000" + item.avatar : null
+                    avatar: item.avatar ? "http://localhost:3000" + item.avatar : null
                 }
             });
             this.dataSource = new MatTableDataSource(this.rosterCompatible);
-            this.dataSource.paginator = this.paginator;
+            this.changeDetectorRef.detectChanges();
         }
     }
 
     goToPlayer(player) {
-        this.router.navigate([/players/ + player._id]);
+        if (this.competitionID) {
+            this.router.navigate(["/competitions/" + this.competitionID + "/teams/" + this.teamID + "/players/" + player._id]);
+        } else {
+            this.router.navigate([/players/ + player._id]);
+        }
     }
 };
-
-export interface PlayerInterface {
-    name: string;
-    age: number;
-    height: number
-    weight: number;
-    avatar?: string;
-}

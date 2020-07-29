@@ -3,17 +3,17 @@
         <div class="header-name col-12 col-md-7 offset-md-1 col-lg-7 offset-lg-1 order-2 order-md-1 text-md-left text-center">
             <div class="header-name-title">
                 <span class="underline" (click)="goToTeamPage()" matTooltip="Ir a página personal de equipo">
-                    Cansaliebres Bar Gargallo
+                    {{ team?.name }}
                 </span>
             </div>
             <div class="header-name-subtitle" >
                 <span class="underline" (click)="goToCompetitionPage()" matTooltip="Ir a página de competición">
-                    XXV Liga de Verano de Baloncesto Cabra 2020
+                    {{ competition?.name }}
                 </span>
             </div>
         </div>
         <div class="header-pic col-12 col-md-4 col-lg-4 order-1 order-md-2">
-            <img mat-card-image src="https://www.pikpng.com/pngl/b/418-4182803_server-icon-png-minecraft.png" alt="Photo of a Shiba Inu">
+            <img mat-card-image [src]="team?.avatar || '/assets/images/defaultteam.png'">
         </div>
     </div>
 
@@ -35,7 +35,7 @@
                     <li [class.active]="currentTabField === getTeamDetailsTabs().prevGames">
                         <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openPrevGames()">Partidos Ant.</a>
                     </li>
-                    <li [class.active]="currentTabField === getTeamDetailsTabs().stats">
+                    <li [class.active]="currentTabField === getTeamDetailsTabs().stats" *ngIf="competition?.leagueFixturesVsSameTeam">
                         <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openTeamStats()">Estadísticas</a>
                     </li>
                 </ul>
@@ -45,7 +45,7 @@
 
     <div class="competition-details-content w-100" [ngSwitch]="currentTabField" [@avoidAnimatedTabsFirstEvent]>
         <div *ngSwitchCase="getTeamDetailsTabs().roster" [@animatedTabs]>
-            <app-competition-team-roster></app-competition-team-roster>
+            <app-competition-team-roster [competitionID]="competitionID" [team]="team"></app-competition-team-roster>
         </div>
         <div *ngSwitchCase="getTeamDetailsTabs().nextGames" [@animatedTabs]>
             <app-team-next-games></app-team-next-games>
@@ -54,7 +54,7 @@
             <app-team-prev-games></app-team-prev-games>
         </div>
         <div *ngSwitchCase="getTeamDetailsTabs().stats" [@animatedTabs]>
-            <app-team-stats></app-team-stats>
+            <app-team-stats [competitionID]="competitionID" [teamID]="teamID" *ngIf="competition?.leagueFixturesVsSameTeam"></app-team-stats>
         </div>
     </div>
 </div>

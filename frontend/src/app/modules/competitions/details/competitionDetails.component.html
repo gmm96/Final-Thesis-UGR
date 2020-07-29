@@ -102,13 +102,13 @@
             <app-team-list [competition]="competition"></app-team-list>
         </div>
         <div *ngSwitchCase="getCompetitionDetailsTabs().calendar" [@animatedTabs]>
-            <app-calendar [competition]="competition"></app-calendar>
+            <app-calendar [competition]="competition" *ngIf="competition?.leagueFixturesVsSameTeam"></app-calendar>
         </div>
         <div *ngSwitchCase="getCompetitionDetailsTabs().standings" [@animatedTabs]>
-            <app-league-table [competition]="competition"></app-league-table>
+            <app-league-table [competition]="competition" *ngIf="competition?.leagueFixturesVsSameTeam"></app-league-table>
         </div>
         <div *ngSwitchCase="getCompetitionDetailsTabs().playoffs" [@animatedTabs]>
-            <app-playoffs [competition]="competition"></app-playoffs>
+            <app-playoffs [competition]="competition" *ngIf="competition?.playoffsFixturesVsSameTeam"></app-playoffs>
         </div>
     </div>
 </div>

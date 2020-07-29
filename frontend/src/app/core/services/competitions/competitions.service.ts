@@ -29,13 +29,17 @@ export class CompetitionsService {
         return this.http.get("http://localhost:3000/competitions/" + competitionID + "/all-playoffs/").toPromise();
     }
 
+    getCompetitionTeamStats (competitionID, teamID) {
+        return this.http.get("http://localhost:3000/competitions/" + competitionID + "/teams/" + teamID + "/stats").toPromise();
+    }
+
+    getCompetitionPlayerStats (competitionID, teamID, playerID) {
+        return this.http.get("http://localhost:3000/competitions/" + competitionID + "/teams/" + teamID + "/players/" + playerID + "/stats").toPromise();
+    }
+
+
     async createCompetition(competition: any): Promise<any> {
         let result = (await this.http.post("http://localhost:3000/competitions", competition).toPromise());
         return result;
     }
-
-    // async deleteTeam(teamID: string) {
-    //     let result = (await this.http.delete("http://localhost:3000/teams/" + teamID).toPromise());
-    //     return result;
-    // }
 }

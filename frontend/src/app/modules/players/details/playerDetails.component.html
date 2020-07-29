@@ -50,7 +50,7 @@
             <app-player-competitions [playerID]="player._id"></app-player-competitions>
         </div>
         <div *ngSwitchCase="getPlayerDetailsTabs().stats" [@animatedTabs]>
-            <app-player-stats></app-player-stats>
+            <app-player-stats [playerID]="player._id"></app-player-stats>
         </div>
     </div>
 </div>

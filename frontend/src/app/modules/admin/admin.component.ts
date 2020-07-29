@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Animations} from "../../shared/animations";
 import {ActivatedRoute, Router} from "@angular/router";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-admin',
@@ -12,11 +13,13 @@ export class AdminComponent implements OnInit, OnDestroy {
 
     constructor(
         private activatedRoute: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private titleService: Title
     ) {
     }
 
     ngOnInit() {
+        this.titleService.setTitle("Administración");
     }
 
     ngOnDestroy() {

@@ -6,6 +6,7 @@ import {PlayersService} from "../../../core/services/players/players.service";
 import * as lodash from 'lodash';
 import {ToastrService} from "ngx-toastr";
 import 'moment/locale/es';
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-admin-players',
@@ -31,7 +32,8 @@ export class ManagePlayersComponent implements OnInit, OnDestroy {
         private fb: FormBuilder,
         private playersService: PlayersService,
         private toastr: ToastrService,
-        private changeDetectorRef: ChangeDetectorRef
+        private changeDetectorRef: ChangeDetectorRef,
+        private titleService: Title
     ) {
     }
 
@@ -63,6 +65,7 @@ export class ManagePlayersComponent implements OnInit, OnDestroy {
             this.clearPlayerToEdit();
             this.changeDetectorRef.detectChanges();
         });
+        this.titleService.setTitle("Gestión de jugadores");
     }
 
     ngOnDestroy() {

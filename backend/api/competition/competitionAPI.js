@@ -52,6 +52,27 @@ exports.getAllAvailablePlayoffsRoundsByCompetition = async ( req, res ) => {
 };
 
 
+exports.getCompetitionTeamStatsByCompetitionAndTeam = async ( req, res ) => {
+	try {
+		let result = ( await competitionDomain.getCompetitionTeamStatsByCompetitionAndTeam( req.params.competitionID, req.params.teamID ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
+exports.getCompetitionPlayerStatsByCompetitionTeamAndPlayer = async ( req, res ) => {
+	try {
+		let result = ( await competitionDomain.getCompetitionPlayerStatsByCompetitionTeamAndPlayer( req.params.competitionID, req.params.teamID, req.params.playerID) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
+
 exports.createCompetition = async ( req, res ) => {
 	try {
 		let newCompetition = {

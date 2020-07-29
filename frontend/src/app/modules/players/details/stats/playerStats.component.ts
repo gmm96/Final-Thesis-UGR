@@ -1,7 +1,6 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
+import {PlayersService} from "../../../../core/services/players/players.service";
 
 @Component({
     selector: 'app-player-stats',
@@ -10,35 +9,46 @@ import {MatPaginator} from "@angular/material/paginator";
 })
 export class PlayerStatsComponent implements OnInit, OnDestroy {
 
-    displayedColumns: string[];
-    dataSource: MatTableDataSource<any>;
+    @Input('playerID') playerID;
+    competitionPlayerStats: any = [];
+    tableData: any;
 
     constructor(
         private activatedRoute: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private playersService: PlayersService
     ) {
     }
 
-    ngOnInit() {
-        this.dataSource = new MatTableDataSource(ELEMENT_DATA);
-        this.displayedColumns = ['name', 'value'];
+    async ngOnInit() {
+        (await this.setTableData());
     }
 
     ngOnDestroy() {
     }
+
+    async ngOnChanges(changes: SimpleChanges) {
+        (await this.setTableData());
+    }
+
+    async setTableData() {
+        if (this.playerID) {
+            (await this.getCompetitionPlayerStats());
+            this.tableData = [
+                {name: "Partidos jugados", value: this.competitionPlayerStats.stats.playedGames},
+                {name: "Puntos totales", value: this.competitionPlayerStats.stats.points},
+                {name: "Puntos por partido", value: (this.competitionPlayerStats.stats.playedGames)? this.competitionPlayerStats.stats.points / this.competitionPlayerStats.stats.playedGames : 0},
+                {name: "Faltas totales", value: this.competitionPlayerStats.stats.fouls },
+                {name: "Faltas por partido", value: (this.competitionPlayerStats.stats.playedGames)? this.competitionPlayerStats.stats.fouls / this.competitionPlayerStats.stats.playedGames : 0},
+            ];
+        }
+    }
+
+    async getCompetitionPlayerStats() {
+        try {
+            this.competitionPlayerStats = (await this.playersService.getAverageCompetitionPlayerStats(this.playerID));
+        } catch (e) {
+            console.error(e);
+        }
+    }
 }
-
-export interface TeamStatsInterface {
-    name: string;
-    value: number;
-}
-
-const ELEMENT_DATA: TeamStatsInterface[] = [
-    {name: "Partidos jugados", value: 24},
-    {name: "Partidos ganados", value: 15},
-    {name: "Partidos perdidos", value: 9},
-    {name: "Puntos a favor", value: 750},
-    {name: "Puntos en contra", value: 590},
-    {name: "Diferencia de puntos", value: 160},
-];
-

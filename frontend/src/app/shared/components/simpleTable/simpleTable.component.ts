@@ -37,8 +37,3 @@ export class SimpleTableComponent implements OnInit, OnDestroy {
     }
 
 }
-
-export interface TeamStatsInterface {
-    name: string;
-    value: any;
-}

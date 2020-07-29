@@ -15,6 +15,13 @@ exports.getCompetitionTeamStatsByCompetition = async ( competitionID ) => {
 };
 
 
+exports.getCompetitionTeamStatsByCompetitionAndTeam = async ( competitionID, teamID ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !teamID ) throw { code: 422, message: "Identificador de equipo inválido" };
+	return ( await competitionTeamStatsDatabase.getCompetitionTeamStatsByCompetitionAndTeam( competitionID, teamID ) );
+}
+
+
 exports.createCompetitionTeamStats = async ( competitionID, teamID ) => {
 	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
 	if ( !teamID ) throw { code: 422, message: "Identificador de equipo inválido" };

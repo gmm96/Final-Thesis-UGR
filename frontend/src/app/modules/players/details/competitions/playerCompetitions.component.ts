@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PlayersService} from "../../../../core/services/players/players.service";
 
@@ -9,27 +9,39 @@ import {PlayersService} from "../../../../core/services/players/players.service"
 })
 export class PlayerCompetitionsComponent implements OnInit, OnDestroy {
 
-    @Input('playerID') playerID: any;
+    @Input('playerID') playerID: string;
     competitions: Array<any> = [];
 
     constructor(
         private activatedRoute: ActivatedRoute,
         private router: Router,
-        private playersService: PlayersService
+        private playersService: PlayersService,
+        private changeDetectorRef: ChangeDetectorRef
     ) {
     }
 
     async ngOnInit() {
         if (this.playerID) {
-            try {
-                this.competitions = (await this.playersService.getPlayerCompetitions(this.playerID));
-            } catch (e) {
-                console.error(e);
-            }
+            (await this.getCompetitions());
+        }
+    }
+
+    async ngOnChanges(changes: SimpleChanges) {
+        if (this.playerID) {
+            (await this.getCompetitions());
         }
     }
 
     ngOnDestroy() {
     }
 
+    async getCompetitions() {
+        try {
+            this.competitions = (await this.playersService.getPlayerCompetitions(this.playerID));
+            this.changeDetectorRef.detectChanges();
+        } catch (e) {
+            console.error(e);
+            this.competitions = [];
+        }
+    }
 }

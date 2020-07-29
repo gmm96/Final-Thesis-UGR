@@ -10,7 +10,6 @@ import * as moment from "moment";
 export class TeamRosterComponent implements OnInit, OnDestroy {
 
     @Input('teamRoster') teamRoster: any;
-    tableRoster: any;
 
     constructor(
         private activatedRoute: ActivatedRoute,

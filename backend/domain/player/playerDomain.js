@@ -57,6 +57,31 @@ exports.getPlayerCompetitions = async ( playerID ) => {
 };
 
 
+exports.getAverageCompetitionPlayerStats = async ( playerID ) => {
+	if ( !playerID ) throw { code: 422, message: "Identificador de jugador inválido" };
+	let player = ( await playerDatabase.getPlayerById( playerID ) );
+	if ( !player ) throw { code: 422, message: "El jugador especificado no se encuentra en el sistema" };
+	
+	let allCompetitionStats = ( await competitionPlayerStatsDomain.hasPlayerPlayedAnyCompetition( playerID ) );
+	let playedGames = 0, points = 0, fouls = 0;
+	if ( allCompetitionStats && allCompetitionStats.length ) {
+		for ( let competitionStat of allCompetitionStats ) {
+			playedGames += competitionStat.stats.playedGames;
+			points += competitionStat.stats.points;
+			fouls += competitionStat.stats.fouls;
+		}
+	}
+	
+	return {
+		stats: {
+			playedGames: playedGames,
+			points: points,
+			fouls: fouls
+		}
+	};
+};
+
+
 exports.createPlayer = async ( player, avatar ) => {
 	( await exports.playerParametersValidator( player, avatar ) );
 	

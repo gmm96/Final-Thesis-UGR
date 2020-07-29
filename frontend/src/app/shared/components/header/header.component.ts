@@ -100,6 +100,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.router.navigate(['/' + selectedOption.type.toLowerCase() + 's/' + selectedOption._id]);
         this.toggleSearchBox();
         this.searchControlHeader.setValue("");
+        this.changeDetectorRef.detectChanges();
     }
 
     toggleSearchBox() {

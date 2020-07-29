@@ -6,12 +6,13 @@ const formidableMiddleware = require('express-formidable');
 
 
 exports.assignRoutes = function ( app ) {
-	app.get( "/players/no-team", player.getPlayersWithNoTeam );
-	app.get( "/players/:playerID", player.getFullPlayerById );
 	app.get( "/players/:playerID/competitions", player.getPlayerCompetitions );
-	app.get( "/players", player.getPlayerArrayByPersonalIdentification );
-	app.post( "/players", player.createPlayer );
+	app.get( "/players/:playerID/stats", player.getAverageCompetitionPlayerStats );
+	app.get( "/players/:playerID", player.getFullPlayerById );
 	app.put( "/players/:playerID", player.updatePlayer );
 	app.delete( "/players/:playerID", player.purgePlayer );
+	app.get( "/players/no-team", player.getPlayersWithNoTeam );
+	app.get( "/players", player.getPlayerArrayByPersonalIdentification );
+	app.post( "/players", player.createPlayer );
 }
 

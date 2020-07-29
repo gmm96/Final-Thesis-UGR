@@ -25,6 +25,10 @@ export class PlayersService {
         return (this.http.get("http://localhost:3000/players/" + playerID + "/competitions").toPromise());
     }
 
+    getAverageCompetitionPlayerStats(playerID: string): Promise<any> {
+        return (this.http.get("http://localhost:3000/players/" + playerID + "/stats").toPromise());
+    }
+
     async createPlayer(player: any, avatar?: File): Promise<any> {
         let formData = new FormData();
 

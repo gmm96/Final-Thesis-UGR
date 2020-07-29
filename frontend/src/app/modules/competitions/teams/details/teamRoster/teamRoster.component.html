@@ -1,7 +1,8 @@
 <div class="team-roster container">
     <div class="row">
         <div class="table-container-matchup col-12 col-md-10 offset-md-1">
-            <app-player-table></app-player-table>
+            <app-player-table [roster]="(team?.players && team?.players?.length)? team?.players : []"
+                  [competitionID]="competitionID" [teamID]="team._id" *ngIf="competitionID && team"></app-player-table>
         </div>
     </div>
 </div>

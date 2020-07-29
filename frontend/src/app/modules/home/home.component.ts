@@ -4,6 +4,7 @@ import {HomeService} from "../../core/services/home/home.service";
 import {Subscription} from "rxjs";
 import {FormControl} from "@angular/forms";
 import {SearchBoxResultInterface} from "../../core/services/home/home";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-home',
@@ -19,7 +20,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     constructor(
         private router: Router,
-        private homeService: HomeService
+        private homeService: HomeService,
+        private titleService: Title
     ) {
     }
 
@@ -29,6 +31,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                 this._filter(value)
             }
         );
+        this.titleService.setTitle("Inicio");
     }
 
     ngOnDestroy() {

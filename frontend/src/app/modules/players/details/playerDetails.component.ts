@@ -32,7 +32,7 @@ export class PlayerDetailsComponent implements OnInit, OnDestroy {
         this.sub = this.activatedRoute.params.subscribe(async params => {
             this.playerID = params['id'];
             this.player = (await this.playersService.getPlayerInformation(this.playerID));
-            this.titleService.setTitle((this.player) ? this.player.name + " " + this.player.surname : "Jugadores");
+            this.titleService.setTitle((this.player) ? this.player.name + " " + this.player.surname + " - Jugadores" : "Jugadores");
             if (this.player) {
                 if (this.player.avatar) this.player.avatar = 'http://localhost:3000' + this.player.avatar;
                 this.changeDetectorRef.detectChanges();

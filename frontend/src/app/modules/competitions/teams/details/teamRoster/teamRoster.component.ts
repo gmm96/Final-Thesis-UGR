@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 
@@ -8,6 +8,9 @@ import {MatTableDataSource} from "@angular/material/table";
     styleUrls: ['./teamRoster.component.scss']
 })
 export class CompetitionTeamRosterComponent implements OnInit, OnDestroy {
+
+    @Input('team') team;
+    @Input('competitionID') competitionID;
 
     constructor(
         private activatedRoute: ActivatedRoute,

@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TeamsService} from "../../../../core/services/teams/teams.service";
 
@@ -20,6 +20,18 @@ export class TeamCompetitionsComponent implements OnInit, OnDestroy {
     }
 
     async ngOnInit() {
+        this.getTeamCompetitions();
+    }
+
+    ngOnDestroy() {
+    }
+
+    async ngOnChanges(changes: SimpleChanges) {
+        this.getTeamCompetitions();
+    }
+
+
+    async getTeamCompetitions() {
         if (this.teamID) {
             try {
                 this.competitions = (await this.teamsService.getTeamCompetitions(this.teamID));
@@ -28,8 +40,4 @@ export class TeamCompetitionsComponent implements OnInit, OnDestroy {
             }
         }
     }
-
-    ngOnDestroy() {
-    }
-
 }

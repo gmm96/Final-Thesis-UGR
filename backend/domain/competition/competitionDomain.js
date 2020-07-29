@@ -70,7 +70,9 @@ exports.getTeamObjectArray = async ( competition ) => {
 
 exports.createStatsObjects = async ( competition ) => {
 	for ( let team of competition.teams ) {
-		let newCompetitionTeamStats = ( await competitionTeamStatsDomain.createCompetitionTeamStats( competition._id, team._id ) )
+		if ( !competition.leagueFixturesVsSameTeam && competition.playoffsFixturesVsSameTeam ) {
+			let newCompetitionTeamStats = ( await competitionTeamStatsDomain.createCompetitionTeamStats( competition._id, team._id ) )
+		}
 		for ( let player of team.players ) {
 			let newCompetitionPlayerStats = ( await competitionPlayerStatsDomain.createCompetitionPlayerStats( competition._id, team._id, player._id ) );
 		}
@@ -282,12 +284,12 @@ exports.parsePlayoffsRoundToGames = async ( competitionID, round ) => {
 				winner: null,
 				loser: null,
 				localTeamInfo: {
-					_id: (index % 2)? round.localTeamID : round.visitorTeamID,
+					_id: ( index % 2 ) ? round.localTeamID : round.visitorTeamID,
 					playerStats: null,
 					quarterStats: null
 				},
 				visitorTeamInfo: {
-					_id: (index % 2)? round.visitorTeamID : round.localTeamID,
+					_id: ( index % 2 ) ? round.visitorTeamID : round.localTeamID,
 					playerStats: null,
 					quarterStats: null
 				},
@@ -364,22 +366,48 @@ exports.getAllAvailablePlayoffsRoundsByCompetition = async ( competitionID ) => 
 	let result = ( await competitionPlayoffsRoundDomain.getAllAvailablePlayoffsRoundsByCompetition( competitionID ) );
 	
 	result = lodash.groupBy( result, "round" );
-	for (let roundIndex in result) {
-		let playoffsRounds = result[roundIndex];
-		for (let playoffsRoundIndex = 0; playoffsRoundIndex < playoffsRounds.length; playoffsRoundIndex += 1) {
-			let round = playoffsRounds[playoffsRoundIndex];
+	for ( let roundIndex in result ) {
+		let playoffsRounds = result[ roundIndex ];
+		for ( let playoffsRoundIndex = 0; playoffsRoundIndex < playoffsRounds.length; playoffsRoundIndex += 1 ) {
+			let round = playoffsRounds[ playoffsRoundIndex ];
 			round.localTeam = competition.teams.find( team => team._id.toString() === round.localTeamID.toString() );
 			round.visitorTeam = competition.teams.find( team => team._id.toString() === round.visitorTeamID.toString() );
-			for (let gameIndex = 0; gameIndex < round.games.length; gameIndex += 1) {
-				let game = round.games[gameIndex];
-				round.games[gameIndex].localTeamInfo.team =  competition.teams.find( team => team._id.toString() === game.localTeamInfo._id.toString() );
-				round.games[gameIndex].visitorTeamInfo.team = competition.teams.find( team => team._id.toString() === game.visitorTeamInfo._id.toString() );
+			for ( let gameIndex = 0; gameIndex < round.games.length; gameIndex += 1 ) {
+				let game = round.games[ gameIndex ];
+				round.games[ gameIndex ].localTeamInfo.team = competition.teams.find( team => team._id.toString() === game.localTeamInfo._id.toString() );
+				round.games[ gameIndex ].visitorTeamInfo.team = competition.teams.find( team => team._id.toString() === game.visitorTeamInfo._id.toString() );
 			}
 		}
 	}
 	return result;
 };
 
+
+exports.getCompetitionTeamStatsByCompetitionAndTeam = async ( competitionID, teamID ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !teamID ) throw { code: 422, message: "Identificador de equipo inválido" };
+	let competition = ( await competitionDatabase.getCompetitionById( competitionID ) );
+	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	let team = ( await teamDomain.getTeamById( teamID ) );
+	if ( !team ) throw { code: 422, message: "El equipo especificado no se encuentra en el sistema" };
+	
+	return ( await competitionTeamStatsDomain.getCompetitionTeamStatsByCompetitionAndTeam( competitionID, teamID ) );
+};
+
+
+exports.getCompetitionPlayerStatsByCompetitionTeamAndPlayer = async ( competitionID, teamID, playerID ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !teamID ) throw { code: 422, message: "Identificador de equipo inválido" };
+	if ( !playerID ) throw { code: 422, message: "Identificador de jugador inválido" };
+	let competition = ( await competitionDatabase.getCompetitionById( competitionID ) );
+	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	let team = ( await teamDomain.getTeamById( teamID ) );
+	if ( !team ) throw { code: 422, message: "El equipo especificado no se encuentra en el sistema" };
+	let player = ( await playerDomain.getPlayerById( playerID ) );
+	if ( !player ) throw { code: 422, message: "El jugador especificado no se encuentra en el sistema" };
+	
+	return ( await competitionPlayerStatsDomain.getCompetitionPlayerStatsByCompetitionTeamAndPlayer( competitionID, teamID, playerID ) );
+};
 
 
 //

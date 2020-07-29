@@ -36,7 +36,7 @@
             <app-team-info [team]="team"></app-team-info>
         </div>
         <div *ngSwitchCase="getTeamDetailsTabs().roster" [@animatedTabs]>
-            <app-team-roster [teamRoster]="team?.players"></app-team-roster>
+            <app-team-roster [teamRoster]="(team?.players && team?.players?.length)? team?.players : []"></app-team-roster>
         </div>
         <div *ngSwitchCase="getTeamDetailsTabs().competitions" [@animatedTabs]>
             <app-team-competitions [teamID]="team?._id"></app-team-competitions>

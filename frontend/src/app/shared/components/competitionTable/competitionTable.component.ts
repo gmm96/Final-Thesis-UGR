@@ -14,7 +14,6 @@ export class CompetitionTableComponent implements OnInit, OnDestroy {
     competitionsCompatible: any;
     displayedColumns: string[];
     dataSource: MatTableDataSource<any>;
-    @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -23,8 +22,6 @@ export class CompetitionTableComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        // this.dataSource = new MatTableDataSource(ELEMENT_DATA);
-        // this.dataSource.paginator = this.paginator;
         this.displayedColumns = ['teamName', 'competitionName', 'season', 'class', 'sex'];
     }
 
@@ -41,7 +38,7 @@ export class CompetitionTableComponent implements OnInit, OnDestroy {
     }
 
     setDataTable() {
-        if (this.competitions && this.competitions.length) {
+        if (this.competitions) {
             this.competitionsCompatible = this.competitions.map(item => {
                 return {
                     competitionID: item._id,
@@ -55,7 +52,6 @@ export class CompetitionTableComponent implements OnInit, OnDestroy {
                 }
             });
             this.dataSource = new MatTableDataSource(this.competitionsCompatible);
-            this.dataSource.paginator = this.paginator;
         }
     }
 

@@ -35,3 +35,15 @@ exports.getCompetitionPlayerStatsByPlayerId = async ( playerID ) => {
 	let result = ( await dbModule.findResultToArray( competitionPlayerStatsCursor, { playerID: ObjectID( playerID.toString() ) } ) );
 	return result;
 }
+
+exports.getCompetitionPlayerStatsByCompetitionTeamAndPlayer = async ( competitionID, teamID, playerID ) => {
+	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !ObjectID.isValid( teamID ) ) throw { code: 422, message: "Identificador de equipo inválido" };
+	if ( !ObjectID.isValid( playerID ) ) throw { code: 422, message: "Identificador de jugador inválido" };
+	let result = ( await competitionPlayerStatsCursor.findOne( {
+		competitionID: ObjectID( competitionID.toString() ),
+		teamID: ObjectID( teamID.toString() ),
+		playerID: ObjectID( playerID.toString() )
+	} ) );
+	return result;
+};

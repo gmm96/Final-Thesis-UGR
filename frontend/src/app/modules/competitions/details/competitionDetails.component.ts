@@ -36,7 +36,7 @@ export class CompetitionDetailsComponent implements OnInit, OnDestroy {
             this.competition = (await this.competitionsService.getFullCompetitionInfo(this.competitionID));
             this.competitionNumberOfPlayers = this.competition.teams.reduce((sum, current) => sum + current.players.length, 0);
             this.teamStats = (await this.competitionsService.getCompetitionStandings(this.competitionID));
-            this.titleService.setTitle((this.competition) ? this.competition.name : "Competiciones");
+            this.titleService.setTitle((this.competition) ? this.competition.name + " - Competiciones" : "Competiciones");
             this.changeDetectorRef.detectChanges();
         });
         this.currentTabField = CompetitionDetailsTabs.teams;

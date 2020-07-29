@@ -3,17 +3,17 @@
         <div class="header-name col-12 col-md-7 offset-md-1 col-lg-7 offset-lg-1 order-2 order-md-1 text-md-left text-center">
             <div class="header-name-title">
                 <span class="underline" (click)="goToPlayerPage()" matTooltip="Ir a página personal de jugador">
-                    Guillermo Montes Martos
+                    {{player.name + " " + player.surname}}
                 </span>
             </div>
             <div class="header-name-subtitle">
-                <span class="underline" (click)="goToTeamPage()" matTooltip="Ir a página de equipo en <nombre competición>">
-                    Cansaliebres Bar Gargallo
+                <span class="underline" (click)="goToTeamPage()" matTooltip="Ir a página de equipo en {{this.competition.name}}">
+                    {{team.name}}
                 </span>
             </div>
         </div>
         <div class="header-pic col-12 col-md-4 col-lg-4 order-1 order-md-2">
-            <img class="player-pic" mat-card-image src="https://d2cwpp38twqe55.cloudfront.net/req/202006161/images/players/caldejo01.jpg" alt="Photo of a Shiba Inu">
+            <img class="player-pic" mat-card-image [src]="player?.avatar || '/assets/images/defaultuser.png'">
         </div>
     </div>
 
@@ -48,7 +48,7 @@
             <app-player-prev-games></app-player-prev-games>
         </div>
         <div *ngSwitchCase="getTeamDetailsTabs().stats" [@animatedTabs]>
-            <app-competition-player-stats></app-competition-player-stats>
+            <app-competition-player-stats [competitionID]="competitionID" [teamID]="teamID" [playerID]="playerID"></app-competition-player-stats>
         </div>
     </div>
 </div>

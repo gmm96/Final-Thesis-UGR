@@ -6,6 +6,7 @@ import {PlayersService} from "../../../core/services/players/players.service";
 import {TeamsService} from "../../../core/services/teams/teams.service";
 import * as lodash from "lodash";
 import {ToastrService} from "ngx-toastr";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-admin-teams',
@@ -35,7 +36,8 @@ export class ManageTeamsComponent implements OnInit, OnDestroy {
         private teamsService: TeamsService,
         private playersService: PlayersService,
         private toastr: ToastrService,
-        private changeDetectorRef: ChangeDetectorRef
+        private changeDetectorRef: ChangeDetectorRef,
+        private titleService: Title
     ) {
     }
 
@@ -65,6 +67,7 @@ export class ManageTeamsComponent implements OnInit, OnDestroy {
             this.clearTeamToEdit();
             this.changeDetectorRef.detectChanges();
         });
+        this.titleService.setTitle("Gestión de equipos");
     }
 
     ngOnDestroy() {

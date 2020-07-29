@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthService} from "../../core/auth/auth.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-login',
@@ -13,7 +14,8 @@ export class LoginComponent implements OnInit {
     constructor(
         private router: Router,
         private loginService: AuthService,
-        public fb: FormBuilder
+        public fb: FormBuilder,
+        private titleService: Title
     ) {
     }
 
@@ -24,7 +26,8 @@ export class LoginComponent implements OnInit {
         this.loginForm = this.fb.group({
             'username': [null, Validators.email],
             'password': [null, Validators.required]
-        })
+        });
+        this.titleService.setTitle("Login");
     }
 
     async login($event) {

@@ -6,6 +6,7 @@ import {TeamsService} from "../../../core/services/teams/teams.service";
 import * as lodash from "lodash";
 import {ToastrService} from "ngx-toastr";
 import {CompetitionsService} from "../../../core/services/competitions/competitions.service";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-admin-competitions',
@@ -29,7 +30,8 @@ export class CreateCompetitionComponent implements OnInit, OnDestroy {
         private playersService: PlayersService,
         private competitionsService: CompetitionsService,
         private toastr: ToastrService,
-        private changeDetectorRef: ChangeDetectorRef
+        private changeDetectorRef: ChangeDetectorRef,
+        private titleService: Title
     ) {
     }
 
@@ -45,6 +47,7 @@ export class CreateCompetitionComponent implements OnInit, OnDestroy {
             'leagueFixturesVsSameTeam': [null, Validators.compose([Validators.required, Validators.pattern("^\\d+$")])],
             'playoffsFixturesVsSameTeam': [null, Validators.compose([Validators.required, Validators.pattern("^(\\d*[13579]|0)$")])],
         });
+        this.titleService.setTitle("Creación de competiciones");
     }
 
     ngOnDestroy() {
