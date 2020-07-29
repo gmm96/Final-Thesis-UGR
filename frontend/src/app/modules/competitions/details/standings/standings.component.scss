@@ -20,6 +20,7 @@
                 display: table;
 
                 .td-padding {
+                    display: block;
                     padding-right: 10px;
                 }
 
@@ -42,6 +43,12 @@
 
                 ::ng-deep .mat-sort-header-arrow {
                     color: $orange;
+                    margin-left: 2px;
+                    margin-right: 5px;
+                }
+
+                ::ng-deep .cdk-column-team {
+                    min-width: 165px;
                 }
             }
 

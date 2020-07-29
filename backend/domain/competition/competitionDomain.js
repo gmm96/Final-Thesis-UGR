@@ -282,12 +282,12 @@ exports.parsePlayoffsRoundToGames = async ( competitionID, round ) => {
 				winner: null,
 				loser: null,
 				localTeamInfo: {
-					_id: round.localTeamID,
+					_id: (index % 2)? round.localTeamID : round.visitorTeamID,
 					playerStats: null,
 					quarterStats: null
 				},
 				visitorTeamInfo: {
-					_id: round.visitorTeamID,
+					_id: (index % 2)? round.visitorTeamID : round.localTeamID,
 					playerStats: null,
 					quarterStats: null
 				},
@@ -357,11 +357,30 @@ exports.getCurrentFixture = async ( competitionID ) => {
 };
 
 
-exports.getAllAvailablePlayoffsRoundsByCompetition = async (competitionID) => {
+exports.getAllAvailablePlayoffsRoundsByCompetition = async ( competitionID ) => {
 	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	let competition = ( await competitionDatabase.getCompetitionById( competitionID ) );
+	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
 	let result = ( await competitionPlayoffsRoundDomain.getAllAvailablePlayoffsRoundsByCompetition( competitionID ) );
+	
+	result = lodash.groupBy( result, "round" );
+	for (let roundIndex in result) {
+		let playoffsRounds = result[roundIndex];
+		for (let playoffsRoundIndex = 0; playoffsRoundIndex < playoffsRounds.length; playoffsRoundIndex += 1) {
+			let round = playoffsRounds[playoffsRoundIndex];
+			round.localTeam = competition.teams.find( team => team._id.toString() === round.localTeamID.toString() );
+			round.visitorTeam = competition.teams.find( team => team._id.toString() === round.visitorTeamID.toString() );
+			for (let gameIndex = 0; gameIndex < round.games.length; gameIndex += 1) {
+				let game = round.games[gameIndex];
+				round.games[gameIndex].localTeamInfo.team =  competition.teams.find( team => team._id.toString() === game.localTeamInfo._id.toString() );
+				round.games[gameIndex].visitorTeamInfo.team = competition.teams.find( team => team._id.toString() === game.visitorTeamInfo._id.toString() );
+			}
+		}
+	}
 	return result;
 };
+
+
 
 //
 //

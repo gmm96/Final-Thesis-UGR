@@ -2,28 +2,28 @@
     <mat-label>Filtro</mat-label>
     <input matInput (keyup)="applyFilter($event.target.value)">
 </mat-form-field>
-<div class="table-border table-responsive shadow" *ngFor="let key of roundNumbers">
-    <mat-table [dataSource]="dataSource" class="table-responsive game-collapsible-table">
+<div class="table-border shadow round" *ngFor="let item of rounds | keyvalue">
+    <mat-table [dataSource]="dataSource[item.key]" class="table-responsive game-collapsible-table">
         <caption class="caption-fixture-info">
             <div class="fixture-info-container">
-                <div class="fixture-number">{{getRoundText( key )}}</div>
+                <div class="fixture-number">{{getRoundText( item.key )}}</div>
                 <div class="fixture-date">18/08/2019 - 29/10/2019</div>
             </div>
         </caption>
         <div class="table-container">
-            <ng-container matColumnDef="teamAName">
-                <mat-cell class="local-team" *matCellDef="let element"> {{element.teamAName}} </mat-cell>
+            <ng-container matColumnDef="localTeamName">
+                <mat-cell class="local-team" *matCellDef="let element"> {{element.localTeamName}} </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="gameStatus">
-                <mat-cell class="gameStatus" *matCellDef="let element"> {{element.gameStatus}} </mat-cell>
+            <ng-container matColumnDef="roundStatus">
+                <mat-cell class="roundStatus" *matCellDef="let element"> {{element.roundStatus}} </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="teamBName">
-                <mat-cell class="visitor-team" *matCellDef="let element"> {{element.teamBName}} </mat-cell>
+            <ng-container matColumnDef="visitorTeamName">
+                <mat-cell class="visitor-team" *matCellDef="let element"> {{element.visitorTeamName}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="expandedDetail">
-                <mat-cell *matCellDef="let detail">
+                <mat-cell *matCellDef="let detail; let element">
                     <div class="playoffs-matchup-container">
-                        <app-playoffs-matchup></app-playoffs-matchup>
+                        <app-playoffs-matchup [games]="element.games"></app-playoffs-matchup>
                     </div>
                 </mat-cell>
             </ng-container>
@@ -31,7 +31,7 @@
                      [cdkDetailRow]="row" [cdkDetailRowTpl]="tpl" (toggleChange)="onToggleChange($event)"></mat-row>
             <ng-template #tpl let-element>
                 <div class="detail-row" [@detailExpand] style="overflow: hidden">
-                    <app-playoffs-matchup></app-playoffs-matchup>
+                    <app-playoffs-matchup [games]="element.games"></app-playoffs-matchup>
                 </div>
             </ng-template>
         </div>

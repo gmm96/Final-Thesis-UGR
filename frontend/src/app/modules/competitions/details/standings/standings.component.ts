@@ -1,7 +1,8 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatSort} from "@angular/material/sort";
 import {MatTableDataSource} from "@angular/material/table";
+import {CompetitionsService} from "../../../../core/services/competitions/competitions.service";
 
 @Component({
     selector: 'app-league-table',
@@ -10,53 +11,62 @@ import {MatTableDataSource} from "@angular/material/table";
 })
 export class StandingsComponent implements OnInit, OnDestroy, AfterViewInit {
 
+    @Input('competition') competition;
+    teamStats: any;
+    teamStatsCompatible: any;
     displayedColumns: string[] = ['position', 'team', 'played', 'wins', 'losses', 'total_points', 'total_opponent_points', 'difference'];
-    dataSource = new MatTableDataSource(ELEMENT_DATA);
-
+    dataSource: MatTableDataSource<any>;
     @ViewChild(MatSort, {static: true}) sort: MatSort;
 
     constructor(
         private activatedRoute: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private competitionsService: CompetitionsService
     ) {
     }
 
-    ngOnInit() {
+    async ngOnInit() {
     }
 
     ngOnDestroy() {
     }
 
-    ngAfterViewInit (){
-
-        this.dataSource.sort = this.sort;
+    ngAfterViewInit() {
     }
 
+    async ngOnChanges(changes: SimpleChanges) {
+        if (this.competition) {
+            (await this.setDataTable());
+        }
+    }
+
+    async setDataTable() {
+        if (this.competition) {
+            try {
+                this.teamStats = (await this.competitionsService.getCompetitionStandings(this.competition._id));
+                if (this.teamStats) {
+                    this.teamStatsCompatible = this.teamStats.map((teamSt, index) => {
+                        let team = this.competition.teams.find(team => team._id.toString() === teamSt.teamID.toString());
+                        return {
+                            competitionID: teamSt.competitionID,
+                            teamID: teamSt.teamID,
+                            position: index + 1,
+                            team: team.name,
+                            played: teamSt.stats.playedGames,
+                            wins: teamSt.stats.wonGames,
+                            losses: teamSt.stats.playedGames - teamSt.stats.wonGames,
+                            total_points: teamSt.stats.points,
+                            total_opponent_points: teamSt.stats.opponentPoints,
+                            difference: teamSt.stats.points - teamSt.stats.opponentPoints,
+                        }
+                    });
+                    this.dataSource = new MatTableDataSource(this.teamStatsCompatible);
+                    this.dataSource.sort = this.sort;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }
 }
-
-export interface PeriodicElement {
-    team: string;
-    position: number;
-    played: number;
-    wins: number;
-    losses: number;
-    total_points: number;
-    total_opponent_points: number;
-    difference: number;
-
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-    {position: 1, team: 'Hydrogen', played: 4, wins: 3, losses: 1, total_points: 90, total_opponent_points: 80, difference: 10},
-    {position: 2, team: 'Hydrogen', played: 5, wins: 3, losses: 1, total_points: 90, total_opponent_points: 80, difference: 10},
-    {position: 3, team: 'Hydrogen', played: 6, wins: 3, losses: 1, total_points: 90, total_opponent_points: 80, difference: 10},
-    {position: 4, team: 'Hydrogen', played: 10, wins: 3, losses: 1, total_points: 90, total_opponent_points: 80, difference: 10},
-    {position: 5, team: 'Hydrogen', played: 4, wins: 3, losses: 1, total_points: 90, total_opponent_points: 80, difference: 10},
-    {position: 6, team: 'Hydrogen', played: 4, wins: 3, losses: 1, total_points: 90, total_opponent_points: 80, difference: 10},
-    {position: 7, team: 'Hydrogen', played: 4, wins: 3, losses: 1, total_points: 90, total_opponent_points: 80, difference: 10},
-    {position: 8, team: 'Hydrogen', played: 4, wins: 3, losses: 1, total_points: 90, total_opponent_points: 80, difference: 10},
-    {position: 9, team: 'Hydrogen', played: 4, wins: 3, losses: 1, total_points: 90, total_opponent_points: 80, difference: 10},
-    {position: 10, team: 'Hydrogen', played: 4, wins: 3, losses: 1, total_points: 90, total_opponent_points: 80, difference: 10},
-];
-
 

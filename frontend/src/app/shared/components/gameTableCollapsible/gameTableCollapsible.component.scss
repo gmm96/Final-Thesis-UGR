@@ -2,12 +2,15 @@
 
 .table-border {
     @include border_radius(10px);
+    margin: 25px 0;
 
     .game-collapsible-table {
         display: table;
 
         mat-cell {
             font-size: 16px;
+            padding-top: 5px;
+            padding-bottom: 5px;
         }
 
         .collapsible-row {
@@ -29,14 +32,17 @@
 
         .local-team {
             justify-content: flex-start;
+            text-align: left;
         }
 
-        .gameStatus {
+        .roundStatus {
             justify-content: center;
+            text-align: center;
         }
 
         .visitor-team {
             justify-content: flex-end;
+            text-align: right;
         }
     }
 }

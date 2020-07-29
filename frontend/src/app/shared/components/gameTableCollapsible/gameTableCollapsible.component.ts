@@ -20,13 +20,11 @@ import {MatPaginator} from "@angular/material/paginator";
 
 export class GameTableCollapsibleComponent implements OnInit, OnDestroy {
 
-    roundNumbers: Array<number>;
     @Input('rounds') rounds;
-    roundsCompatible: any;
+    roundsCompatible: any = {};
     displayedColumns: string[];
-    dataSource: MatTableDataSource<any>;
+    dataSource: any = {};
     private openedRow: CdkDetailRowDirective;
-    @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
 
     constructor(
@@ -36,7 +34,7 @@ export class GameTableCollapsibleComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.displayedColumns = ['localTeamName', 'gameStatus', 'visitorTeamName'];
+        this.displayedColumns = ['localTeamName', 'roundStatus', 'visitorTeamName'];
     }
 
     ngOnDestroy() {
@@ -49,7 +47,9 @@ export class GameTableCollapsibleComponent implements OnInit, OnDestroy {
     applyFilter(filterValue: string) {
         filterValue = filterValue.trim();
         filterValue = filterValue.toLowerCase();
-        this.dataSource.filter = filterValue;
+        Object.keys(this.dataSource).forEach(index => {
+            this.dataSource[index].filter = filterValue;
+        })
     }
 
     onToggleChange(cdkDetailRow: CdkDetailRowDirective): void {
@@ -61,19 +61,19 @@ export class GameTableCollapsibleComponent implements OnInit, OnDestroy {
 
     setTableData() {
         if (this.rounds) {
-            this.roundsCompatible = this.rounds.teams.map(item => {
-                return {
-                    _id: item._id,
-                    name: item.name,
-                    city: item.city,
-                    playersLength: (item.players && item.players.length)? item.players.length : 0,
-                    avatar: item.avatar? "http://localhost:3000" + item.avatar : null
-                }
-            });
-            this.dataSource = new MatTableDataSource(this.roundsCompatible);
-            this.dataSource.paginator = this.paginator;
+            for (let roundGroupedIndex in this.rounds) {
+                let playoffsRounds = this.rounds[roundGroupedIndex];
+                this.roundsCompatible[roundGroupedIndex] = playoffsRounds.map ( round => {
+                    return {
+                        localTeamName: round.localTeam.name,
+                        visitorTeamName: round.visitorTeam.name,
+                        games: round.games,
+                        roundStatus: "3 - 0"
+                    }
+                });
+                this.dataSource[roundGroupedIndex] = new MatTableDataSource(this.roundsCompatible[roundGroupedIndex]);
+            }
         }
-
     }
 
     getRoundText(round: number) {

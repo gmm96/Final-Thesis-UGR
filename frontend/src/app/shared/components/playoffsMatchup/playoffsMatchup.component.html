@@ -1,9 +1,9 @@
 <div class="playoffs-matchup-table-container w-100">
     <mat-table [dataSource]="dataSource" class="table-responsive playoffs-matchup-table">
         <div class="table-shadow">
-            <ng-container matColumnDef="teamAName">
+            <ng-container matColumnDef="localTeamName">
                 <mat-cell class="local-team" *matCellDef="let element">
-                    {{ element.teamAName }}
+                    {{ element.localTeamName }}
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="gameStatus">
@@ -11,12 +11,12 @@
                     {{ element.gameStatus }}
                 </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="teamBName">
+            <ng-container matColumnDef="visitorTeamName">
                 <mat-cell class="visitor-team" *matCellDef="let element">
-                    {{ element.teamBName }}
+                    {{ element.visitorTeamName }}
                 </mat-cell>
             </ng-container>
-            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="goToGame(row)"></mat-row>
         </div>
     </mat-table>
 </div>

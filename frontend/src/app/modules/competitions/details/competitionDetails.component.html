@@ -105,7 +105,7 @@
             <app-calendar [competition]="competition"></app-calendar>
         </div>
         <div *ngSwitchCase="getCompetitionDetailsTabs().standings" [@animatedTabs]>
-            <app-league-table></app-league-table>
+            <app-league-table [competition]="competition"></app-league-table>
         </div>
         <div *ngSwitchCase="getCompetitionDetailsTabs().playoffs" [@animatedTabs]>
             <app-playoffs [competition]="competition"></app-playoffs>
