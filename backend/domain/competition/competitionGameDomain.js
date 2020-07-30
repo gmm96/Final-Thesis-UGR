@@ -78,7 +78,6 @@ exports.getPrevTeamGamesInCompetition = async ( competitionID, teamID ) => {
 };
 
 
-
 exports.createGame = async ( game ) => {
 	let competition = ( await competitionDomain.getCompetitionById( game.competitionID ) );
 	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };

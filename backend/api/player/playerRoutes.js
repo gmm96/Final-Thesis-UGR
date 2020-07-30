@@ -9,10 +9,10 @@ exports.assignRoutes = function ( app ) {
 	app.get( "/players/:playerID/competitions", player.getPlayerCompetitions );
 	app.get( "/players/:playerID/stats", player.getAverageCompetitionPlayerStats );
 	app.get( "/players/:playerID", player.getFullPlayerById );
-	app.put( "/players/:playerID", player.updatePlayer );
-	app.delete( "/players/:playerID", player.purgePlayer );
+	app.put( "/players/:playerID", passport.authenticate( 'jwt' ), player.updatePlayer );
+	app.delete( "/players/:playerID", passport.authenticate( 'jwt' ), player.purgePlayer );
 	app.get( "/players/no-team", player.getPlayersWithNoTeam );
 	app.get( "/players", player.getPlayerArrayByPersonalIdentification );
-	app.post( "/players", player.createPlayer );
+	app.post( "/players", passport.authenticate( 'jwt' ), player.createPlayer );
 }
 

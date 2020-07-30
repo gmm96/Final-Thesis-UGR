@@ -138,6 +138,30 @@ exports.updateCompetition = async ( req, res ) => {
 	// }
 };
 
+
+exports.updateGameTimeAndLocation = async (req, res) => {
+	try {
+		let newParameters = {
+			name: req.body.name,
+			organizer: req.body.organizer,
+			season: req.body.season,
+			minTeamNumber: req.body.minTeamNumber,
+			minPlayerNumberPerTeam: req.body.minPlayerNumberPerTeam,
+			leagueFixturesVsSameTeam: req.body.leagueFixturesVsSameTeam,
+			playoffsFixturesVsSameTeam: req.body.playoffsFixturesVsSameTeam,
+			inProgress: req.body.inProgress,
+			teams: req.body.teams,
+			updatedAt: new Date()
+		};
+		let result = ( await competitionDomain.updateGameTimeAndLocation( req.params.competitionID, req.params.gameID, newParameters ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+	
+};
+
+
 exports.purgeCompetition = async ( req, res ) => {
 	try {
 		let result = ( await competitionDomain.purgeCompetition( req.params.competitionID ) );

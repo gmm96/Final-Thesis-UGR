@@ -420,7 +420,22 @@ exports.getPrevTeamGamesInCompetition = async ( competitionID, teamID ) => {
 };
 
 
-
+exports.updateGameTimeAndLocation = async ( competitionID, gameID, param ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !gameID ) throw { code: 422, message: "Identificador de partido inválido" };
+	if ( !param || !param.location || !param.time ) throw { code: 422, message: "Fecha y localización del partido incorrectas" };
+	
+	let competition = ( await competitionDatabase.getCompetitionById( competitionID ) );
+	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	let existingGame = ( await gameDomain.getGameById( gameID ) );
+	if ( !existingGame ) throw { code: 422, message: "El equipo especificado no se encuentra en el sistema" };
+	
+	existingGame.location = param.location;
+	existingGame.time = param.time;
+	delete existingGame._id;
+	
+	return ( await gameDomain.updateGame( gameID, existingGame ) );
+}
 //
 //
 // exports.deleteCompetitionSchedule = async ( competitionID ) => {

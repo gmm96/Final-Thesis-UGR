@@ -30,10 +30,10 @@
                         <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openTeamRoster()">Plantilla</a>
                     </li>
                     <li [class.active]="currentTabField === getTeamDetailsTabs().nextGames">
-                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openNextGames()">Partidos Post.</a>
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openNextGames()">Partidos posteriores</a>
                     </li>
                     <li [class.active]="currentTabField === getTeamDetailsTabs().prevGames">
-                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openPrevGames()">Partidos Ant.</a>
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openPrevGames()">Partidos Anteriores</a>
                     </li>
                     <li [class.active]="currentTabField === getTeamDetailsTabs().stats" *ngIf="competition?.leagueFixturesVsSameTeam">
                         <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openTeamStats()">Estadísticas</a>

@@ -6,9 +6,9 @@ var passport = require( "passport" );
 exports.assignRoutes = function ( app ) {
 	app.get( "/teams/:teamID/competitions", team.getTeamCompetitions );
 	app.get( "/teams/:teamID", team.getTeamById );
-	app.get( "/teams", team.getTeamArrayByName );
-	app.post( "/teams", team.createTeam );
 	app.put( "/teams/:teamID", team.updateTeam );
-	app.delete( "/teams/:teamID", team.purgeTeam );
+	app.delete( "/teams/:teamID", passport.authenticate( 'jwt' ), team.purgeTeam );
+	app.get( "/teams", team.getTeamArrayByName );
+	app.post( "/teams", passport.authenticate( 'jwt' ), team.createTeam );
 }
 
