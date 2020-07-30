@@ -1,4 +1,9 @@
 import {MatPaginatorIntl} from '@angular/material';
+import {Injectable} from "@angular/core";
+
+@Injectable({
+    providedIn: 'root',
+})
 
 export class MatPaginatorIntlSpa extends MatPaginatorIntl {
     itemsPerPageLabel = 'Ver';

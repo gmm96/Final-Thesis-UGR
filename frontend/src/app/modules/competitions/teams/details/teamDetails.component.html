@@ -48,10 +48,10 @@
             <app-competition-team-roster [competitionID]="competitionID" [team]="team"></app-competition-team-roster>
         </div>
         <div *ngSwitchCase="getTeamDetailsTabs().nextGames" [@animatedTabs]>
-            <app-team-next-games></app-team-next-games>
+            <app-team-next-games [competitionID]="competitionID" [teamID]="teamID"></app-team-next-games>
         </div>
         <div *ngSwitchCase="getTeamDetailsTabs().prevGames" [@animatedTabs]>
-            <app-team-prev-games></app-team-prev-games>
+            <app-team-prev-games [competitionID]="competitionID" [teamID]="teamID"></app-team-prev-games>
         </div>
         <div *ngSwitchCase="getTeamDetailsTabs().stats" [@animatedTabs]>
             <app-team-stats [competitionID]="competitionID" [teamID]="teamID" *ngIf="competition?.leagueFixturesVsSameTeam"></app-team-stats>

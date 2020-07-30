@@ -42,10 +42,10 @@
 
     <div class="competition-details-content w-100" [ngSwitch]="currentTabField" [@avoidAnimatedTabsFirstEvent]>
         <div *ngSwitchCase="getTeamDetailsTabs().nextGames" [@animatedTabs]>
-            <app-player-next-games></app-player-next-games>
+            <app-player-next-games [competitionID]="competitionID" [teamID]="teamID"></app-player-next-games>
         </div>
         <div *ngSwitchCase="getTeamDetailsTabs().prevGames" [@animatedTabs]>
-            <app-player-prev-games></app-player-prev-games>
+            <app-player-prev-games [competitionID]="competitionID" [teamID]="teamID"></app-player-prev-games>
         </div>
         <div *ngSwitchCase="getTeamDetailsTabs().stats" [@animatedTabs]>
             <app-competition-player-stats [competitionID]="competitionID" [teamID]="teamID" [playerID]="playerID"></app-competition-player-stats>

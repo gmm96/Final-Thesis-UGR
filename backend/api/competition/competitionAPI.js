@@ -72,6 +72,26 @@ exports.getCompetitionPlayerStatsByCompetitionTeamAndPlayer = async ( req, res )
 };
 
 
+exports.getNextTeamGamesInCompetition = async (req, res) => {
+	try {
+		let result = ( await competitionDomain.getNextTeamGamesInCompetition( req.params.competitionID, req.params.teamID) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
+exports.getPrevTeamGamesInCompetition = async (req, res) => {
+	try {
+		let result = ( await competitionDomain.getPrevTeamGamesInCompetition( req.params.competitionID, req.params.teamID) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
 
 exports.createCompetition = async ( req, res ) => {
 	try {

@@ -37,6 +37,13 @@ export class CompetitionsService {
         return this.http.get("http://localhost:3000/competitions/" + competitionID + "/teams/" + teamID + "/players/" + playerID + "/stats").toPromise();
     }
 
+    getNextTeamGamesInCompetition ( competitionID, teamID ) {
+        return this.http.get("http://localhost:3000/competitions/" + competitionID + "/teams/" + teamID + "/next-games").toPromise();
+    }
+
+    getPrevTeamGamesInCompetition ( competitionID, teamID ) {
+        return this.http.get("http://localhost:3000/competitions/" + competitionID + "/teams/" + teamID + "/prev-games").toPromise();
+    }
 
     async createCompetition(competition: any): Promise<any> {
         let result = (await this.http.post("http://localhost:3000/competitions", competition).toPromise());

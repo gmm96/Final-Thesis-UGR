@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
@@ -16,14 +16,15 @@ export class GameTableComponent implements OnInit, OnDestroy {
     maxDate: string;
     displayedColumns: string[];
     dataSource: MatTableDataSource<any>;
-    @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
     @Input() showPaginator: boolean = false;
     @Input() showCaption: boolean = true;
 
 
     constructor(
         private activatedRoute: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private changeDetectorRef: ChangeDetectorRef,
     ) {
     }
 
@@ -69,6 +70,7 @@ export class GameTableComponent implements OnInit, OnDestroy {
             this.minDate = (minDateNumber) ? new Date(minDateNumber).toLocaleDateString("es-ES") : null;
             this.dataSource = new MatTableDataSource(this.gameCompatible);
             this.dataSource.paginator = this.paginator;
+            this.changeDetectorRef.detectChanges();
         }
     }
 }

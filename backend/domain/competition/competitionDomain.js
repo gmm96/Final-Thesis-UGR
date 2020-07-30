@@ -410,6 +410,17 @@ exports.getCompetitionPlayerStatsByCompetitionTeamAndPlayer = async ( competitio
 };
 
 
+exports.getNextTeamGamesInCompetition = async ( competitionID, teamID ) => {
+	return ( gameDomain.getNextTeamGamesInCompetition( competitionID, teamID ) );
+};
+
+
+exports.getPrevTeamGamesInCompetition = async ( competitionID, teamID ) => {
+	return ( gameDomain.getPrevTeamGamesInCompetition( competitionID, teamID ) );
+};
+
+
+
 //
 //
 // exports.deleteCompetitionSchedule = async ( competitionID ) => {
