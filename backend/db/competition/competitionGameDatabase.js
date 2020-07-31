@@ -77,6 +77,22 @@ exports.getPrevTeamGamesInCompetition = async ( competitionID, teamID ) => {
 };
 
 
+exports.getUnplayedGamesByCompetitionForScheduling = async (competitionID) => {
+	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
+	let result = ( await gameCursor.find( {
+		"competitionID": ObjectID( competitionID.toString() ),
+		"winner": null,
+		"loser": null,
+		"localTeamInfo.playerStats": null,
+		"localTeamInfo.teamStats": null,
+		"visitorTeamInfo.playerStats": null,
+		"visitorTeamInfo.teamStats": null,
+	} )
+	.sort( { fixture: 1 } ).toArray() );
+	return result;
+}
+
+
 exports.createGame = async ( game ) => {
 	let result = ( await gameCursor.insertOne( game ) );
 	return result.ops[ 0 ];

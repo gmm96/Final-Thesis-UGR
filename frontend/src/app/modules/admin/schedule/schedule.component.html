@@ -1,0 +1,125 @@
+<div class="admin-schedule">
+    <div class="admin-header">
+        <div class="title">Gestión de calendario</div>
+        <div class="disclaimer alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center"
+             role="alert">
+            <mat-icon color="primary">priority_high</mat-icon>
+            <span>Recuerde que no puede iniciar un partido sin establecer la fecha y la localización</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="admin-content container">
+        <div class="row">
+            <div class="col-12 col-md-10 offset-md-1">
+                <div class="schedule-wrapper">
+                    <form [formGroup]="competitionForm" class="w-100">
+                        <mat-form-field class="query col-12 col-md-10 offset-md-1" appearance="outline" color="accent">
+                            <mat-icon matPrefix [color]="searchInput.focused ? 'accent' : ''" class="search-icon">search
+                            </mat-icon>
+                            <mat-label>Nombre de competición</mat-label>
+                            <input matInput formControlName="name" #searchInput="matInput" [matAutocomplete]="auto"
+                                   [readonly]="selectedCompetition">
+                            <button mat-button *ngIf="selectedCompetition" matSuffix mat-icon-button aria-label="Clear"
+                                    (click)="clearSelectedCompetition()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </form>
+
+                    <mat-form-field class="table-filter w-100">
+                        <mat-label>Filtro</mat-label>
+                        <input matInput (keyup)="applyFilter($event)">
+                    </mat-form-field>
+
+                    <div class="table-border table-responsive shadow">
+                        <mat-table [dataSource]="dataSource" class="w-100 game-table">
+                            <div class="table-shadow">
+                                <ng-container matColumnDef="localTeamName">
+                                    <mat-header-cell *matHeaderCellDef matTooltip="Equipo local">Local</mat-header-cell>
+                                    <mat-cell class="local-team" *matCellDef="let element">
+                                        {{ element.localTeamName }}
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="visitorTeamName">
+                                    <mat-header-cell *matHeaderCellDef matTooltip="Equipo visitante">Visitante
+                                    </mat-header-cell>
+                                    <mat-cell class="visitor-team" *matCellDef="let element">
+                                        {{ element.visitorTeamName }}
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="fixture">
+                                    <mat-header-cell *matHeaderCellDef matTooltip="Jornada">Jornada</mat-header-cell>
+                                    <mat-cell class="fixture" *matCellDef="let element">
+                                        {{ element.fixture }}
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="ready">
+                                    <mat-header-cell *matHeaderCellDef matTooltip="Preparado para iniciar">Ok
+                                    </mat-header-cell>
+                                    <mat-cell class="ready" *matCellDef="let element">
+                                        <mat-icon class="ok-icon" *ngIf="element.ready">check</mat-icon>
+                                        <mat-icon class="no-icon" *ngIf="!element.ready">close</mat-icon>
+                                    </mat-cell>
+                                </ng-container>
+                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="editGame(row._id)"
+                                         data-toggle="modal" data-target="#modal"></mat-row>
+                            </div>
+                        </mat-table>
+                        <div class="no-data" *ngIf="!dataSource || dataSource?.filteredData?.length == 0">
+                            <span>No hay datos para este filtro</span>
+                        </div>
+                        <mat-paginator [length]="dataSource?.filteredData?.length" [pageSizeOptions]="[5, 10, 25, 50]"
+                                       [pageSize]="10"></mat-paginator>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<mat-autocomplete class="autocomplete-header" #auto="matAutocomplete" (optionSelected)="setSelectedCompetition($event)">
+    <mat-option *ngFor="let option of filteredOptions" [value]="option" class="autocomplete-option">
+        <mat-icon class="icon-type">emoji_events</mat-icon>
+        <span class="result-name">{{ option.name + " ( " + option.organizer + " - " + option.season + " )"}}</span>
+    </mat-option>
+</mat-autocomplete>
+
+
+<div class="modal fade mat-elevation-z24" data-backdrop="static" data-keyboard="false" id="modal" tabindex="-1"
+     role="dialog" aria-labelledby="timeoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="timeoutModalLabel">Edición de partido</h5>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="gameForm" #formDirective="ngForm">
+                    <mat-form-field appearance="legacy" color="accent">
+                        <mat-label>Fecha y hora *</mat-label>
+                        <input matInput formControlName="time" type="datetime-local" min="{{ minDate.toISOString() }}">
+                    </mat-form-field>
+                    <mat-form-field appearance="legacy" color="accent">
+                        <mat-label>Localización *</mat-label>
+                        <input matInput formControlName="location" type="text">
+                    </mat-form-field>
+                    <div class="required-tip">* Campo obligatorio</div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button mat-flat-button type="button" class="close-button" data-dismiss="modal" color="accent"
+                        (click)="resetGameForm()">Cerrar
+                </button>
+                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="primary"
+                        (click)="sendEditGame()" [disabled]="!gameForm.valid">Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

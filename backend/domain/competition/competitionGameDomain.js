@@ -78,7 +78,25 @@ exports.getPrevTeamGamesInCompetition = async ( competitionID, teamID ) => {
 };
 
 
+exports.getUnplayedGamesByCompetitionForScheduling = async ( competitionID ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	let competition = ( await competitionDomain.getCompetitionById( competitionID ) );
+	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	
+	let result = ( await gameDatabase.getUnplayedGamesByCompetitionForScheduling( competitionID ) );
+	if ( result.length ) {
+		for ( let i = 0; i < result.length; i += 1 ) {
+			result[ i ].localTeamInfo.team = competition.teams.find( team => team._id.toString() === result[ i ].localTeamInfo._id.toString() );
+			result[ i ].visitorTeamInfo.team = competition.teams.find( team => team._id.toString() === result[ i ].visitorTeamInfo._id.toString() );
+		}
+	}
+	
+	return result;
+};
+
+
 exports.createGame = async ( game ) => {
+	( await exports.competitionGameParametersValidator( game ) );
 	let competition = ( await competitionDomain.getCompetitionById( game.competitionID ) );
 	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
 	
@@ -133,5 +151,9 @@ exports.deleteCompetitionSchedule = async ( competitionID ) => {
 
 
 exports.competitionGameParametersValidator = async ( game ) => {
-
+	if ( !game.competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !game.localTeamInfo || !game.localTeamInfo._id ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !game.visitorTeamInfo || !game.visitorTeamInfo._id ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !game.fixture ) throw { code: 422, message: "Número de jornada inválido" };
+	if ( !game.round ) throw { code: 422, message: "Ronda de partido inválida" };
 };

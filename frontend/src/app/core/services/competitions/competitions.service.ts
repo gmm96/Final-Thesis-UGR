@@ -29,24 +29,38 @@ export class CompetitionsService {
         return this.http.get("http://localhost:3000/competitions/" + competitionID + "/all-playoffs/").toPromise();
     }
 
-    getCompetitionTeamStats (competitionID, teamID) {
+    getCompetitionTeamStats(competitionID, teamID) {
         return this.http.get("http://localhost:3000/competitions/" + competitionID + "/teams/" + teamID + "/stats").toPromise();
     }
 
-    getCompetitionPlayerStats (competitionID, teamID, playerID) {
+    getCompetitionPlayerStats(competitionID, teamID, playerID) {
         return this.http.get("http://localhost:3000/competitions/" + competitionID + "/teams/" + teamID + "/players/" + playerID + "/stats").toPromise();
     }
 
-    getNextTeamGamesInCompetition ( competitionID, teamID ) {
+    getNextTeamGamesInCompetition(competitionID, teamID) {
         return this.http.get("http://localhost:3000/competitions/" + competitionID + "/teams/" + teamID + "/next-games").toPromise();
     }
 
-    getPrevTeamGamesInCompetition ( competitionID, teamID ) {
+    getPrevTeamGamesInCompetition(competitionID, teamID) {
         return this.http.get("http://localhost:3000/competitions/" + competitionID + "/teams/" + teamID + "/prev-games").toPromise();
+    }
+
+    getUnplayedGamesByCompetition(competitionID: string) {
+        return this.http.get("http://localhost:3000/competitions/" + competitionID + "/unplayed-games").toPromise();
+    }
+
+    getCompetitionListByName(name: string) {
+        return this.http.get("http://localhost:3000/competitions?q=" + name).toPromise();
     }
 
     async createCompetition(competition: any): Promise<any> {
         let result = (await this.http.post("http://localhost:3000/competitions", competition).toPromise());
         return result;
     }
+
+    async updateGameTimeAndLocation(competitionID: string, gameID, params): Promise<any> {
+        let result = (await this.http.put("http://localhost:3000/competitions/" + competitionID + "/games/" + gameID, params).toPromise());
+        return result;
+    }
+
 }

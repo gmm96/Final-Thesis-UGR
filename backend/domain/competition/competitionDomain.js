@@ -108,8 +108,6 @@ exports.hasTeamPlayedAnyCompetition = async ( teamID ) => {
 exports.generateCompetitionSchedule = async ( competition ) => {
 	if ( !competition ) throw { code: 422, message: "Objecto competición dañado" };
 	
-	// let canInitializeCompetition = ( await exports.canInitializeCompetition( existingCompetition ) );
-	
 	let teamsInCompetition = lodash.cloneDeep( competition.teams );
 	let randomizeTeams = ( await domainTools.randomizeArray( teamsInCompetition ) );
 	let randomizeTeamsIDs = randomizeTeams.map( function ( team ) {
@@ -126,21 +124,14 @@ exports.generateCompetitionSchedule = async ( competition ) => {
 	}
 	
 };
-//
-//
-// exports.canInitializeCompetition = async ( competition ) => {
-// 	if ( !competition ) throw { code: 422, message: "Invalid competition" };
-// 	if ( competition.inProgress ) throw { code: 422, message: "Competition has already started" };
-// 	return true;
-// };
-//
-//
+
+
 exports.generateLeagueFixtures = async ( competition, randomizeTeamsIDs ) => {
-	if ( !competition ) throw { code: 422, message: "Invalid competition" };
+	if ( !competition ) throw { code: 422, message: "Objecto competición dañado" };
 	
 	
 	if ( !competition.leagueFixturesVsSameTeam ) {
-		throw { code: 422, message: "Invalid competition format. Needed league rounds." };
+		throw { code: 422, message: "Formato de competición inválido, se necesitan las vueltas de liga." };
 	} else {
 		let oddRoundFixtures = robin( randomizeTeamsIDs.length, randomizeTeamsIDs );
 		for ( let i = 1; i < oddRoundFixtures.length; i += 2 ) {
@@ -212,10 +203,10 @@ exports.parseFixturesToGames = async ( fixturesMatrix, competitionID ) => {
 
 
 exports.generatePlayoffsRoundsWithoutLeague = async ( competition, randomizeTeamsIDs ) => {
-	if ( !competition ) throw { code: 422, message: "Invalid competition" };
+	if ( !competition ) throw { code: 422, message: "Objecto competición dañádo" };
 	
 	if ( !competition.playoffsFixturesVsSameTeam ) {
-		throw { code: 422, message: "Invalid competition format. Needed playoffs rounds." };
+		throw { code: 422, message: "Formato de competición inválido, se necesitan las partidos de playoffs." };
 	} else {
 		let treeStats = ( await exports.calculateTournamentTreeStats( competition ) );
 		
@@ -305,7 +296,7 @@ exports.parsePlayoffsRoundToGames = async ( competitionID, round ) => {
 
 
 exports.calculateTournamentTreeStats = async ( competition ) => {
-	if ( !competition ) throw { code: 422, message: "Invalid competition" };
+	if ( !competition ) throw { code: 422, message: "Objecto competición dañádo" };
 	
 	let result = {};
 	result.nTeams = competition.teams.length;
@@ -429,6 +420,9 @@ exports.updateGameTimeAndLocation = async ( competitionID, gameID, param ) => {
 	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
 	let existingGame = ( await gameDomain.getGameById( gameID ) );
 	if ( !existingGame ) throw { code: 422, message: "El equipo especificado no se encuentra en el sistema" };
+	if ( existingGame.localTeamInfo.playerStats || existingGame.localTeamInfo.quarterStats || existingGame.visitorTeamInfo.playerStats || existingGame.visitorTeamInfo.quarterStats ) {
+		throw { code: 422, message: "Imposible modificar la fecha y localización del partido, ya ha comenzaod" };
+	}
 	
 	existingGame.location = param.location;
 	existingGame.time = param.time;
@@ -436,6 +430,16 @@ exports.updateGameTimeAndLocation = async ( competitionID, gameID, param ) => {
 	
 	return ( await gameDomain.updateGame( gameID, existingGame ) );
 }
+
+
+exports.getUnplayedGamesByCompetitionForScheduling = async ( competitionID ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	let competition = ( await competitionDatabase.getCompetitionById( competitionID ) );
+	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	
+	return ( await gameDomain.getUnplayedGamesByCompetitionForScheduling( competitionID ) );
+};
+
 //
 //
 // exports.deleteCompetitionSchedule = async ( competitionID ) => {

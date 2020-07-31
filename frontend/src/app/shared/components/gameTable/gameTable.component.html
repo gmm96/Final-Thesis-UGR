@@ -4,10 +4,10 @@
 </mat-form-field>
 <div class="table-border table-responsive shadow">
     <mat-table [dataSource]="dataSource" class="table-responsive game-table">
-        <caption class="caption-fixture-info" [hidden]="!showCaption">
+        <caption class="caption-fixture-info">
             <div class="fixture-info-container">
                 <div class="fixture-number" *ngIf="gameCompatible && gameCompatible.length">
-                    Jornada {{gameCompatible[ 0 ].fixture}}</div>
+                    {{( showCaption ) ? "Jornada " + gameCompatible[ 0 ].fixture : ""}}</div>
                 <div class="fixture-date" *ngIf="minDate && maxDate">{{ minDate }} - {{ maxDate }}</div>
             </div>
         </caption>
@@ -18,7 +18,8 @@
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="gameStatus">
-                <mat-cell class="gameStatus text-center d-flex flex-column justify-content-center align-items-center" *matCellDef="let element">
+                <mat-cell class="gameStatus text-center d-flex flex-column justify-content-center align-items-center"
+                          *matCellDef="let element">
                     <div class="" *ngIf="element.gameStatus.date && element.gameStatus.time">
                         {{ element.gameStatus.date }}
                     </div>
@@ -41,6 +42,7 @@
     <div class="no-data" *ngIf="!dataSource || dataSource?.filteredData?.length == 0">
         <span>No hay datos para este filtro</span>
     </div>
-    <mat-paginator [length]="dataSource?.filteredData?.length" [pageSizeOptions]="[5, 10, 25, 50]" [pageSize]="5" [hidden]="!showPaginator"
+    <mat-paginator [length]="dataSource?.filteredData?.length" [pageSizeOptions]="[5, 10, 25, 50]" [pageSize]="5"
+                   [hidden]="!showPaginator"
                    *ngIf="dataSource && dataSource?.filteredData?.length > 0"></mat-paginator>
 </div>
