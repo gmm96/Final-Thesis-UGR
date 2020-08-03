@@ -460,6 +460,12 @@ exports.createGameEvent = async ( event ) => {
 }
 
 
+exports.removeGameEvent = async ( eventID ) => {
+	if ( !eventID ) throw { code: 422, message: "Identificador de evento inválido" };
+	return ( await competitionEventDomain.purgeCompetitionEvent( eventID ) );
+}
+
+
 //
 //
 // exports.deleteCompetitionSchedule = async ( competitionID ) => {

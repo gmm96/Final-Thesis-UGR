@@ -73,7 +73,13 @@ export class CompetitionsService {
     }
 
     async createGameEvent(competitionID, gameID, event): Promise<any> {
-        let result = (await this.http.post("http://localhost:3000/competitions/" + competitionID + "/games/" + gameID + "/event", event).toPromise());
+        let result = (await this.http.post("http://localhost:3000/competitions/" + competitionID + "/games/" + gameID + "/events", event).toPromise());
         return result;
     }
+
+    async removeGameEvent(competitionID, gameID, eventID): Promise<any> {
+        let result = (await this.http.delete("http://localhost:3000/competitions/" + competitionID + "/games/" + gameID + "/events/" + eventID).toPromise());
+        return result;
+    }
+
 }

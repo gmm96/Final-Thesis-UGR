@@ -42,8 +42,6 @@ exports.createCompetitionEvent = async ( event ) => {
 			case exports.CompetitionEventTypes.endQuarter:
 				( await exports.advanceNextQuarter( event, game ) );
 				break;
-			case exports.CompetitionEventTypes.endGame:
-				break;
 		}
 	}
 	
@@ -180,6 +178,7 @@ exports.advanceNextQuarter = async ( event, game ) => {
 		game.winner = ( game.localTeamInfo.points > game.visitorTeamInfo.points ) ? game.localTeamInfo._id : game.visitorTeamInfo._id;
 		game.loser = ( game.localTeamInfo.points > game.visitorTeamInfo.points ) ? game.visitorTeamInfo._id : game.localTeamInfo._id;
 		( await gameDomain.updateGame( game._id, gameCopy ) );
+		( await gameDomain.finishGame( game._id ) );
 	}
 };
 
@@ -195,13 +194,101 @@ exports.updateCompetitionEvent = async ( id, event ) => {
 
 exports.purgeCompetitionEvent = async ( competitionEventID ) => {
 	if ( !competitionEventID ) throw { code: 422, message: "Identificador de evento inválido" };
+	let event = ( await competitionEventDatabase.getCompetitionEventById( competitionEventID ) );
+	if ( !event ) throw { code: 422, message: "El evento especificado no se encuentran en el sistema" };
+	let game = ( await gameDomain.getGameById( event.gameID ) );
+	if ( !game ) throw { code: 422, message: "El partido especificado no se encuentra en el sistema" };
 	
-	let existingEvent = ( await competitionEventDatabase.getCompetitionEventById( competitionEventID ) );
-	if ( !existingEvent ) {
-		throw { code: 422, message: "El evento especificado no se encuentran en el sistema" };
+	if ( event.type === exports.CompetitionEventTypes.basket || event.type === exports.CompetitionEventTypes.freeThrow ||
+		event.type === exports.CompetitionEventTypes.foul || event.type === exports.CompetitionEventTypes.timeOut ) {
+		switch ( event.type ) {
+			case exports.CompetitionEventTypes.basket:
+				( await exports.removeBasketEvent( event, game ) );
+				break;
+			case exports.CompetitionEventTypes.freeThrow:
+				( await exports.removeFreeThrowEvent( event, game ) );
+				break;
+			case exports.CompetitionEventTypes.timeOut:
+				( await exports.removeTimeoutEvent( event, game ) );
+				break;
+			case exports.CompetitionEventTypes.foul:
+				( await exports.removeFoulEvent( event, game ) );
+				break;
+		}
+	} else {
+		throw { code: 422, message: "El tipo de evento especificado no se puede borrar del sistema" };
 	}
 	
+	
 	return ( await competitionEventDatabase.purgeCompetitionEvent( competitionEventID ) );
+};
+
+
+exports.removeBasketEvent = async ( event, game ) => {
+	let gameCopy = lodash.cloneDeep( game );
+	delete gameCopy._id;
+	
+	if ( game.localTeamInfo._id.toString() === event.teamID.toString() ) {
+		gameCopy.localTeamInfo.quarterStats[ event.quarter - 1 ].points -= event.data;
+		let playerIndex = gameCopy.localTeamInfo.playerStats.findIndex( playerSt => playerSt.playerID.toString() === event.playerID.toString() );
+		gameCopy.localTeamInfo.playerStats[ playerIndex ].points -= event.data;
+	} else {
+		gameCopy.visitorTeamInfo.quarterStats[ event.quarter - 1 ].points -= event.data;
+		let playerIndex = gameCopy.visitorTeamInfo.playerStats.findIndex( playerSt => playerSt.playerID.toString() === event.playerID.toString() );
+		gameCopy.visitorTeamInfo.playerStats[ playerIndex ].points -= event.data;
+	}
+	await gameDomain.updateGame( game._id, gameCopy );
+};
+
+
+exports.removeFreeThrowEvent = async ( event, game ) => {
+	let gameCopy = lodash.cloneDeep( game );
+	delete gameCopy._id;
+	
+	if ( event.data ) {
+		if ( gameCopy.localTeamInfo._id.toString() === event.teamID.toString() ) {
+			gameCopy.localTeamInfo.quarterStats[ event.quarter - 1 ].points -= 1;
+			let playerIndex = gameCopy.localTeamInfo.playerStats.findIndex( playerSt => playerSt.playerID.toString() === event.playerID.toString() );
+			gameCopy.localTeamInfo.playerStats[ playerIndex ].points -= 1;
+		} else {
+			gameCopy.visitorTeamInfo.quarterStats[ event.quarter - 1 ].points -= 1;
+			let playerIndex = gameCopy.visitorTeamInfo.playerStats.findIndex( playerSt => playerSt.playerID.toString() === event.playerID.toString() );
+			gameCopy.visitorTeamInfo.playerStats[ playerIndex ].points -= 1;
+		}
+		await gameDomain.updateGame( game._id, gameCopy );
+	}
+};
+
+
+exports.removeTimeoutEvent = async ( event, game ) => {
+	let gameCopy = lodash.cloneDeep( game );
+	delete gameCopy._id;
+	
+	if ( gameCopy.localTeamInfo._id.toString() === event.teamID.toString() ) {
+		gameCopy.localTeamInfo.quarterStats[ event.quarter - 1 ].timeoutsRemaining += 1;
+	} else {
+		gameCopy.visitorTeamInfo.quarterStats[ event.quarter - 1 ].timeoutsRemaining += 1;
+	}
+	await gameDomain.updateGame( game._id, gameCopy );
+};
+
+
+exports.removeFoulEvent = async ( event, game ) => {
+	let gameCopy = lodash.cloneDeep( game );
+	delete gameCopy._id;
+	
+	if ( gameCopy.localTeamInfo._id.toString() === event.teamID.toString() ) {
+		let playerIndex = gameCopy.localTeamInfo.playerStats.findIndex( playerSt => playerSt.playerID.toString() === event.playerID.toString() );
+		let foulIndex = gameCopy.localTeamInfo.playerStats[ playerIndex ].fouls.length - 1 - gameCopy.localTeamInfo.playerStats[ playerIndex ].fouls.slice().reverse().findIndex( foul => foul === event.data );
+		gameCopy.localTeamInfo.playerStats[ playerIndex ].fouls.splice( foulIndex, 1 );
+		if ( event.data !== "A" ) gameCopy.localTeamInfo.quarterStats[ event.quarter - 1 ].fouls -= 1;
+	} else {
+		let playerIndex = gameCopy.visitorTeamInfo.playerStats.findIndex( playerSt => playerSt.playerID.toString() === event.playerID.toString() );
+		let foulIndex = gameCopy.visitorTeamInfo.playerStats[ playerIndex ].fouls.length - 1 - gameCopy.visitorTeamInfo.playerStats[ playerIndex ].fouls.slice().reverse().findIndex( foul => foul === event.data );
+		gameCopy.visitorTeamInfo.playerStats[ playerIndex ].fouls.splice( foulIndex, 1 );
+		if ( event.data !== "A" ) gameCopy.visitorTeamInfo.quarterStats[ event.quarter - 1 ].fouls -= 1;
+	}
+	await gameDomain.updateGame( game._id, gameCopy );
 };
 
 

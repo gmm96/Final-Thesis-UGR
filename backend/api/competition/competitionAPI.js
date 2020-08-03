@@ -205,3 +205,14 @@ exports.createGameEvent = async ( req, res ) => {
 		apiTools.manageError( req, res, e );
 	}
 };
+
+
+exports.removeGameEvent = async ( req, res ) => {
+	try {
+		let result = ( await competitionDomain.removeGameEvent( req.params.eventID ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+

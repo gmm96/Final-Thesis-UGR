@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="col-2 score d-flex justify-content-center align-items-center flex-column">
-            <div class="quarter">{{ currentQuarter ? ((!game.winner)? "Cuarto " + currentQuarter : "Finalizado" ) : "Sin comenzar" }}</div>
+            <div class="quarter">{{ currentQuarter ? ( ( !game.winner ) ? "Cuarto " + currentQuarter : "Finalizado" ) : "Sin comenzar" }}</div>
             <div class="score-container d-flex align-items-center flex-row">
                 <div class="score-value local-score">{{game?.localTeamInfo?.points}}</div>
                 <div class="score-separator">-</div>
@@ -181,13 +181,17 @@
                                  matTooltipPosition="right"
                                  matTooltipClass="chip-tooltip">{{ player?.stats?.points || '0' }}P
                             </div>
-                            <!--                            </div>-->
                             <div class="player-fouls">
-                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 0 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 0 ]) : null" >{{ player?.stats?.fouls[ 0 ] || " " }}</div>
-                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 1 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 1 ]) : null">{{ player?.stats?.fouls[ 1 ] || " " }}</div>
-                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 2 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 2 ]) : null">{{ player?.stats?.fouls[ 2 ] || " " }}</div>
-                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 3 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 3 ]) : null">{{ player?.stats?.fouls[ 3 ] || " " }}</div>
-                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 4 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 4 ]) : null">{{ player?.stats?.fouls[ 4 ] || " " }}</div>
+                                <div class="foul-cell"
+                                     [matTooltip]="player?.stats?.fouls[ 0 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 0 ]) : null">{{ player?.stats?.fouls[ 0 ] || " " }}</div>
+                                <div class="foul-cell"
+                                     [matTooltip]="player?.stats?.fouls[ 1 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 1 ]) : null">{{ player?.stats?.fouls[ 1 ] || " " }}</div>
+                                <div class="foul-cell"
+                                     [matTooltip]="player?.stats?.fouls[ 2 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 2 ]) : null">{{ player?.stats?.fouls[ 2 ] || " " }}</div>
+                                <div class="foul-cell"
+                                     [matTooltip]="player?.stats?.fouls[ 3 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 3 ]) : null">{{ player?.stats?.fouls[ 3 ] || " " }}</div>
+                                <div class="foul-cell"
+                                     [matTooltip]="player?.stats?.fouls[ 4 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 4 ]) : null">{{ player?.stats?.fouls[ 4 ] || " " }}</div>
                             </div>
                         </div>
                         <mat-divider [inset]="false"></mat-divider>
@@ -223,11 +227,16 @@
                             </div>
                             <!--                            </div>-->
                             <div class="player-fouls">
-                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 0 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 0 ]) : null" >{{ player?.stats?.fouls[ 0 ] || " " }}</div>
-                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 1 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 1 ]) : null">{{ player?.stats?.fouls[ 1 ] || " " }}</div>
-                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 2 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 2 ]) : null">{{ player?.stats?.fouls[ 2 ] || " " }}</div>
-                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 3 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 3 ]) : null">{{ player?.stats?.fouls[ 3 ] || " " }}</div>
-                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 4 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 4 ]) : null">{{ player?.stats?.fouls[ 4 ] || " " }}</div>
+                                <div class="foul-cell"
+                                     [matTooltip]="player?.stats?.fouls[ 0 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 0 ]) : null">{{ player?.stats?.fouls[ 0 ] || " " }}</div>
+                                <div class="foul-cell"
+                                     [matTooltip]="player?.stats?.fouls[ 1 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 1 ]) : null">{{ player?.stats?.fouls[ 1 ] || " " }}</div>
+                                <div class="foul-cell"
+                                     [matTooltip]="player?.stats?.fouls[ 2 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 2 ]) : null">{{ player?.stats?.fouls[ 2 ] || " " }}</div>
+                                <div class="foul-cell"
+                                     [matTooltip]="player?.stats?.fouls[ 3 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 3 ]) : null">{{ player?.stats?.fouls[ 3 ] || " " }}</div>
+                                <div class="foul-cell"
+                                     [matTooltip]="player?.stats?.fouls[ 4 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 4 ]) : null">{{ player?.stats?.fouls[ 4 ] || " " }}</div>
                             </div>
                         </div>
                         <mat-divider [inset]="false"></mat-divider>
@@ -250,7 +259,8 @@
                                     <span *ngSwitchCase="'startGame'">Inicio del partido</span>
                                     <span *ngSwitchCase="'startQuarter'">Inicio del cuarto {{ event.quarter }}</span>
                                     <span *ngSwitchCase="'timeOut'">Tiempo muerto solicitado por {{ getTeamNameByTeamId( event.teamID ) }}</span>
-                                    <span *ngSwitchCase="'basket'">Canasta de {{ event.data }}P {{ getTeamNameByTeamId( event.teamID ) }}
+                                    <span *ngSwitchCase="'basket'">Canasta de {{ event.data }}
+                                        P {{ getTeamNameByTeamId( event.teamID ) }}
                                         #{{ getPlayerNameByPlayerId( event.teamID, event.playerID ).number }}</span>
                                     <span *ngSwitchCase="'freeThrow'">Tiro libre {{ event.data ? "convertido" : "fallado" }}
                                         {{ getTeamNameByTeamId( event.teamID ) }}
@@ -261,7 +271,7 @@
                                 </div>
                             </div>
                             <button mat-icon-button class="event-delete" type="button" color="primary"
-                                    *ngIf="loginService.isAuthenticated()">
+                                    *ngIf="canDisplayRemoveEventIcon(event.type)" (click)="removeEvent(event._id)">
                                 <mat-icon>delete_forever</mat-icon>
                             </button>
                         </div>
@@ -312,11 +322,7 @@
                         <span mat-line>Pedir tiempo muerto</span>
                     </a>
                     <a mat-list-item (click)="goToNextQuarter()" *ngIf="isGameStarted()">
-                        <span mat-line *ngIf="!canFinishGame()">Finalizar cuarto</span>
-                        <span mat-line *ngIf="canFinishGame()">Finalizar partido</span>
-                    </a>
-                    <a mat-list-item (click)="finishGameWithoutSaving()" *ngIf="isGameStarted()">
-                        <span mat-line>Finalizar partido sin disputar</span>
+                        <span mat-line>Finalizar cuarto</span>
                     </a>
                     <a mat-list-item data-toggle="modal" data-target="#localTeamPlayers" (click)="closeBottomSheet()"
                        *ngIf="!isGameStarted()">

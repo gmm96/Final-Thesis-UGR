@@ -5,12 +5,13 @@ var passport = require( "passport" );
 
 exports.assignRoutes = function ( app ) {
 	app.get( "/competitions/:competitionID/teams/:teamID/players/:playerID/stats", competition.getCompetitionPlayerStatsByCompetitionTeamAndPlayer );
+	app.delete( "/competitions/:competitionID/games/:gameID/events/:eventID", passport.authenticate( 'jwt' ), competition.removeGameEvent );
 	app.get( "/competitions/:competitionID/teams/:teamID/stats", competition.getCompetitionTeamStatsByCompetitionAndTeam );
 	app.get( "/competitions/:competitionID/teams/:teamID/next-games", competition.getNextTeamGamesInCompetition );
 	app.get( "/competitions/:competitionID/teams/:teamID/prev-games", competition.getPrevTeamGamesInCompetition );
 	app.get( "/competitions/:competitionID/fixture/:fixtureNumber", competition.getGamesByCompetitionAndFixture );
-	app.post( "/competitions/:competitionID/games/:gameID/start", competition.startGame );
-	app.post( "/competitions/:competitionID/games/:gameID/event", competition.createGameEvent );
+	app.post( "/competitions/:competitionID/games/:gameID/start", passport.authenticate( 'jwt' ), competition.startGame );
+	app.post( "/competitions/:competitionID/games/:gameID/events", passport.authenticate( 'jwt' ), competition.createGameEvent );
 	app.get( "/competitions/:competitionID/games/:gameID", competition.getFullGameById );
 	app.put( "/competitions/:competitionID/games/:gameID", passport.authenticate( 'jwt' ), competition.updateGameTimeAndLocation );
 	app.get( "/competitions/:competitionID/all-playoffs/", competition.getAllAvailablePlayoffsRoundsByCompetition );
@@ -20,6 +21,4 @@ exports.assignRoutes = function ( app ) {
 	app.get( "/competitions/:competitionID", competition.getCompetitionByID );
 	app.post( "/competitions", passport.authenticate( 'jwt' ), competition.createCompetition );
 	app.get( "/competitions", competition.getCompetitionListByName );
-	// app.put( "/competitions/:competitionID", competition.updateCompetition );
-	// app.purge( "/competitions/:competitionID", competition.purgeCompetition );
 }

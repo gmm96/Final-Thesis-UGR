@@ -179,6 +179,16 @@ export class GameControlComponent implements OnInit {
         }
     }
 
+    async removeEvent(eventID) {
+        try {
+            (await this.competitionsService.removeGameEvent(this.competitionID, this.gameID, eventID));
+            this.toastr.success("Evento borrado correctamente.", "Operación satisfactoria");
+            (await this.getGame());
+        } catch (e) {
+            this.toastr.error((e && e.error && e.error.message) ? e.error.message : "Error desconococido, vuelva a intentarlo.", "Error");
+        }
+    }
+
     async callForTimeout() {
         let event = {
             competitionID: this.competitionID,
@@ -249,9 +259,8 @@ export class GameControlComponent implements OnInit {
 
     goToNextQuarter() {
         this.closeBottomSheet();
-        // si resultado distinto y q = 4, finalizar partido
         if (this.canFinishGame()) {
-            if (confirm('̣̣̣¿Desea finalizar el partido en su estado actual?')) {
+            if (confirm('̣̣̣¿Desea finalizar el partido en su estado actual?. Una vez terminado, no podrá editarlo.')) {
 
             }
         } else {
@@ -324,15 +333,6 @@ export class GameControlComponent implements OnInit {
         }
     }
 
-    finishGameWithoutSaving(): void {
-        this.closeBottomSheet();
-        if (confirm('̣̣̣¿Desea realmente finalizar el partido sin disputar?̀\nNinguno de los cambios efectuados tendrán efecto.')) {
-            if (confirm('¿Entiende los riesgos que conlleva?\nEl partido volverá a su estado inicial y el estado actual será irrecuperable.')) {
-
-            }
-        }
-    }
-
     updateMinute(minute: number) {
         this.lastKnownMinute = minute;
         this.possibleMinutes = this.possibleMinutes.slice(this.possibleMinutes.indexOf(this.lastKnownMinute));
@@ -393,6 +393,10 @@ export class GameControlComponent implements OnInit {
                 return "descalificante";
                 break;
         }
+    }
+
+    canDisplayRemoveEventIcon(type) {
+        return this.loginService.isAuthenticated() && (type !== "startGame") && (type !== "startQuarter") && (type !== "endGame") && (type !== "endQuarter");
     }
 
     scrollToTop(): void {

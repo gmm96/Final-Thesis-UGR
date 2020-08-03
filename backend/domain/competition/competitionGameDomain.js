@@ -5,6 +5,8 @@ var teamDomain = require( "../team/teamDomain" );
 var playerDomain = require( "../player/playerDomain" );
 var competitionEventDomain = require( "./competitionEventDomain" );
 var robin = require( "roundrobin" );
+var competitionPlayerStatsDomain = require( "./competitionPlayerStatsDomain" )
+var competitionTeamStatsDomain = require( "./competitionTeamStatsDomain" )
 
 
 exports.getGameById = async ( gameID ) => {
@@ -211,6 +213,48 @@ exports.canIFinishGame = async ( gameID ) => {
 	let quarter = game.localTeamInfo.quarterStats[ game.localTeamInfo.quarterStats.length - 1 ].quarter;
 	
 	return quarter >= 4 && game.localTeamInfo.points != game.visitorTeamInfo.points;
+};
+
+
+exports.finishGame = async ( gameID ) => {
+	if ( !gameID ) throw { code: 422, message: "Identificador de partido inválido" };
+	let game = ( await exports.getFullGameById( gameID ) );
+	if ( !game ) throw { code: 422, message: "El partido especificado no se encuentra en el sistema" };
+	let competition = ( await competitionDomain.getCompetitionById( game.competitionID ) );
+	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	
+	if ( typeof game.round === "number" ) {
+		let localCompetitionSt = ( await competitionTeamStatsDomain.getCompetitionTeamStatsByCompetitionAndTeam( game.competitionID, game.localTeamInfo._id ) );
+		localCompetitionSt.stats.playedGames += 1;
+		if ( game.winner.toString() === game.localTeamInfo._id.toString() ) localCompetitionSt.stats.wonGames += 1;
+		localCompetitionSt.stats.points += game.localTeamInfo.points;
+		localCompetitionSt.stats.opponentPoints += game.visitorTeamInfo.points;
+		( await competitionTeamStatsDomain.updateCompetitionTeamStats( localCompetitionSt._id, localCompetitionSt ) );
+		
+		let visitorCompetitionSt = ( await competitionTeamStatsDomain.getCompetitionTeamStatsByCompetitionAndTeam( game.competitionID, game.localTeamInfo._id ) );
+		visitorCompetitionSt.stats.playedGames += 1;
+		if ( game.winner.toString() === game.localTeamInfo._id.toString() ) visitorCompetitionSt.stats.wonGames += 1;
+		visitorCompetitionSt.stats.points += game.localTeamInfo.points;
+		visitorCompetitionSt.stats.opponentPoints += game.visitorTeamInfo.points;
+		( await competitionTeamStatsDomain.updateCompetitionTeamStats( visitorCompetitionSt._id, visitorCompetitionSt ) );
+	}
+	
+	( exports.updateCompetitionPlayerStatsAfterGame( game, game.localTeamInfo ) );
+	( exports.updateCompetitionPlayerStatsAfterGame( game, game.visitorTeamInfo ) );
+};
+
+
+exports.updateCompetitionPlayerStatsAfterGame = async ( game, teamInfo ) => {
+	if ( !game ) throw { code: 422, message: "Objeto partido inválido" };
+	if ( !teamInfo ) throw { code: 422, message: "Objeto estadísticas de equipo inválido" };
+	
+	for ( let playerSt of teamInfo.playerStats ) {
+		let competitionSt = ( await competitionPlayerStatsDomain.getCompetitionPlayerStatsByCompetitionTeamAndPlayer( game.competitionID, teamInfo._id, playerSt.playerID ) );
+		competitionSt.stats.playedGames += 1;
+		competitionSt.stats.points += playerSt.points;
+		competitionSt.stats.fouls += playerSt.fouls.length;
+		( await competitionPlayerStatsDomain.updateCompetitionPlayerStats( competitionSt._id, competitionSt ) );
+	}
 };
 
 
