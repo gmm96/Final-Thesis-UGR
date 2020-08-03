@@ -112,6 +112,16 @@ exports.getUnplayedGamesByCompetitionForScheduling = async ( req, res ) => {
 };
 
 
+exports.getFullGameById = async ( req, res ) => {
+	try {
+		let result = ( await competitionDomain.getFullGameById( req.params.competitionID, req.params.gameID ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
 exports.createCompetition = async ( req, res ) => {
 	try {
 		let newCompetition = {
@@ -134,27 +144,6 @@ exports.createCompetition = async ( req, res ) => {
 	} catch ( e ) {
 		apiTools.manageError( req, res, e );
 	}
-};
-
-exports.updateCompetition = async ( req, res ) => {
-	// try {
-	// 	let updatedCompetition = {
-	// 		name: req.body.name,
-	// 		organizer: req.body.organizer,
-	// 		season: req.body.season,
-	// 		minTeamNumber: req.body.minTeamNumber,
-	// 		minPlayerNumberPerTeam: req.body.minPlayerNumberPerTeam,
-	// 		leagueFixturesVsSameTeam: req.body.leagueFixturesVsSameTeam,
-	// 		playoffsFixturesVsSameTeam: req.body.playoffsFixturesVsSameTeam,
-	// 		inProgress: req.body.inProgress,
-	// 		teams: req.body.teams,
-	// 		updatedAt: new Date()
-	// 	};
-	// 	let result = ( await competitionDomain.updateCompetition( req.params.competitionID, updatedCompetition ) );
-	// 	res.send( result );
-	// } catch ( e ) {
-	// 	apiTools.manageError( req, res, e );
-	// }
 };
 
 
@@ -182,21 +171,37 @@ exports.purgeCompetition = async ( req, res ) => {
 	}
 };
 
-// exports.generateCompetitionSchedule = async ( req, res ) => {
-// 	try {
-// 		let result = ( await competitionDomain.generateCompetitionSchedule( req.params.competitionID ) );
-// 		res.send( result );
-// 	} catch ( e ) {
-// 		apiTools.manageError( req, res, e );
-// 	}
-// };
-//
-//
-// exports.deleteCompetitionSchedule = async ( req, res ) => {
-// 	try {
-// 		let result = ( await competitionDomain.deleteCompetitionSchedule( req.params.competitionID ) );
-// 		res.send( result );
-// 	} catch ( e ) {
-// 		apiTools.manageError( req, res, e );
-// 	}
-// };
+
+exports.startGame = async ( req, res ) => {
+	try {
+		let initGame = {
+			localTeam: req.body.localTeam,
+			visitorTeam: req.body.visitorTeam,
+			referees: req.body.referees
+		};
+		let result = ( await competitionDomain.startGame( req.params.competitionID, req.params.gameID, initGame ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};
+
+
+exports.createGameEvent = async ( req, res ) => {
+	try {
+		let event = {
+			competitionID: req.params.competitionID,
+			gameID: req.params.gameID,
+			teamID: req.body.teamID,
+			playerID: req.body.playerID,
+			type: req.body.type,
+			data: req.body.data,
+			minute: req.body.minute,
+			quarter: req.body.quarter
+		};
+		let result = ( await competitionDomain.createGameEvent( event ) );
+		res.send( result );
+	} catch ( e ) {
+		apiTools.manageError( req, res, e );
+	}
+};

@@ -7,7 +7,7 @@ import {MatCardModule} from "@angular/material/card";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {NotFoundComponent} from "./shared/components/notFound/notFound.component";
 import {HomeComponent} from "./modules/home/home.component";
-import {GameControlComponent} from "./shared/components/gameControl/gameControl.component";
+import {GameControlComponent} from "./modules/competitions/gameControl/gameControl.component";
 
 
 const routes: Routes = [
@@ -44,7 +44,6 @@ const routes: Routes = [
 
     {path: 'login', component: LoginComponent},
     {path: 'notFound', component: NotFoundComponent},
-    {path: 'gameControl', component: GameControlComponent},
     {path: '**', component: NotFoundComponent}
 ];
 

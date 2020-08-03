@@ -6,6 +6,7 @@ var gameDomain = require( "./competitionGameDomain" );
 var competitionTeamStatsDomain = require( "./competitionTeamStatsDomain" );
 var competitionPlayerStatsDomain = require( "./competitionPlayerStatsDomain" );
 var competitionPlayoffsRoundDomain = require( "./competitionPlayoffsRoundDomain" );
+var competitionEventDomain = require( "./competitionEventDomain" );
 var robin = require( "roundrobin" );
 var lodash = require( "lodash" );
 var underscore = require( "underscore" );
@@ -440,6 +441,25 @@ exports.getUnplayedGamesByCompetitionForScheduling = async ( competitionID ) => 
 	return ( await gameDomain.getUnplayedGamesByCompetitionForScheduling( competitionID ) );
 };
 
+
+exports.getFullGameById = async ( competitionID, gameID ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !gameID ) throw { code: 422, message: "Identificador de equipo inválido" };
+	return ( await gameDomain.getFullGameById( competitionID, gameID ) );
+};
+
+
+exports.startGame = async ( competitionID, gameID, initGame ) => {
+	return ( await gameDomain.startGame( competitionID, gameID, initGame ) );
+};
+
+
+exports.createGameEvent = async ( event ) => {
+	if ( !event ) throw { code: 422, message: "Objecto evento inválido" };
+	return ( await competitionEventDomain.createCompetitionEvent( event ) );
+}
+
+
 //
 //
 // exports.deleteCompetitionSchedule = async ( competitionID ) => {
@@ -449,7 +469,7 @@ exports.getUnplayedGamesByCompetitionForScheduling = async ( competitionID ) => 
 // 	if ( !existingCompetition ) {
 // 		throw { code: 422, message: "Specified competition is not in system" };
 // 	}
-//
+//game
 // 	return ( await gameDomain.deleteCompetitionSchedule( competitionID ) );
 // };
 //

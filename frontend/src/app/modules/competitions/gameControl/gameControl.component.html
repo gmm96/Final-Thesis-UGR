@@ -1,0 +1,659 @@
+<div class="container-fluid game-control" *ngIf="competition && game">
+    <div class="row no-gutters scoreboard-container">
+        <div class="col-5 local-team-container team-container justify-content-start">
+            <img class="team-pic d-none d-md-block" mat-card-image
+                 [src]="game?.localTeamInfo?.team?.avatar || '/assets/images/defaultteam.png'">
+            <div class="local-team team-name">
+                <div class="team-name-text text-center text-md-left">{{ game?.localTeamInfo?.team?.name }}</div>
+                <div class="team-status justify-content-center justify-content-md-start">
+                    <div class="status-chip"
+                         matTooltip="{{ (isGameStarted())? game?.localTeamInfo?.quarterStats[currentQuarter-1]?.timeoutsRemaining : '0' }} tiempos muertos restantes"
+                         matTooltipPosition="above"
+                         matTooltipClass="chip-tooltip">{{ ( isGameStarted() ) ? game?.localTeamInfo?.quarterStats[ currentQuarter - 1 ]?.timeoutsRemaining : '0' }}
+                        TM
+                    </div>
+                    <div class="status-chip"
+                         matTooltip="{{ (isGameStarted())? game?.localTeamInfo?.quarterStats[currentQuarter-1]?.fouls : '0' }} faltas de equipo"
+                         matTooltipPosition="above"
+                         matTooltipClass="chip-tooltip">{{ ( isGameStarted() ) ? game?.localTeamInfo?.quarterStats[ currentQuarter - 1 ]?.fouls : '0' }}
+                        FE
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-2 score d-flex justify-content-center align-items-center flex-column">
+            <div class="quarter">{{ currentQuarter ? ((!game.winner)? "Cuarto " + currentQuarter : "Finalizado" ) : "Sin comenzar" }}</div>
+            <div class="score-container d-flex align-items-center flex-row">
+                <div class="score-value local-score">{{game?.localTeamInfo?.points}}</div>
+                <div class="score-separator">-</div>
+                <div class="score-value visitor-score">{{game?.visitorTeamInfo?.points}}</div>
+            </div>
+        </div>
+        <div class="col-5 visitor-team-container team-container justify-content-end">
+            <div class="visitor-team team-name">
+                <div class="team-name-text text-center text-md-right">{{game?.visitorTeamInfo?.team?.name}}</div>
+                <div class="team-status justify-content-center justify-content-md-end">
+                    <div class="status-chip"
+                         matTooltip="{{ (isGameStarted())? game?.visitorTeamInfo?.quarterStats[currentQuarter-1]?.fouls : '0' }} faltas de equipo"
+                         matTooltipPosition="above"
+                         matTooltipClass="chip-tooltip">{{ ( isGameStarted() ) ? game?.visitorTeamInfo?.quarterStats[ currentQuarter - 1 ]?.fouls : '0' }}
+                        FE
+                    </div>
+                    <div class="status-chip"
+                         matTooltip="{{ (isGameStarted())? game?.visitorTeamInfo?.quarterStats[currentQuarter-1]?.timeoutsRemaining : '0' }} tiempos muertos restantes"
+                         matTooltipPosition="above"
+                         matTooltipClass="chip-tooltip">{{ ( isGameStarted() ) ? game?.visitorTeamInfo?.quarterStats[ currentQuarter - 1 ]?.timeoutsRemaining : "0" }}
+                        TM
+                    </div>
+                </div>
+            </div>
+            <img class="team-pic d-none d-md-block" mat-card-image
+                 [src]="game?.visitorTeamInfo?.team?.avatar || '/assets/images/defaultteam.png'">
+        </div>
+    </div>
+    <div class="row no-gutters game-info">
+        <div class="col-12 mat-elevation-z8">
+            <div class="game-info-header d-flex justify-content-between align-items-center">
+                <span>Información del partido</span>
+                <button mat-icon-button class="button-collapse" type="button" data-toggle="collapse"
+                        data-target="#gameInfo" aria-expanded="false">
+                    <mat-icon class="arrow-down">arrow_drop_down</mat-icon>
+                    <mat-icon class="arrow-up">arrow_drop_up</mat-icon>
+                </button>
+            </div>
+            <div class="collapse game-info-content" id="gameInfo">
+                <div class="row">
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="game-info-content-cell">
+                            <div class="game-info-label">
+                                <span>Competición</span>
+                            </div>
+                            <div class="game-info-text">
+                                {{ competition?.name }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="game-info-content-cell">
+                            <div class="game-info-label">
+                                <span>Jornada</span>
+                            </div>
+                            <div class="game-info-text">
+                                {{game?.fixture}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="game-info-content-cell">
+                            <div class="game-info-label">
+                                <span>Fecha</span>
+                            </div>
+                            <div class="game-info-text">
+                                {{ game?.time }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="game-info-content-cell">
+                            <div class="game-info-label">
+                                <span>Localidad</span>
+                            </div>
+                            <div class="game-info-text">
+                                {{ game?.location }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="game-info-content-cell">
+                            <div class="game-info-label">
+                                <span>Puntuación por cuartos</span>
+                            </div>
+                            <div class="game-info-text">
+                                <table class="score-by-quarter">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">1º</th>
+                                        <th scope="col">2º</th>
+                                        <th scope="col">3º</th>
+                                        <th scope="col">4º</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <th scope="row">Local</th>
+                                        <td>{{game?.localTeamInfo?.quarterStats[ 0 ]?.points}}</td>
+                                        <td>{{game?.localTeamInfo?.quarterStats[ 1 ]?.points}}</td>
+                                        <td>{{game?.localTeamInfo?.quarterStats[ 2 ]?.points}}</td>
+                                        <td>{{game?.localTeamInfo?.quarterStats[ 3 ]?.points}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Visitante</th>
+                                        <td>{{game?.visitorTeamInfo?.quarterStats[ 0 ]?.points}}</td>
+                                        <td>{{game?.visitorTeamInfo?.quarterStats[ 1 ]?.points}}</td>
+                                        <td>{{game?.visitorTeamInfo?.quarterStats[ 2 ]?.points}}</td>
+                                        <td>{{game?.visitorTeamInfo?.quarterStats[ 3 ]?.points}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="game-info-content-cell">
+                            <div class="game-info-label">
+                                <span>Árbitros</span>
+                            </div>
+                            <div class="game-info-text d-flex flex-column">
+                                <span *ngFor="let referee of game?.referees">{{referee}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row players-and-events">
+        <div class="team col-12 col-sm-6 col-xl-3">
+            <div class="game-team-roster game-local-team-roster mat-elevation-z8">
+                <div class="game-team-roster-title justify-content-between justify-content-sm-start">
+                    <div>Plantilla {{localTeam?.name}}</div>
+                    <button mat-icon-button class="button-collapse d-block d-sm-none" type="button"
+                            data-toggle="collapse" data-target="#localRosterTeam" aria-expanded="false">
+                        <mat-icon class="arrow-down">arrow_drop_down</mat-icon>
+                        <mat-icon class="arrow-up">arrow_drop_up</mat-icon>
+                    </button>
+                </div>
+                <div class="collapse player-list d-sm-block" id="localRosterTeam">
+                    <ng-container *ngFor="let player of localPlayers; index as i">
+                        <div class="player-display">
+                            <!--                            <div class="player-info">-->
+                            <img class="player-pic d-none d-md-block" mat-card-image
+                                 [src]="(player?.avatar)? 'http://localhost:3000' + player?.avatar : '/assets/images/defaultuser.png'">
+                            <div class="player-number d-flex justify-content-between align-items-center">
+                                <span [matTooltip]="player?.name + ' ' + player?.surname">#{{ player?.stats?.number || '0' + i }}</span>
+                                <div class="starter-badge" *ngIf="true" matTooltip="Titular" matTooltipPosition="right"
+                                     matTooltipClass="chip-tooltip">T
+                                </div>
+                            </div>
+                            <div class="player-points" matTooltip="{{ player?.stats?.points || '0' }} puntos"
+                                 matTooltipPosition="right"
+                                 matTooltipClass="chip-tooltip">{{ player?.stats?.points || '0' }}P
+                            </div>
+                            <!--                            </div>-->
+                            <div class="player-fouls">
+                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 0 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 0 ]) : null" >{{ player?.stats?.fouls[ 0 ] || " " }}</div>
+                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 1 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 1 ]) : null">{{ player?.stats?.fouls[ 1 ] || " " }}</div>
+                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 2 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 2 ]) : null">{{ player?.stats?.fouls[ 2 ] || " " }}</div>
+                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 3 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 3 ]) : null">{{ player?.stats?.fouls[ 3 ] || " " }}</div>
+                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 4 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 4 ]) : null">{{ player?.stats?.fouls[ 4 ] || " " }}</div>
+                            </div>
+                        </div>
+                        <mat-divider [inset]="false"></mat-divider>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="team col-12 col-sm-6 col-xl-3 order-xl-2">
+            <div class="game-team-roster game-visitor-team-roster mat-elevation-z8">
+                <div class="game-team-roster-title justify-content-between justify-content-sm-start">
+                    <div>Plantilla {{visitorTeam?.name}}</div>
+                    <button mat-icon-button class="button-collapse d-block d-sm-none" type="button"
+                            data-toggle="collapse" data-target="#visitorRosterTeam" aria-expanded="false">
+                        <mat-icon class="arrow-down">arrow_drop_down</mat-icon>
+                        <mat-icon class="arrow-up">arrow_drop_up</mat-icon>
+                    </button>
+                </div>
+                <div class="collapse player-list d-sm-block" id="visitorRosterTeam">
+                    <ng-container *ngFor="let player of visitorPlayers; index as i">
+                        <div class="player-display">
+                            <!--                            <div class="player-info">-->
+                            <img class="player-pic d-none d-md-block" mat-card-image
+                                 [src]="(player?.avatar)? 'http://localhost:3000' + player?.avatar : '/assets/images/defaultuser.png'">
+                            <div class="player-number d-flex align-items-center justify-content-between">
+                                <div class="starter-badge" *ngIf="true" matTooltip="Titular" matTooltipPosition="left"
+                                     matTooltipClass="chip-tooltip">T
+                                </div>
+                                <span [matTooltip]="player?.name + ' ' + player?.surname">#{{ player?.stats?.number || '0' + i }}</span>
+                            </div>
+                            <div class="player-points" matTooltip="{{ player?.stats?.points || '0' }} puntos"
+                                 matTooltipPosition="left"
+                                 matTooltipClass="chip-tooltip">{{ player?.stats?.points || '0' }}P
+                            </div>
+                            <!--                            </div>-->
+                            <div class="player-fouls">
+                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 0 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 0 ]) : null" >{{ player?.stats?.fouls[ 0 ] || " " }}</div>
+                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 1 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 1 ]) : null">{{ player?.stats?.fouls[ 1 ] || " " }}</div>
+                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 2 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 2 ]) : null">{{ player?.stats?.fouls[ 2 ] || " " }}</div>
+                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 3 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 3 ]) : null">{{ player?.stats?.fouls[ 3 ] || " " }}</div>
+                                <div class="foul-cell" [matTooltip]="player?.stats?.fouls[ 4 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 4 ]) : null">{{ player?.stats?.fouls[ 4 ] || " " }}</div>
+                            </div>
+                        </div>
+                        <mat-divider [inset]="false"></mat-divider>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="events col-12 col-xl-6">
+            <div class="event-container mat-elevation-z8">
+                <div class="event-container-title text-center">Eventos</div>
+                <div *ngIf="game?.events && game?.events?.length">
+                    <ng-container *ngFor="let event of game?.events">
+                        <div class="event">
+                            <div class="event-text">
+                                <div class="event-minute">
+                                    <div class="minute-text">min</div>
+                                    <div class="minute-value">{{event?.minute}}</div>
+                                </div>
+                                <div class="event-text-container" [ngSwitch]="event?.type">
+                                    <span *ngSwitchCase="'startGame'">Inicio del partido</span>
+                                    <span *ngSwitchCase="'startQuarter'">Inicio del cuarto {{ event.quarter }}</span>
+                                    <span *ngSwitchCase="'timeOut'">Tiempo muerto solicitado por {{ getTeamNameByTeamId( event.teamID ) }}</span>
+                                    <span *ngSwitchCase="'basket'">Canasta de {{ event.data }}P {{ getTeamNameByTeamId( event.teamID ) }}
+                                        #{{ getPlayerNameByPlayerId( event.teamID, event.playerID ).number }}</span>
+                                    <span *ngSwitchCase="'freeThrow'">Tiro libre {{ event.data ? "convertido" : "fallado" }}
+                                        {{ getTeamNameByTeamId( event.teamID ) }}
+                                        #{{ getPlayerNameByPlayerId( event.teamID, event.playerID ).number }}</span>
+                                    <span *ngSwitchCase="'foul'">Falta {{ getFoulType( event.data ) }}
+                                        {{ getTeamNameByTeamId( event.teamID ) }}
+                                        #{{ getPlayerNameByPlayerId( event.teamID, event.playerID ).number }}</span>
+                                </div>
+                            </div>
+                            <button mat-icon-button class="event-delete" type="button" color="primary"
+                                    *ngIf="loginService.isAuthenticated()">
+                                <mat-icon>delete_forever</mat-icon>
+                            </button>
+                        </div>
+                        <mat-divider></mat-divider>
+                    </ng-container>
+                </div>
+                <div class="no-events text-center" *ngIf="!game?.events || !game?.events?.length">
+                    No hay eventos aún, el partido no ha comenzado
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="add-event" mat-fab color="primary" *ngIf="loginService.isAuthenticated()"
+            (click)="openedBottomSheet? closeBottomSheet() : openedBottomSheet=true">
+        <mat-icon *ngIf="!openedBottomSheet">add</mat-icon>
+        <mat-icon *ngIf="openedBottomSheet">close</mat-icon>
+    </button>
+    <button class="scroll-top" [ngClass]="{'show-scrollTop': windowScrolled}" mat-mini-fab color="accent"
+            (click)="scrollToTop()">
+        <mat-icon>expand_less</mat-icon>
+    </button>
+
+    <div class="row no-gutters" *ngIf="openedBottomSheet || canCloseBottomSheet">
+        <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+            <div class="bottom-sheet mat-elevation-z24" *ngIf="openedBottomSheet" [@bottomSheet]>
+                <div class="bottomSheet-header d-flex justify-content-between align-items-center">
+                    <div>Añadir un evento</div>
+                    <button mat-mini-fab class="close-bottomSheet" color="primary" (click)="closeBottomSheet()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </div>
+                <mat-nav-list>
+                    <a mat-list-item data-toggle="modal" data-target="#basketModal" (click)="closeBottomSheet()"
+                       *ngIf="isGameStarted()">
+                        <span mat-line>Anotar canasta</span>
+                    </a>
+                    <a mat-list-item data-toggle="modal" data-target="#freeThrowModal" (click)="closeBottomSheet()"
+                       *ngIf="isGameStarted()">
+                        <span mat-line>Anotar tiro libre</span>
+                    </a>
+                    <a mat-list-item data-toggle="modal" data-target="#foulModal" (click)="closeBottomSheet()"
+                       *ngIf="isGameStarted()">
+                        <span mat-line>Señalar falta</span>
+                    </a>
+                    <a mat-list-item data-toggle="modal" data-target="#timeoutModal" (click)="closeBottomSheet()"
+                       *ngIf="isGameStarted()">
+                        <span mat-line>Pedir tiempo muerto</span>
+                    </a>
+                    <a mat-list-item (click)="goToNextQuarter()" *ngIf="isGameStarted()">
+                        <span mat-line *ngIf="!canFinishGame()">Finalizar cuarto</span>
+                        <span mat-line *ngIf="canFinishGame()">Finalizar partido</span>
+                    </a>
+                    <a mat-list-item (click)="finishGameWithoutSaving()" *ngIf="isGameStarted()">
+                        <span mat-line>Finalizar partido sin disputar</span>
+                    </a>
+                    <a mat-list-item data-toggle="modal" data-target="#localTeamPlayers" (click)="closeBottomSheet()"
+                       *ngIf="!isGameStarted()">
+                        <span mat-line>Iniciar partido</span>
+                    </a>
+                </mat-nav-list>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="timeout-counter-wrapper d-flex justify-content-center align-items-center"
+     *ngIf="timeoutRemainingSeconds != 0" [@simpleFade]>
+    <div class="timeout-counter">
+        {{ timeoutRemainingSeconds }}
+    </div>
+</div>
+
+
+<div class="modal fade mat-elevation-z24" data-backdrop="static" data-keyboard="false" id="basketModal" tabindex="-1"
+     role="dialog" aria-labelledby="basketModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="basketModalLabel">Anotar canasta</h5>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="basketFormGroup">
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="team"
+                                    (selectionChange)="setModalPlayers($event, basketFormGroup)">
+                            <mat-option value="{{localTeam?._id}}">{{localTeam?.name}}</mat-option>
+                            <mat-option value="{{visitorTeam?._id}}">{{visitorTeam?.name}}</mat-option>
+                        </mat-select>
+                        <mat-label>Equipo</mat-label>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="player">
+                            <mat-option *ngFor="let player of modalPlayers" value="{{ player._id }}">
+                                #{{ player.stats.number + " - " + player.name + " " + player.surname  }}</mat-option>
+                        </mat-select>
+                        <mat-label>Jugador</mat-label>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="points">
+                            <mat-option [value]="2">2 puntos</mat-option>
+                            <mat-option [value]="3">3 puntos</mat-option>
+                        </mat-select>
+                        <mat-label>Tipo de canasta</mat-label>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="minute">
+                            <mat-option *ngFor="let min of possibleMinutes" [value]="min"> {{ min }} </mat-option>
+                        </mat-select>
+                        <mat-label>Minuto</mat-label>
+                    </mat-form-field>
+                    <div class="required-tip">* Campo obligatorio</div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button mat-flat-button type="button" class="close-button" data-dismiss="modal" color="accent"
+                        (click)="resetForm(basketFormGroup)">Cerrar
+                </button>
+                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="primary"
+                        (click)="annotateBasket()" [disabled]="!basketFormGroup.valid">Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade mat-elevation-z24" data-backdrop="static" data-keyboard="false" id="freeThrowModal" tabindex="-1"
+     role="dialog" aria-labelledby="freeThrowModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="freeThrowModalLabel">Anotar tiro libre</h5>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="freeThrowFormGroup">
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="team"
+                                    (selectionChange)="setModalPlayers($event, freeThrowFormGroup)">
+                            <mat-option value="{{localTeam?._id}}">{{localTeam?.name}}</mat-option>
+                            <mat-option value="{{visitorTeam?._id}}">{{visitorTeam?.name}}</mat-option>
+                        </mat-select>
+                        <mat-label>Equipo</mat-label>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="player">
+                            <mat-option *ngFor="let player of modalPlayers" value="{{ player._id }}">
+                                #{{ player.stats.number + " - " + player.name + " " + player.surname  }}</mat-option>
+                        </mat-select>
+                        <mat-label>Jugador</mat-label>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="in">
+                            <mat-option [value]="true">Convertido</mat-option>
+                            <mat-option [value]="false">Fallado</mat-option>
+                        </mat-select>
+                        <mat-label>Resultado</mat-label>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="minute">
+                            <mat-option *ngFor="let min of possibleMinutes" [value]="min"> {{ min }} </mat-option>
+                        </mat-select>
+                        <mat-label>Minuto</mat-label>
+                    </mat-form-field>
+                    <div class="required-tip">* Campo obligatorio</div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button mat-flat-button type="button" class="close-button" data-dismiss="modal" color="accent"
+                        (click)="resetForm(freeThrowFormGroup)">Cerrar
+                </button>
+                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="primary"
+                        (click)="annotateFreeThrow()" [disabled]="!freeThrowFormGroup.valid">Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade mat-elevation-z24" data-backdrop="static" data-keyboard="false" id="foulModal" tabindex="-1"
+     role="dialog" aria-labelledby="foulModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="foulModalLabel">Señalar falta</h5>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="foulFormGroup">
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="team"
+                                    (selectionChange)="setModalPlayers($event, foulFormGroup)">
+                            <mat-option value="{{localTeam?._id}}">{{localTeam?.name}}</mat-option>
+                            <mat-option value="{{visitorTeam?._id}}">{{visitorTeam?.name}}</mat-option>
+                        </mat-select>
+                        <mat-label>Equipo</mat-label>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="player">
+                            <mat-option *ngFor="let player of modalPlayers" value="{{ player._id }}">
+                                #{{ player.stats.number + " - " + player.name + " " + player.surname  }}</mat-option>
+                        </mat-select>
+                        <mat-label>Jugador</mat-label>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="foulType">
+                            <mat-option value="D">Falta personal en defensa</mat-option>
+                            <mat-option value="A">Falta en ataque</mat-option>
+                            <mat-option value="U">Falta antideportiva</mat-option>
+                            <mat-option value="T">Falta técnica</mat-option>
+                            <mat-option value="X">Falta descalificante</mat-option>
+                        </mat-select>
+                        <mat-label>Tipo de falta</mat-label>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="minute">
+                            <mat-option *ngFor="let min of possibleMinutes" [value]="min"> {{ min }} </mat-option>
+                        </mat-select>
+                        <mat-label>Minuto</mat-label>
+                    </mat-form-field>
+                    <div class="required-tip">* Campo obligatorio</div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button mat-flat-button type="button" class="close-button" data-dismiss="modal" color="accent"
+                        (click)="resetForm(foulFormGroup)">Cerrar
+                </button>
+                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="primary"
+                        (click)="callForAFoul()" [disabled]="!foulFormGroup.valid">Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade mat-elevation-z24" data-backdrop="static" data-keyboard="false" id="timeoutModal" tabindex="-1"
+     role="dialog" aria-labelledby="timeoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="timeoutModalLabel">Tiempo muerto</h5>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="timeoutFormGroup">
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="team">
+                            <mat-option value="{{localTeam?._id}}">{{localTeam?.name}}</mat-option>
+                            <mat-option value="{{visitorTeam?._id}}">{{visitorTeam?.name}}</mat-option>
+                        </mat-select>
+                        <mat-label>Equipo</mat-label>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-select required formControlName="minute">
+                            <mat-option *ngFor="let min of possibleMinutes" [value]="min"> {{ min }} </mat-option>
+                        </mat-select>
+                        <mat-label>Minuto</mat-label>
+                    </mat-form-field>
+                    <div class="required-tip">* Campo obligatorio</div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button mat-flat-button type="button" class="close-button" data-dismiss="modal" color="accent"
+                        (click)="resetForm(timeoutFormGroup)">Cerrar
+                </button>
+                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="primary"
+                        (click)="callForTimeout()" [disabled]="!timeoutFormGroup.valid">Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade mat-elevation-z24" data-backdrop="static" data-keyboard="false" id="localTeamPlayers"
+     tabindex="-1" role="dialog" aria-labelledby="localTeamPlayersLabel" aria-hidden="true" *ngIf="!isGameStarted()">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center justify-content-center flex-column">
+                <h5 class="modal-title text-center" id="localTeamPlayersLabel">Selección de jugadores - Equipo
+                    local</h5>
+                <div class="modal-subtitle">Selecciona los jugadores disponibles para el partido y su dorsal
+                    correspondiente
+                </div>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="localTeamPlayersForm">
+                    <div class="player-container d-flex align-items-center justify-content-start"
+                         *ngFor="let player of localTeam?.players">
+                        <mat-checkbox class="mat-form-checkbox"
+                                      [formControlName]="player._id.toString() + '_selected'"></mat-checkbox>
+                        <mat-form-field appearance="legacy" color="accent" class="player-number">
+                            <mat-label>Dorsal</mat-label>
+                            <input matInput [formControlName]="player._id.toString() + '_number'" type="text"
+                                   class="text-center"
+                                   [disableControl]="!canEditPlayerNumber(player._id.toString(), localTeamPlayersForm)">
+                        </mat-form-field>
+                        <div class="player-idCard">{{ player?.idCard }}</div>
+                        <div class="player-name">{{ "( " + player?.name + ' ' + player?.surname + " )" }}</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button mat-flat-button type="button" class="close-button" data-dismiss="modal" color="accent"
+                        (click)="resetForm(localTeamPlayersForm)">Cerrar
+                </button>
+                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" data-toggle="modal"
+                        data-target="#visitorTeamPlayers" color="primary"
+                        [disabled]="!localTeamPlayersForm.valid">Siguiente
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade mat-elevation-z24" data-backdrop="static" data-keyboard="false" id="visitorTeamPlayers"
+     tabindex="-1" role="dialog" aria-labelledby="visitorTeamPlayersLabel" aria-hidden="true" *ngIf="!isGameStarted()">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center justify-content-center flex-column">
+                <h5 class="modal-title text-center" id="visitorTeamPlayersLabel">Selección de jugadores - Equipo
+                    visitante</h5>
+                <div class="modal-subtitle">Selecciona los jugadores disponibles para el partido y su dorsal
+                    correspondiente
+                </div>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="visitorTeamPlayersForm">
+                    <div class="player-container d-flex align-items-center justify-content-start"
+                         *ngFor="let player of visitorTeam?.players">
+                        <mat-checkbox class="mat-form-checkbox"
+                                      [formControlName]="player._id.toString() + '_selected'"></mat-checkbox>
+                        <mat-form-field appearance="legacy" color="accent" class="player-number">
+                            <mat-label>Dorsal</mat-label>
+                            <input matInput [formControlName]="player._id.toString() + '_number'" type="text"
+                                   class="text-center"
+                                   [disableControl]="!canEditPlayerNumber(player._id.toString(), visitorTeamPlayersForm)">
+                        </mat-form-field>
+                        <div class="player-idCard">{{ player?.idCard }}</div>
+                        <div class="player-name">{{ "( " + player?.name + ' ' + player?.surname + " )" }}</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button mat-flat-button type="button" class="close-button" data-dismiss="modal" color="accent"
+                        (click)="resetForm(visitorTeamPlayersForm); resetForm(localTeamPlayersForm)">Cerrar
+                </button>
+                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" data-toggle="modal"
+                        data-target="#referees" color="primary"
+                        [disabled]="!visitorTeamPlayersForm.valid">Siguiente
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade mat-elevation-z24" data-backdrop="static" data-keyboard="false" id="referees"
+     tabindex="-1" role="dialog" aria-labelledby="refereesLabel" aria-hidden="true" *ngIf="!isGameStarted()">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center justify-content-center flex-column">
+                <h5 class="modal-title text-center" id="refereesLabel">Entrada de árbitros</h5>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="refereesForm">
+                    <mat-form-field appearance="legacy" color="accent" class="player-number">
+                        <mat-label>Árbitro 1</mat-label>
+                        <input matInput formControlName="referee1" type="text">
+                    </mat-form-field>
+                    <mat-form-field appearance="legacy" color="accent" class="player-number">
+                        <mat-label>Árbitro 2 (opcional)</mat-label>
+                        <input matInput formControlName="referee2" type="text">
+                    </mat-form-field>
+                    <mat-form-field appearance="legacy" color="accent" class="player-number">
+                        <mat-label>Árbitro 3 (opcional)</mat-label>
+                        <input matInput formControlName="referee3" type="text">
+                    </mat-form-field>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button mat-flat-button type="button" class="close-button" data-dismiss="modal" color="accent"
+                        (click)="resetForm(refereesForm); resetForm(visitorTeamPlayersForm); resetForm(localTeamPlayersForm)">
+                    Cerrar
+                </button>
+                <button mat-flat-button type="button" class="send-button" data-dismiss="modal" color="primary"
+                        [disabled]="!refereesForm.valid" (click)="startGame()">Iniciar partido
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -4,6 +4,7 @@ import {Subscription} from "rxjs";
 import {Animations} from "../../../shared/animations";
 import {PlayersService} from "../../../core/services/players/players.service";
 import {Title} from "@angular/platform-browser";
+import {ManagePlayerActions} from "../../admin/players/managePlayers.component";
 
 @Component({
     selector: 'app-player-details',
@@ -15,7 +16,7 @@ export class PlayerDetailsComponent implements OnInit, OnDestroy {
 
     playerID: string;
     player: any;
-    currentTabField: PlayerDetailsTabs = PlayerDetailsTabs.info;
+    currentTabField: PlayerDetailsTabs;
     private sub: Subscription;
 
 
@@ -38,6 +39,7 @@ export class PlayerDetailsComponent implements OnInit, OnDestroy {
                 this.changeDetectorRef.detectChanges();
             }
         });
+        this.currentTabField = PlayerDetailsTabs.info;
     }
 
     ngOnDestroy() {

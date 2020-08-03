@@ -9,6 +9,9 @@ exports.assignRoutes = function ( app ) {
 	app.get( "/competitions/:competitionID/teams/:teamID/next-games", competition.getNextTeamGamesInCompetition );
 	app.get( "/competitions/:competitionID/teams/:teamID/prev-games", competition.getPrevTeamGamesInCompetition );
 	app.get( "/competitions/:competitionID/fixture/:fixtureNumber", competition.getGamesByCompetitionAndFixture );
+	app.post( "/competitions/:competitionID/games/:gameID/start", competition.startGame );
+	app.post( "/competitions/:competitionID/games/:gameID/event", competition.createGameEvent );
+	app.get( "/competitions/:competitionID/games/:gameID", competition.getFullGameById );
 	app.put( "/competitions/:competitionID/games/:gameID", passport.authenticate( 'jwt' ), competition.updateGameTimeAndLocation );
 	app.get( "/competitions/:competitionID/all-playoffs/", competition.getAllAvailablePlayoffsRoundsByCompetition );
 	app.get( "/competitions/:competitionID/current-fixture", competition.getCurrentFixture );

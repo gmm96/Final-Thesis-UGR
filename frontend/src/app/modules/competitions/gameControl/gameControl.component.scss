@@ -259,6 +259,7 @@
                                 border-top: 2px solid $orange;
                                 border-bottom: 2px solid $orange;
                                 min-width: 18px;
+                                min-height: 24px;
                                 font-size: 14px;
                                 line-height: 16px;
                                 padding: 2px 0;
@@ -359,6 +360,11 @@
                 @include border_radius(10px);
                 border: 2px solid grey;
                 margin: 5px 0;
+
+                .no-events {
+                    padding: 10px 15px;
+                    font-size: 16px;
+                }
 
                 .event-container-title {
                     @include border-top-left-radius(8px);
@@ -542,10 +548,30 @@
             background-color: $indigo-900;
             color: white;
             border-bottom: 0;
+
+            .modal-subtitle {
+                font-size: 13px;
+                text-align: center;
+            }
         }
 
         .modal-body {
             border-top: 3px solid $orange;
+
+            .player-container {
+
+                .player-number {
+                    width: 45px;
+                    margin: 0 12px;
+                }
+            }
+            .player-idCard {
+                font-size: 15px;
+            }
+            .player-name {
+                font-size: 12px;
+                margin-left: 12px;
+            }
 
             mat-form-field {
                 width: 100%;

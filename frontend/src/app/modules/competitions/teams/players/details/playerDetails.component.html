@@ -26,14 +26,14 @@
             </button>
             <div class="navbar-toggler-content collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
                 <ul class="navbar-links nav navbar-nav text-center">
-                    <li [class.active]="currentTabField === getTeamDetailsTabs().nextGames">
+                    <li [class.active]="currentTabField === getPlayerDetailsTabs().nextGames">
                         <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openNextGames()">Partidos posteriores</a>
                     </li>
-                    <li [class.active]="currentTabField === getTeamDetailsTabs().prevGames">
+                    <li [class.active]="currentTabField === getPlayerDetailsTabs().prevGames">
                         <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openPrevGames()">Partidos Anteriores</a>
                     </li>
-                    <li [class.active]="currentTabField === getTeamDetailsTabs().stats">
-                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openTeamStats()">Estadísticas</a>
+                    <li [class.active]="currentTabField === getPlayerDetailsTabs().stats">
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openPlayerStats()">Estadísticas</a>
                     </li>
                 </ul>
             </div>
@@ -41,13 +41,13 @@
     </div>
 
     <div class="competition-details-content w-100" [ngSwitch]="currentTabField" [@avoidAnimatedTabsFirstEvent]>
-        <div *ngSwitchCase="getTeamDetailsTabs().nextGames" [@animatedTabs]>
+        <div *ngSwitchCase="getPlayerDetailsTabs().nextGames" [@animatedTabs]>
             <app-player-next-games [competitionID]="competitionID" [teamID]="teamID"></app-player-next-games>
         </div>
-        <div *ngSwitchCase="getTeamDetailsTabs().prevGames" [@animatedTabs]>
+        <div *ngSwitchCase="getPlayerDetailsTabs().prevGames" [@animatedTabs]>
             <app-player-prev-games [competitionID]="competitionID" [teamID]="teamID"></app-player-prev-games>
         </div>
-        <div *ngSwitchCase="getTeamDetailsTabs().stats" [@animatedTabs]>
+        <div *ngSwitchCase="getPlayerDetailsTabs().stats" [@animatedTabs]>
             <app-competition-player-stats [competitionID]="competitionID" [teamID]="teamID" [playerID]="playerID"></app-competition-player-stats>
         </div>
     </div>

@@ -63,4 +63,17 @@ export class CompetitionsService {
         return result;
     }
 
+    getFullGameById(competitionID, gameID) {
+        return this.http.get("http://localhost:3000/competitions/" + competitionID + "/games/" + gameID).toPromise();
+    }
+
+    async startGame(competitionID: string, gameID, initGame): Promise<any> {
+        let result = (await this.http.post("http://localhost:3000/competitions/" + competitionID + "/games/" + gameID + "/start", initGame).toPromise());
+        return result;
+    }
+
+    async createGameEvent(competitionID, gameID, event): Promise<any> {
+        let result = (await this.http.post("http://localhost:3000/competitions/" + competitionID + "/games/" + gameID + "/event", event).toPromise());
+        return result;
+    }
 }

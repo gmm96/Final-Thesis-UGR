@@ -15,7 +15,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
 
     teamID: string;
     team: any;
-    currentTabField: TeamDetailsTabs = TeamDetailsTabs.info;
+    currentTabField: TeamDetailsTabs;
     private sub: Subscription;
 
 
@@ -38,6 +38,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
                 this.changeDetectorRef.detectChanges();
             }
         });
+        this.currentTabField = TeamDetailsTabs.info;
     }
 
     ngOnDestroy() {

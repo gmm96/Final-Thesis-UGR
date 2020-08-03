@@ -7,13 +7,14 @@ import {SharedModule} from "../../shared/shared.module";
 import {CompetitionTeamDetailsComponent} from "./teams/details/teamDetails.component";
 import {NotFoundComponent} from "../../shared/components/notFound/notFound.component";
 import {CompetitionPlayerDetailsComponent} from "./teams/players/details/playerDetails.component";
-import {GameControlComponent} from "../../shared/components/gameControl/gameControl.component";
+import {GameControlComponent} from "./gameControl/gameControl.component";
 
 
 const competitionsRoutes: Routes = [
     // {path: 'new', component}
     {path: ':competitionID/teams/:teamID/players/:playerID', component: CompetitionPlayerDetailsComponent},
     {path: ':competitionID/teams/:teamID', component: CompetitionTeamDetailsComponent},
+    {path: ':competitionID/games/:gameID', component: GameControlComponent},
     {path: ':competitionID', component: CompetitionDetailsComponent},
     {path: '**', component: NotFoundComponent}
 ];

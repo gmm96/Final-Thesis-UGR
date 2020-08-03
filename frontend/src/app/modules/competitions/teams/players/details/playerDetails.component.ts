@@ -19,7 +19,7 @@ export class CompetitionPlayerDetailsComponent implements OnInit, OnDestroy {
     team: any;
     playerID: string;
     player: any;
-    currentTabField: TeamDetailsTabs = TeamDetailsTabs.nextGames;
+    currentTabField: PlayerDetailsTabs;
     private sub: Subscription;
 
 
@@ -50,6 +50,7 @@ export class CompetitionPlayerDetailsComponent implements OnInit, OnDestroy {
             this.titleService.setTitle((this.player) ? this.player.name + " " + this.player.surname + " en " + this.competition.name + " - Jugador en competición" : "Jugadores en competición");
             this.changeDetectorRef.detectChanges();
         });
+        this.currentTabField = PlayerDetailsTabs.nextGames;
     }
 
     ngOnDestroy() {
@@ -57,15 +58,15 @@ export class CompetitionPlayerDetailsComponent implements OnInit, OnDestroy {
     }
 
     openNextGames() {
-        this.currentTabField = TeamDetailsTabs.nextGames;
+        this.currentTabField = PlayerDetailsTabs.nextGames;
     }
 
     openPrevGames() {
-        this.currentTabField = TeamDetailsTabs.prevGames;
+        this.currentTabField = PlayerDetailsTabs.prevGames;
     }
 
-    openTeamStats() {
-        this.currentTabField = TeamDetailsTabs.stats;
+    openPlayerStats() {
+        this.currentTabField = PlayerDetailsTabs.stats;
     }
 
     goToTeamPage() {
@@ -77,13 +78,13 @@ export class CompetitionPlayerDetailsComponent implements OnInit, OnDestroy {
     }
 
 
-    getTeamDetailsTabs() {
-        return TeamDetailsTabs;
+    getPlayerDetailsTabs() {
+        return PlayerDetailsTabs;
     }
 };
 
-export enum TeamDetailsTabs {
-    nextGames = 'PARTIDOS POST.',
-    prevGames = 'PARTIDOS ANT.',
+export enum PlayerDetailsTabs {
+    nextGames = 'PARTIDOS POSTERIORES.',
+    prevGames = 'PARTIDOS ANTERIORES.',
     stats = 'ESTADÍSTICAS'
 }

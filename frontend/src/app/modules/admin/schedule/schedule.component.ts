@@ -108,6 +108,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     async setFilteredOptions(query: string) {
         try {
             if (query && query.length) this.filteredOptions = (await this.competitionsService.getCompetitionListByName(query));
+            else this.filteredOptions = [];
         } catch (e) {
             this.filteredOptions = [];
             console.log(e);
@@ -123,11 +124,13 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     async sendEditGame() {
         try {
             let editedGame = (await this.competitionsService.updateGameTimeAndLocation(this.selectedCompetition._id, this.game._id, this.gameForm.value));
-            let index = this.games.findIndex(game => game._id.toString() === editedGame._id.toString());
-            this.games[index] = editedGame;
+            (await this.getUnplayedGamesByCompetition());
+            (await this.setDataTable());
+            this.setDataTable();
             this.formDirective.resetForm();
             this.toastr.success("Partido editado correctamente.", "Operación satisfactoria");
         } catch (e) {
+            console.error(e);
             this.toastr.error((e && e.error && e.error.message) ? e.error.message : "Error desconococido, vuelva a intentarlo.", "Error");
         }
     }

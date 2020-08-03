@@ -49,6 +49,6 @@ export class PlayoffsMatchupComponent implements OnInit, OnDestroy {
     }
 
     goToGame(game) {
-        this.router.navigate(["/competitions/" + game.competitionID + "/game/" + game._id]);
+        this.router.navigate(["/competitions/" + game.competitionID + "/games/" + game._id]);
     }
 }

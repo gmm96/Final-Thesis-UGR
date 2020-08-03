@@ -11,7 +11,22 @@ exports.getCompetitionEventById = async ( eventID ) => {
 };
 
 
+exports.getCompetitionEventListByGameId = async ( competitionID, gameID ) => {
+	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !ObjectID.isValid( gameID ) ) throw { code: 422, message: "Identificador de partido inválido" };
+	let result = ( await dbModule.findResultToArray( competitionEventCursor, {
+		competitionID: ObjectID( competitionID.toString() ),
+		gameID: ObjectID( gameID.toString() )
+	} ) );
+	return result;
+};
+
+
 exports.createCompetitionEvent = async ( event ) => {
+	event.competitionID = ObjectID(event.competitionID.toString());
+	event.gameID = ObjectID(event.gameID.toString());
+	if (event.teamID) event.teamID = ObjectID(event.teamID.toString());
+	if (event.playerID) event.playerID = ObjectID(event.playerID.toString());
 	let result = ( await competitionEventCursor.insertOne( event ) );
 	return result.ops[ 0 ];
 };

@@ -36,7 +36,7 @@
                     {{ element.visitorTeamName }}
                 </mat-cell>
             </ng-container>
-            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="goToGame(row)"></mat-row>
         </div>
     </mat-table>
     <div class="no-data" *ngIf="!dataSource || dataSource?.filteredData?.length == 0">

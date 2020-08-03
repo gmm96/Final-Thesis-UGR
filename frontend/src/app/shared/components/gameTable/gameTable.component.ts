@@ -59,7 +59,7 @@ export class GameTableComponent implements OnInit, OnDestroy {
                             hour: '2-digit',
                             minute: '2-digit'
                         }) : null) : null,
-                        result: (item.winner == null)? ((item.time)? null : " - ") : "TODO",
+                        result: (item.winner == null) ? ((item.time) ? null : " - ") : "TODO",
                     },
                     fixture: item.fixture
                 }
@@ -72,5 +72,9 @@ export class GameTableComponent implements OnInit, OnDestroy {
             this.dataSource.paginator = this.paginator;
             this.changeDetectorRef.detectChanges();
         }
+    }
+
+    goToGame(game) {
+        this.router.navigate(['/competitions/' + game.competitionID + '/games/' + game._id]);
     }
 }

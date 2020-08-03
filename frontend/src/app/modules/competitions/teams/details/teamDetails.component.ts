@@ -17,7 +17,7 @@ export class CompetitionTeamDetailsComponent implements OnInit, OnDestroy {
     teamID: string;
     team: any;
     competition: any;
-    currentTabField: TeamDetailsTabs = TeamDetailsTabs.roster;
+    currentTabField: TeamDetailsTabs;
     private sub: Subscription;
 
 
@@ -43,6 +43,7 @@ export class CompetitionTeamDetailsComponent implements OnInit, OnDestroy {
             this.titleService.setTitle((this.team) ? this.team.name + " en " + this.competition.name + " - Equipo en competición" : "Equipos en competición");
             this.changeDetectorRef.detectChanges();
         });
+        this.currentTabField = TeamDetailsTabs.roster;
     }
 
     ngOnDestroy() {

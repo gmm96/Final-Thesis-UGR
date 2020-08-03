@@ -43,7 +43,7 @@ import {PlayerTableComponent} from "./components/playerTable/playerTable.compone
 import {CompetitionTeamRosterComponent} from "../modules/competitions/teams/details/teamRoster/teamRoster.component";
 import {TeamStatsComponent} from "../modules/competitions/teams/details/stats/teamStats.component";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
-import {GameControlComponent} from "./components/gameControl/gameControl.component";
+import {GameControlComponent} from "../modules/competitions/gameControl/gameControl.component";
 import {MatMenuModule} from "@angular/material/menu";
 import {SimpleTableComponent} from "./components/simpleTable/simpleTable.component";
 import {PlayerInfoComponent} from "../modules/players/details/information/playerInfo.component";
@@ -57,7 +57,6 @@ import {TeamRosterComponent} from "../modules/teams/details/teamRoster/teamRoste
 import {CompetitionPlayerStatsComponent} from "../modules/competitions/teams/players/details/stats/playerStats.component";
 import {PlayerStatsComponent} from "../modules/players/details/stats/playerStats.component";
 import {MatBottomSheetModule} from "@angular/material/bottom-sheet";
-import {GameControlBottomSheetComponent} from "./components/gameControlBottomSheet/gameControlBottomSheet.component";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatBadgeModule} from "@angular/material/badge";
 import {MatSelectModule} from "@angular/material/select";
@@ -65,7 +64,6 @@ import {ClickOutsideModule} from "ng-click-outside";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {PlayersService} from "../core/services/players/players.service";
 import {TeamsService} from "../core/services/teams/teams.service";
-import {AdminComponent} from "../modules/admin/admin.component";
 import {MatRadioModule} from "@angular/material/radio";
 import {DisableControlDirective} from "../core/directives/disableControl.directive";
 import {MatDatepickerModule} from "@angular/material/datepicker";
@@ -74,7 +72,6 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import {ToastrModule} from "ngx-toastr";
 import {AuthGuardService} from "../core/auth/auth-guard.service";
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MomentDateModule} from '@angular/material-moment-adapter';
-import {CreateCompetitionComponent} from "../modules/admin/competitions/createCompetition.component";
 import {CompetitionsService} from "../core/services/competitions/competitions.service";
 import {TeamTableComponent} from "./components/teamTable/teamTable.component";
 import {TeamListComponent} from "../modules/competitions/details/teamList/teamList.component";
@@ -110,7 +107,6 @@ import {TeamListComponent} from "../modules/competitions/details/teamList/teamLi
         PlayerStatsComponent,
         TeamRosterComponent,
         CompetitionPlayerStatsComponent,
-        GameControlBottomSheetComponent,
         DisableControlDirective,
         TeamTableComponent,
         TeamListComponent
@@ -215,7 +211,6 @@ import {TeamListComponent} from "../modules/competitions/details/teamList/teamLi
         TeamRosterComponent,
         CompetitionPlayerStatsComponent,
         MatBottomSheetModule,
-        GameControlBottomSheetComponent,
         MatDividerModule,
         MatBadgeModule,
         MatSelectModule,
@@ -231,7 +226,7 @@ import {TeamListComponent} from "../modules/competitions/details/teamList/teamLi
         TeamListComponent
     ],
     schemas: [],
-    entryComponents: [GameControlBottomSheetComponent]
+    entryComponents: []
 })
 
 export class SharedModule {

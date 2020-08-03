@@ -3,12 +3,35 @@ var gameDatabase = require( '../../db/competition/competitionGameDatabase' );
 var competitionDomain = require( "./competitionDomain" );
 var teamDomain = require( "../team/teamDomain" );
 var playerDomain = require( "../player/playerDomain" );
+var competitionEventDomain = require( "./competitionEventDomain" );
 var robin = require( "roundrobin" );
 
 
 exports.getGameById = async ( gameID ) => {
 	if ( !gameID ) throw { code: 422, message: "Identificador de partido inválido" };
 	return ( await gameDatabase.getGameById( gameID ) );
+};
+
+
+exports.getFullGameById = async ( competitionID, gameID ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !gameID ) throw { code: 422, message: "Identificador de partido inválido" };
+	
+	let competition = ( await competitionDomain.getCompetitionById( competitionID ) );
+	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	let game = ( await gameDatabase.getGameById( gameID ) );
+	if ( !game ) throw { code: 422, message: "El partido especificado no se encuentra en el sistema" };
+	
+	game.localTeamInfo.team = competition.teams.find( team => team._id.toString() === game.localTeamInfo._id.toString() );
+	game.visitorTeamInfo.team = competition.teams.find( team => team._id.toString() === game.visitorTeamInfo._id.toString() );
+	game.events = ( await competitionEventDomain.getCompetitionEventListByGameId( competitionID, gameID ) ).reverse();
+	
+	if ( await exports.isGameStarted( game ) ) {
+		( await exports.getTeamScore( game.localTeamInfo ) );
+		( await exports.getTeamScore( game.visitorTeamInfo ) );
+	}
+	
+	return game;
 };
 
 
@@ -95,6 +118,16 @@ exports.getUnplayedGamesByCompetitionForScheduling = async ( competitionID ) => 
 };
 
 
+exports.isGameStarted = async ( game ) => {
+	if ( !game ) throw { code: 422, message: "Objecto partido inválido" };
+	let localTeamInfo = game.localTeamInfo;
+	let visitorTeamInfo = game.visitorTeamInfo;
+	let localOk = localTeamInfo.playerStats && localTeamInfo.playerStats.length && localTeamInfo.quarterStats && localTeamInfo.quarterStats.length;
+	let visitorOk = visitorTeamInfo.playerStats && visitorTeamInfo.playerStats.length && visitorTeamInfo.quarterStats && visitorTeamInfo.quarterStats.length;
+	return localOk && visitorOk;
+};
+
+
 exports.createGame = async ( game ) => {
 	( await exports.competitionGameParametersValidator( game ) );
 	let competition = ( await competitionDomain.getCompetitionById( game.competitionID ) );
@@ -131,6 +164,83 @@ exports.updateGame = async ( gameID, game ) => {
 };
 
 
+exports.startGame = async ( competitionID, gameID, initGame ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !gameID ) throw { code: 422, message: "Identificador de partido inválido" };
+	if ( !initGame || !initGame.localTeam || !initGame.visitorTeam || !initGame.referees ) throw { code: 422, message: "Parámetros de inicio de partido inválidos" };
+	
+	let competition = ( await competitionDomain.getCompetitionById( competitionID ) );
+	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	let game = ( await gameDatabase.getGameById( gameID ) );
+	if ( !game ) throw { code: 422, message: "El partido especificado no se encuentra en el sistema" };
+	
+	if ( game.time && game.location ) {
+		if ( !( await exports.isGameStarted( game ) ) ) {
+			delete game._id;
+			game.referees = initGame.referees;
+			( await exports.createTeamInfoStats( game.localTeamInfo, initGame.localTeam ) );
+			( await exports.createTeamInfoStats( game.visitorTeamInfo, initGame.visitorTeam ) );
+			( await competitionEventDomain.createCompetitionEvent( {
+				competitionID: competitionID,
+				gameID: gameID,
+				type: competitionEventDomain.CompetitionEventTypes.startGame,
+				minute: 1,
+				quarter: 1
+			} ) );
+			( await competitionEventDomain.createCompetitionEvent( {
+				competitionID: competitionID,
+				gameID: gameID,
+				type: competitionEventDomain.CompetitionEventTypes.startQuarter,
+				minute: 1,
+				quarter: 1
+			} ) );
+			return ( gameDatabase.updateGame( gameID, game ) );
+		} else {
+			throw { code: 422, message: "El partido ya fue iniciado anteriormente" };
+		}
+	} else {
+		throw { code: 422, message: "El partido no se puede iniciar, tiene que establecer fecha y localización en el calendario" };
+	}
+};
+
+
+exports.canIFinishGame = async ( gameID ) => {
+	if ( !gameID ) throw { code: 422, message: "Identificador de partido inválido" };
+	let game = ( await exports.getFullGameById( gameID ) );
+	if ( !game ) throw { code: 422, message: "El partido especificado no se encuentra en el sistema" };
+	let quarter = game.localTeamInfo.quarterStats[ game.localTeamInfo.quarterStats.length - 1 ].quarter;
+	
+	return quarter >= 4 && game.localTeamInfo.points != game.visitorTeamInfo.points;
+};
+
+
+exports.createTeamInfoStats = async ( teamInfo, players ) => {
+	if ( !teamInfo ) throw { code: 422, message: "Objecto estadísitcas de equipo inválido" };
+	teamInfo.quarterStats = [];
+	teamInfo.quarterStats.push( {
+		points: 0,
+		fouls: 0,
+		quarter: 1,
+		timeoutsRemaining: 2
+	} );
+	teamInfo.playerStats = [];
+	players.forEach( player => {
+		teamInfo.playerStats.push( {
+			playerID: player._id,
+			points: 0,
+			fouls: [],
+			number: player.number
+		} );
+	} );
+};
+
+
+exports.getTeamScore = async ( teamInfo ) => {
+	if ( !teamInfo ) throw { code: 422, message: "Objeto estadísticas de equipo inválido" };
+	teamInfo.points = teamInfo.quarterStats.reduce( ( sum, quarter ) => sum + quarter.points, 0 );
+};
+
+
 exports.purgeGame = async ( gameID ) => {
 	if ( !gameID ) throw { code: 422, message: "Identificador de partido inválido" };
 	
@@ -140,13 +250,6 @@ exports.purgeGame = async ( gameID ) => {
 	}
 	
 	return ( await gameDatabase.purgeGame( gameID ) );
-};
-
-
-exports.deleteCompetitionSchedule = async ( competitionID ) => {
-	if ( !competitionID ) throw { code: 422, message: "Identificador de partido inválido" };
-	
-	return ( await gameDatabase.deleteGamesByCompetition( competitionID ) );
 };
 
 

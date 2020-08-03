@@ -37,9 +37,9 @@ export class CompetitionDetailsComponent implements OnInit, OnDestroy {
             this.competitionNumberOfPlayers = this.competition.teams.reduce((sum, current) => sum + current.players.length, 0);
             this.teamStats = (await this.competitionsService.getCompetitionStandings(this.competitionID));
             this.titleService.setTitle((this.competition) ? this.competition.name + " - Competiciones" : "Competiciones");
+            this.currentTabField = CompetitionDetailsTabs.teams;
             this.changeDetectorRef.detectChanges();
         });
-        this.currentTabField = CompetitionDetailsTabs.teams;
     }
 
     ngOnDestroy() {
