@@ -46,7 +46,8 @@ exports.createCompetitionEvent = async ( event ) => {
 	}
 	
 	let createdEvent = ( await competitionEventDatabase.createCompetitionEvent( event ) );
-	if ( createdEvent.type === exports.CompetitionEventTypes.endQuarter && !( await gameDomain.canIFinishGame( event.gameID ) ) ) {
+	if ( createdEvent.type === exports.CompetitionEventTypes.endQuarter &&
+		( !( await gameDomain.canIFinishGame( event.competitionID, event.gameID ) ) || createdEvent.quarter < 4 ) ) {
 		( await competitionEventDatabase.createCompetitionEvent( {
 			competitionID: event.competitionID,
 			gameID: event.gameID,
@@ -54,7 +55,7 @@ exports.createCompetitionEvent = async ( event ) => {
 			quarter: createdEvent.quarter + 1,
 			minute: ( ( createdEvent.quarter + 1 ) < 5 ) ? ( createdEvent.quarter + 1 - 1 ) * 10 + 1 : 40 + 1 + ( createdEvent.quarter + 1 - 1 - 4 ) * 5
 		} ) );
-	} else if ( createdEvent.type === exports.CompetitionEventTypes.endQuarter && ( await gameDomain.canIFinishGame( event.gameID ) ) ) {
+	} else if ( createdEvent.type === exports.CompetitionEventTypes.endQuarter && createdEvent.quarter >= 4 && ( await gameDomain.canIFinishGame( event.competitionID, event.gameID ) ) ) {
 		( await competitionEventDatabase.createCompetitionEvent( {
 			competitionID: event.competitionID,
 			gameID: event.gameID,
@@ -155,10 +156,10 @@ exports.logFoul = async ( event, game ) => {
 exports.advanceNextQuarter = async ( event, game ) => {
 	let gameCopy = lodash.cloneDeep( game );
 	delete gameCopy._id;
-	let quarter = gameCopy.localTeamInfo.quarterStats[ gameCopy.localTeamInfo.quarterStats.length - 1 ].quarter;
+	let quarter = event.quarter;
 	event.minute = event.quarter * 10;
 	
-	if ( !( await gameDomain.canIFinishGame( game._id ) ) ) {
+	if ( !( await gameDomain.canIFinishGame( game.competitionID, game._id ) ) ) {
 		let timeoutsRemaining = gameCopy.localTeamInfo.quarterStats[ quarter - 1 ].timeoutsRemaining;
 		if ( quarter === 2 ) {
 			timeoutsRemaining = 3;
@@ -171,14 +172,28 @@ exports.advanceNextQuarter = async ( event, game ) => {
 			quarter: quarter + 1,
 			timeoutsRemaining: timeoutsRemaining
 		} );
+		
+		timeoutsRemaining = gameCopy.visitorTeamInfo.quarterStats[ quarter - 1 ].timeoutsRemaining;
+		if ( quarter === 2 ) {
+			timeoutsRemaining = 3;
+		} else if ( quarter >= 4 ) {
+			timeoutsRemaining += 1;
+		}
+		gameCopy.visitorTeamInfo.quarterStats.push( {
+			points: 0,
+			fouls: ( quarter >= 4 ) ? gameCopy.visitorTeamInfo.quarterStats[ quarter - 1 ].fouls : 0,
+			quarter: quarter + 1,
+			timeoutsRemaining: timeoutsRemaining
+		} );
+		
 		( await gameDomain.updateGame( game._id, gameCopy ) );
 	} else {
 		( await gameDomain.getTeamScore( game.localTeamInfo ) );
-		( await gameDomain.getTeamScore( game.localTeamInfo ) );
-		game.winner = ( game.localTeamInfo.points > game.visitorTeamInfo.points ) ? game.localTeamInfo._id : game.visitorTeamInfo._id;
-		game.loser = ( game.localTeamInfo.points > game.visitorTeamInfo.points ) ? game.visitorTeamInfo._id : game.localTeamInfo._id;
+		( await gameDomain.getTeamScore( game.visitorTeamInfo ) );
+		gameCopy.winner = ( game.localTeamInfo.points > game.visitorTeamInfo.points ) ? game.localTeamInfo._id : game.visitorTeamInfo._id;
+		gameCopy.loser = ( game.localTeamInfo.points > game.visitorTeamInfo.points ) ? game.visitorTeamInfo._id : game.localTeamInfo._id;
 		( await gameDomain.updateGame( game._id, gameCopy ) );
-		( await gameDomain.finishGame( game._id ) );
+		( await gameDomain.finishGame( game.competitionID, game._id ) );
 	}
 };
 
@@ -296,7 +311,7 @@ exports.competitionEventParametersValidator = async ( event ) => {
 	if ( !event.competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
 	if ( !event.gameID ) throw { code: 422, message: "Identificador de partido inválido" };
 	if ( !event.quarter ) throw { code: 422, message: "Cuarto de evento inválido" };
-	if ( !event.minute ) throw { code: 422, message: "Minuto de evento inválido" };
+	if ( !event.minute && event.type !== "endQuarter" ) throw { code: 422, message: "Minuto de evento inválido" };
 	if ( !event.type || !Object.values( exports.CompetitionEventTypes ).includes( event.type ) ) throw { code: 422, message: "Tipo de evento inválido" };
 }
 

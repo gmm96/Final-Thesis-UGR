@@ -143,8 +143,7 @@ export class GameControlComponent implements OnInit {
                 let player = this.visitorTeam.players.find(player => player._id.toString() === playerGameStats.playerID.toString());
                 this.visitorPlayers.push({...player, stats: playerGameStats});
             });
-            this.currentQuarter = Math.max(this.game.localTeamInfo.quarterStats[this.game.localTeamInfo.quarterStats.length - 1].quarter,
-                this.game.visitorTeamInfo.quarterStats[this.game.visitorTeamInfo.quarterStats.length - 1].quarter);
+            this.currentQuarter = this.game.events[0].quarter;
             if (this.currentQuarter <= 4) {
                 this.possibleMinutes = Array.from(Array((10)), (v, i) => i + (this.currentQuarter - 1) * 10 + 1);
             } else {
@@ -257,27 +256,19 @@ export class GameControlComponent implements OnInit {
         (await this.sendEvent(event));
     }
 
-    goToNextQuarter() {
+    async goToNextQuarter() {
         this.closeBottomSheet();
-        if (this.canFinishGame()) {
-            if (confirm('̣̣̣¿Desea finalizar el partido en su estado actual?. Una vez terminado, no podrá editarlo.')) {
-
-            }
-        } else {
-            if (confirm('̣̣̣¿Desea avanzar al siguiente cuarto?')) {
-                this.currentQuarter += 1;
-                this.updateMinute(1 + 10 * (this.currentQuarter - 1));
-                if (this.currentQuarter <= 4) {
-                    this.possibleMinutes = Array.from(Array((10)), (v, i) => i + (this.currentQuarter - 1) * 10 + 1);
-                } else {
-                    this.possibleMinutes = Array.from(Array((5)), (v, i) => i + 40 + 1 + (this.currentQuarter - 4) * 5);
-                }
-            }
+        if (confirm('̣̣̣¿Desea finalizar el cuarto actual? No podrá deshacer esta acción. ')) {
+            let event = {
+                competitionID: this.competitionID,
+                gameID: this.gameID,
+                type: 'endQuarter',
+                quarter: this.currentQuarter
+            };
+            this.updateMinute(event.quarter * 10);
+            setTimeout(() => this.resetForm(this.basketFormGroup), 0);
+            (await this.sendEvent(event));
         }
-    }
-
-    canFinishGame(): boolean {
-        return this.currentQuarter >= 4 && this.game.localTeamInfo.points != this.game.visitorTeamInfo.points;
     }
 
     isGameStarted(): boolean {
@@ -396,7 +387,8 @@ export class GameControlComponent implements OnInit {
     }
 
     canDisplayRemoveEventIcon(type) {
-        return this.loginService.isAuthenticated() && (type !== "startGame") && (type !== "startQuarter") && (type !== "endGame") && (type !== "endQuarter");
+        return this.loginService.isAuthenticated() && (type !== "startGame") && (type !== "startQuarter") && (type !== "endGame")
+            && (type !== "endQuarter") && !this.game.winner;
     }
 
     scrollToTop(): void {

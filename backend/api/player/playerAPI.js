@@ -70,7 +70,6 @@ exports.createPlayer = async ( req, res ) => {
 					createdAt: new Date().toISOString(),
 					updatedAt: new Date().toISOString()
 				};
-				// debugger;
 				let result = ( await playerDomain.createPlayer( newPlayer, files.avatar ) );
 				res.send( result );
 				
@@ -101,7 +100,6 @@ exports.updatePlayer = async ( req, res ) => {
 					deleteAvatar: fields.deleteAvatar === 'true',
 					updatedAt: new Date().toISOString()
 				};
-				// debugger;
 				let result = ( await playerDomain.updatePlayer( req.params.playerID, updatedPlayer, files.avatar ) );
 				res.send( result );
 			} catch ( e ) {

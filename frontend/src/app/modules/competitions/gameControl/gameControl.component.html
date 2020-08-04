@@ -122,17 +122,17 @@
                                     <tbody>
                                     <tr>
                                         <th scope="row">Local</th>
-                                        <td>{{game?.localTeamInfo?.quarterStats[ 0 ]?.points}}</td>
-                                        <td>{{game?.localTeamInfo?.quarterStats[ 1 ]?.points}}</td>
-                                        <td>{{game?.localTeamInfo?.quarterStats[ 2 ]?.points}}</td>
-                                        <td>{{game?.localTeamInfo?.quarterStats[ 3 ]?.points}}</td>
+                                        <td>{{ isGameStarted() ? game?.localTeamInfo?.quarterStats[ 0 ]?.points : ""}}</td>
+                                        <td>{{ isGameStarted() ? game?.localTeamInfo?.quarterStats[ 1 ]?.points : ""}}</td>
+                                        <td>{{ isGameStarted() ? game?.localTeamInfo?.quarterStats[ 2 ]?.points : ""}}</td>
+                                        <td>{{ isGameStarted() ? game?.localTeamInfo?.quarterStats[ 3 ]?.points : ""}}</td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Visitante</th>
-                                        <td>{{game?.visitorTeamInfo?.quarterStats[ 0 ]?.points}}</td>
-                                        <td>{{game?.visitorTeamInfo?.quarterStats[ 1 ]?.points}}</td>
-                                        <td>{{game?.visitorTeamInfo?.quarterStats[ 2 ]?.points}}</td>
-                                        <td>{{game?.visitorTeamInfo?.quarterStats[ 3 ]?.points}}</td>
+                                        <td>{{ isGameStarted() ? game?.visitorTeamInfo?.quarterStats[ 0 ]?.points : ""}}</td>
+                                        <td>{{ isGameStarted() ? game?.visitorTeamInfo?.quarterStats[ 1 ]?.points : ""}}</td>
+                                        <td>{{ isGameStarted() ? game?.visitorTeamInfo?.quarterStats[ 2 ]?.points : ""}}</td>
+                                        <td>{{ isGameStarted() ? game?.visitorTeamInfo?.quarterStats[ 3 ]?.points : ""}}</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -257,7 +257,9 @@
                                 </div>
                                 <div class="event-text-container" [ngSwitch]="event?.type">
                                     <span *ngSwitchCase="'startGame'">Inicio del partido</span>
+                                    <span *ngSwitchCase="'endGame'">Final del partido</span>
                                     <span *ngSwitchCase="'startQuarter'">Inicio del cuarto {{ event.quarter }}</span>
+                                    <span *ngSwitchCase="'endQuarter'">Final del cuarto {{ event.quarter }}</span>
                                     <span *ngSwitchCase="'timeOut'">Tiempo muerto solicitado por {{ getTeamNameByTeamId( event.teamID ) }}</span>
                                     <span *ngSwitchCase="'basket'">Canasta de {{ event.data }}
                                         P {{ getTeamNameByTeamId( event.teamID ) }}
@@ -285,7 +287,7 @@
         </div>
     </div>
 
-    <button class="add-event" mat-fab color="primary" *ngIf="loginService.isAuthenticated()"
+    <button class="add-event" mat-fab color="primary" *ngIf="loginService.isAuthenticated() && !game?.winner"
             (click)="openedBottomSheet? closeBottomSheet() : openedBottomSheet=true">
         <mat-icon *ngIf="!openedBottomSheet">add</mat-icon>
         <mat-icon *ngIf="openedBottomSheet">close</mat-icon>
@@ -557,7 +559,7 @@
             <div class="modal-body">
                 <form [formGroup]="localTeamPlayersForm">
                     <div class="player-container d-flex align-items-center justify-content-start"
-                         *ngFor="let player of localTeam?.players">
+                         *ngFor="let player of localPlayers">
                         <mat-checkbox class="mat-form-checkbox"
                                       [formControlName]="player._id.toString() + '_selected'"></mat-checkbox>
                         <mat-form-field appearance="legacy" color="accent" class="player-number">
@@ -599,7 +601,7 @@
             <div class="modal-body">
                 <form [formGroup]="visitorTeamPlayersForm">
                     <div class="player-container d-flex align-items-center justify-content-start"
-                         *ngFor="let player of visitorTeam?.players">
+                         *ngFor="let player of visitorPlayers">
                         <mat-checkbox class="mat-form-checkbox"
                                       [formControlName]="player._id.toString() + '_selected'"></mat-checkbox>
                         <mat-form-field appearance="legacy" color="accent" class="player-number">
