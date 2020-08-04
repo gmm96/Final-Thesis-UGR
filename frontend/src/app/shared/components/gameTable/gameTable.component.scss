@@ -27,10 +27,18 @@
 
         .gameStatus {
             justify-content: center;
-            font-size: 12px;
 
-            .dash {
-                font-size: 20px;
+            .text {
+                font-size: 10px;
+            }
+            .result {
+                font-size: 16px;
+            }
+            .date {
+                font-size: 14px;
+            }
+            .time {
+                font-size: 12px;
             }
         }
 

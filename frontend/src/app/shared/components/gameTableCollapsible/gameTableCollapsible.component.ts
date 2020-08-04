@@ -1,9 +1,8 @@
-import {Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {CdkDetailRowDirective} from "./cdk-detail-row.directive";
-import {MatPaginator} from "@angular/material/paginator";
 
 @Component({
     selector: 'app-game-table-collapsible',
@@ -63,12 +62,22 @@ export class GameTableCollapsibleComponent implements OnInit, OnDestroy {
         if (this.rounds) {
             for (let roundGroupedIndex in this.rounds) {
                 let playoffsRounds = this.rounds[roundGroupedIndex];
-                this.roundsCompatible[roundGroupedIndex] = playoffsRounds.map ( round => {
+                this.roundsCompatible[roundGroupedIndex] = playoffsRounds.map(round => {
+                    let localWins = 0;
+                    let visitorWins = 0;
+                    round.games.forEach(game => {
+                        if (game.winner) {
+                            if (game.winner.toString() === round.localTeamID.toString())
+                                localWins += 1;
+                            else
+                                visitorWins += 1;
+                        }
+                    });
                     return {
                         localTeamName: round.localTeam.name,
                         visitorTeamName: round.visitorTeam.name,
                         games: round.games,
-                        roundStatus: "3 - 0"
+                        roundStatus: localWins + " - " + visitorWins,
                     }
                 });
                 this.dataSource[roundGroupedIndex] = new MatTableDataSource(this.roundsCompatible[roundGroupedIndex]);

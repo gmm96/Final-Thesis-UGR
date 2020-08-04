@@ -36,12 +36,34 @@ export class PlayoffsMatchupComponent implements OnInit, OnDestroy {
     async setTableData() {
         if (this.games) {
             this.gamesCompatible = this.games.map(game => {
+                let gameStatus = {};
+                if (!game.time || !game.location) {
+                    gameStatus['result'] = " - ";
+                    gameStatus['text'] = "Sin programar";
+                } else {
+                    if (!game.localTeamInfo.quarterStats || !game.localTeamInfo.quarterStats.length) {
+                        gameStatus['date'] = new Date(game.time).toLocaleDateString("es-ES");
+                        gameStatus['time'] = new Date(game.time).toLocaleTimeString("es-ES", {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    } else {
+                        let localPoints = game.localTeamInfo.quarterStats.reduce((sum, quarter) => sum + quarter.points, 0);
+                        let visitorPoints = game.visitorTeamInfo.quarterStats.reduce((sum, quarter) => sum + quarter.points, 0);
+                        gameStatus['result'] = localPoints + " - " + visitorPoints;
+                        if (game.winner) {
+                            gameStatus['text'] = "Finalizado";
+                        } else {
+                            gameStatus['text'] = "Cuarto " + game.localTeamInfo.quarterStats.length;
+                        }
+                    }
+                }
                 return {
                     _id: game._id,
                     competitionID: game.competitionID,
                     localTeamName: game.localTeamInfo.team.name,
                     visitorTeamName: game.visitorTeamInfo.team.name,
-                    gameStatus: " - ",
+                    gameStatus: gameStatus,
                 }
             });
             this.dataSource = new MatTableDataSource(this.gamesCompatible);

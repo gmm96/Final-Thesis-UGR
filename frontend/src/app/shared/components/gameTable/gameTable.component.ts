@@ -47,21 +47,35 @@ export class GameTableComponent implements OnInit, OnDestroy {
     setDataTable() {
         if (this.games && this.games.length) {
             this.gameCompatible = this.games.map(item => {
+                let gameStatus = {};
+                if (!item.time || !item.location) {
+                    gameStatus['result'] = " - ";
+                    gameStatus['text'] = "Sin programar";
+                } else {
+                    if (!item.localTeamInfo.quarterStats || !item.localTeamInfo.quarterStats.length) {
+                        gameStatus['date'] = new Date(item.time).toLocaleDateString("es-ES");
+                        gameStatus['time'] = new Date(item.time).toLocaleTimeString("es-ES", {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    } else {
+                        let localPoints = item.localTeamInfo.quarterStats.reduce((sum, quarter) => sum + quarter.points, 0);
+                        let visitorPoints = item.visitorTeamInfo.quarterStats.reduce((sum, quarter) => sum + quarter.points, 0);
+                        gameStatus['result'] = localPoints + " - " + visitorPoints;
+                        if (item.winner) {
+                            gameStatus['text'] = "Finalizado";
+                        } else {
+                            gameStatus['text'] = "Cuarto " + item.localTeamInfo.quarterStats.length;
+                        }
+                    }
+                }
                 return {
                     _id: item._id,
                     competitionID: item.competitionID,
                     localTeamName: item.localTeamInfo.team.name,
                     visitorTeamName: item.visitorTeamInfo.team.name,
-                    // gameStatus: (item.winner == null) ? ((item.time) ? new Date(item.time).toLocaleDateString("es-ES") + " " + " algo" : "-") : "TODO",
-                    gameStatus: {
-                        date: (item.winner == null) ? ((item.time) ? new Date(item.time).toLocaleDateString("es-ES") : null) : null,
-                        time: (item.winner == null) ? ((item.time) ? new Date(item.time).toLocaleTimeString("es-ES", {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        }) : null) : null,
-                        result: (item.winner == null) ? ((item.time) ? null : " - ") : "TODO",
-                    },
-                    fixture: item.fixture
+                    gameStatus: gameStatus,
+                    fixture: item.fixture,
                 }
             });
             let maxDateNumber = Math.max.apply(Math, this.games.map((game) => new Date(game.time)));

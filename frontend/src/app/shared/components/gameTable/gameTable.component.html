@@ -18,15 +18,17 @@
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="gameStatus">
-                <mat-cell class="gameStatus text-center d-flex flex-column justify-content-center align-items-center"
-                          *matCellDef="let element">
-                    <div class="" *ngIf="element.gameStatus.date && element.gameStatus.time">
-                        {{ element.gameStatus.date }}
-                    </div>
-                    <div class="" *ngIf="element.gameStatus.date && element.gameStatus.time">
+                <mat-cell class="gameStatus text-center d-flex flex-column justify-content-center align-items-center" *matCellDef="let element">
+                    <div class="time" *ngIf="element.gameStatus.date && element.gameStatus.time">
                         {{ element.gameStatus.time }}
                     </div>
-                    <div class="dash" *ngIf="!element.gameStatus.date && !element.gameStatus.time">
+                    <div class="date" *ngIf="element.gameStatus.date && element.gameStatus.time">
+                        {{ element.gameStatus.date }}
+                    </div>
+                    <div class="text" *ngIf="element.gameStatus.result && element.gameStatus.text">
+                        {{ element.gameStatus.text }}
+                    </div>
+                    <div class="result" *ngIf="element.gameStatus.result && element.gameStatus.text">
                         {{ element.gameStatus.result }}
                     </div>
                 </mat-cell>
