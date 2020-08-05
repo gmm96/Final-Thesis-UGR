@@ -562,11 +562,21 @@
         .modal-body {
             border-top: 3px solid $orange;
 
+            .modal-body-header {
+                font-size: 14px;
+                font-variant: all-small-caps;
+                margin-bottom: 10px;
+            }
+
             .player-container {
 
                 .player-number {
                     width: 45px;
                     margin: 0 12px;
+                }
+
+                .startingLineup {
+                    margin-right: 12px;
                 }
             }
             .player-idCard {

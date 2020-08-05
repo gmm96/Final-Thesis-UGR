@@ -125,10 +125,12 @@ export class GameControlComponent implements OnInit {
             this.localTeam.players.forEach((player) => {
                 this.localTeamPlayersForm.addControl(player._id.toString() + "_selected", new FormControl(null));
                 this.localTeamPlayersForm.addControl(player._id.toString() + "_number", new FormControl(null));
+                this.localTeamPlayersForm.addControl(player._id.toString() + "_startingLineup", new FormControl(null));
             });
             this.visitorTeam.players.forEach((player) => {
                 this.visitorTeamPlayersForm.addControl(player._id.toString() + "_selected", new FormControl(null));
                 this.visitorTeamPlayersForm.addControl(player._id.toString() + "_number", new FormControl(null));
+                this.visitorTeamPlayersForm.addControl(player._id.toString() + "_startingLineup", new FormControl(null));
             });
             this.localPlayers = this.localTeam.players;
             this.visitorPlayers = this.visitorTeam.players;
@@ -287,24 +289,27 @@ export class GameControlComponent implements OnInit {
         let initParams = {localTeam: [], visitorTeam: [], referees: []}
         if (this.game && !this.isGameStarted()) {
             this.localTeam.players.forEach(player => {
-                let selected, number;
+                let selected, number, startingLineup;
                 try {
-                    selected = this.localTeamPlayersForm.value[player._id + '_selected'];
-                    number = this.localTeamPlayersForm.value[player._id + "_number"];
+                    selected = this.localTeamPlayersForm.value[player._id.toString() + '_selected'];
+                    number = parseInt(this.localTeamPlayersForm.value[player._id.toString() + "_number"]);
+                    startingLineup = this.localTeamPlayersForm.value[player._id.toString() + "_startingLineup"];
                 } finally {
                     if (selected && number) {
-                        initParams.localTeam.push({_id: player._id, number: number});
+                        initParams.localTeam.push({_id: player._id, number: number, startingLineup: startingLineup});
                     }
                 }
             });
             this.visitorTeam.players.forEach(player => {
-                let selected, number;
+                let selected, number, startingLineup;
                 try {
                     selected = this.visitorTeamPlayersForm.value[player._id + '_selected'];
-                    number = this.visitorTeamPlayersForm.value[player._id + "_number"];
+                    number = parseInt(this.visitorTeamPlayersForm.value[player._id + "_number"]);
+                    startingLineup = this.visitorTeamPlayersForm.value[player._id.toString() + "_startingLineup"];
+
                 } finally {
                     if (selected && number) {
-                        initParams.visitorTeam.push({_id: player._id, number: number});
+                        initParams.visitorTeam.push({_id: player._id, number: number, startingLineup: startingLineup});
                     }
                 }
             });

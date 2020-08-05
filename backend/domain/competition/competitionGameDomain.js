@@ -271,7 +271,8 @@ exports.createTeamInfoStats = async ( teamInfo, players ) => {
 			playerID: player._id,
 			points: 0,
 			fouls: [],
-			number: player.number
+			number: player.number,
+			startingLineup: player.startingLineup
 		} );
 	} );
 };
