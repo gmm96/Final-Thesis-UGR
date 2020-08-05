@@ -5,8 +5,9 @@ var teamDomain = require( "../team/teamDomain" );
 var playerDomain = require( "../player/playerDomain" );
 var competitionEventDomain = require( "./competitionEventDomain" );
 var robin = require( "roundrobin" );
-var competitionPlayerStatsDomain = require( "./competitionPlayerStatsDomain" )
-var competitionTeamStatsDomain = require( "./competitionTeamStatsDomain" )
+var competitionPlayerStatsDomain = require( "./competitionPlayerStatsDomain" );
+var competitionTeamStatsDomain = require( "./competitionTeamStatsDomain" );
+var competitionPlayoffsRoundDomain = require( "./competitionPlayoffsRoundDomain" );
 
 
 exports.getGameById = async ( gameID ) => {
@@ -239,6 +240,31 @@ exports.finishGame = async ( competitionID, gameID ) => {
 	}
 	( exports.updateCompetitionPlayerStatsAfterGame( game, game.localTeamInfo ) );
 	( exports.updateCompetitionPlayerStatsAfterGame( game, game.visitorTeamInfo ) );
+	
+	// TODO checks after end of game
+	
+	// Si es partido de liga
+	if ( typeof game.round == "number" ) {
+		let leagueRemainingGames = ( await gameDatabase.getLeagueRemainingGames( competitionID ) );
+		if ( !leagueRemainingGames || !leagueRemainingGames.length ) {
+			if ( competition.playoffsFixturesVsSameTeam && competition.playoffsTeamsAfterLeague ) {
+				// TODO create playoffs after league
+			} else {
+				( await competitionDomain.setEndOfCompetition( competitionID ) );
+			}
+		}
+	} else {
+		let gameFixtureToCheck = Math.ceil( competition.playoffsFixturesVsSameTeam / 2 );
+		if ( game.fixture >= gameFixtureToCheck ) {
+			( await competitionPlayoffsRoundDomain.checkIfEndPlayoffsRound( game.round, gameFixtureToCheck ) );
+			let playoffsRound = ( await competitionPlayoffsRoundDomain.getPlayoffsRoundById( game.round ) );
+			let allPlayoffsRoundByRoundNumber = ( await competitionPlayoffsRoundDomain.getPlayoffsRoundsByCompetitionAndRound( competitionID, playoffsRound.round ) );
+			let playoffsRoundsUnfinished = allPlayoffsRoundByRoundNumber.filter( round => round.winnerID == null );
+			if ( playoffsRound.round != 1 && !playoffsRoundsUnfinished.length ) {
+				( await competitionDomain.parsePlayoffsRoundToGames( competitionID, playoffsRound.round / 2 ) );
+			}
+		}
+	}
 };
 
 

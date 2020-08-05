@@ -10,6 +10,25 @@ exports.getPlayoffsRoundById = async ( id ) => {
 	return result;
 };
 
+exports.getFullPlayoffsRoundById = async ( id ) => {
+	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Identificador de ronda de playoffs inválido" };
+	let result = ( await playoffsCursor.aggregate( [
+		{
+			$lookup: {
+				from: 'comp_game',
+				localField: '_id',
+				foreignField: 'round',
+				as: 'games'
+			}
+		},
+		{
+			$match: { _id: ObjectID( id.toString() ) }
+		},
+	] ).toArray() );
+	
+	return result[ 0 ];
+};
+
 exports.getPlayoffsRoundsByCompetitionAndRound = async ( competitionID, round ) => {
 	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
 	let result = ( await dbModule.findResultToArray( playoffsCursor, { competitionID: ObjectID( competitionID.toString() ), round: round } ) );

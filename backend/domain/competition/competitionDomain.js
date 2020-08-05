@@ -71,7 +71,7 @@ exports.getTeamObjectArray = async ( competition ) => {
 
 exports.createStatsObjects = async ( competition ) => {
 	for ( let team of competition.teams ) {
-		if ( !competition.leagueFixturesVsSameTeam && competition.playoffsFixturesVsSameTeam ) {
+		if ( competition.leagueFixturesVsSameTeam ) {
 			let newCompetitionTeamStats = ( await competitionTeamStatsDomain.createCompetitionTeamStats( competition._id, team._id ) )
 		}
 		for ( let player of team.players ) {
@@ -93,6 +93,12 @@ exports.competitionParametersValidator = async ( competition ) => {
 		throw { code: 422, message: "Formato de competición inválido" };
 	if ( competition.playoffsFixturesVsSameTeam && !domainTools.isOdd( competition.playoffsFixturesVsSameTeam ) )
 		throw { code: 422, message: "El número de partidos de playoffs por ronda debe ser impar" };
+	if ( competition.leagueFixturesVsSameTeam > 0 && competition.playoffsFixturesVsSameTeam > 0 && !competition.playoffsTeamsAfterLeague )
+		throw { code: 422, message: "Número de equipos de playoffs después de liga inválido" };
+	if ( ( !competition.leagueFixturesVsSameTeam || !competition.playoffsFixturesVsSameTeam ) && competition.playoffsTeamsAfterLeague )
+		throw { code: 422, message: "Número de equipos de playoffs después de liga inválido" };
+	if ( competition.playoffsTeamsAfterLeague && competition.playoffsTeamsAfterLeague > competition.teams.length )
+		throw { code: 422, message: "Número de equipos de playoffs después de liga inválido" };
 	if ( await domainTools.hasArrayDuplicatedElements( competition.teams ) ) throw { code: 422, message: "Lista de equipos de competición inválida, equipo duplicado" };
 };
 
@@ -259,7 +265,7 @@ exports.generatePlayoffsRoundsWithoutLeague = async ( competition, randomizeTeam
 };
 
 
-exports.parsePlayoffsRoundToGames = async ( competitionID, round ) => {
+exports.parsePlayoffsRoundToGames = async ( competitionID, roundNumber ) => {
 	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
 	if ( !round ) throw { code: 422, message: "Ronda inválida" };
 	let competition = ( await competitionDatabase.getCompetitionById( competitionID ) );
@@ -582,6 +588,14 @@ exports.removeGameEvent = async ( eventID ) => {
 	if ( !eventID ) throw { code: 422, message: "Identificador de evento inválido" };
 	return ( await competitionEventDomain.purgeCompetitionEvent( eventID ) );
 }
+
+
+exports.setEndOfCompetition = async ( competitionID ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	let competition = ( await competitionDatabase.getCompetitionById( competitionID ) );
+	competition.inProgress = false;
+	let endedCompetition = ( await competitionDatabase.updateCompetition( competitionID, competition ) );
+};
 
 
 //

@@ -1,12 +1,20 @@
 var domainTools = require( "../domainTools" );
 var competitionDomain = require( "./competitionDomain" );
 var teamDomain = require( "../team/teamDomain" );
+var gameDomain = require( "./competitionGameDomain" );
 var playoffsRoundDatabase = require( "../../db/competition/competitionPlayoffsRoundDatabase" );
+var lodash = require( "lodash" );
 
 
 exports.getPlayoffsRoundById = async ( playoffsRoundID ) => {
 	if ( !playoffsRoundID ) throw { code: 422, message: "Identificador de ronda de playoffs inválido" };
 	return ( await playoffsRoundDatabase.getPlayoffsRoundById( playoffsRoundID ) );
+};
+
+
+exports.getFullPlayoffsRoundById = async ( playoffsRoundID ) => {
+	if ( !playoffsRoundID ) throw { code: 422, message: "Identificador de ronda de playoffs inválido" };
+	return ( await playoffsRoundDatabase.getFullPlayoffsRoundById( playoffsRoundID ) );
 };
 
 
@@ -23,6 +31,58 @@ exports.getAllAvailablePlayoffsRoundsByCompetition = async ( competitionID ) => 
 	
 	return ( await playoffsRoundDatabase.getAllAvailablePlayoffsRoundsByCompetition( competitionID ) );
 }
+
+
+exports.checkIfEndPlayoffsRound = async ( playoffsRoundID, gamesToWin ) => {
+	if ( !playoffsRoundID ) throw { code: 422, message: "Identificador de ronda de playoffs inválido" };
+	
+	let playoffsRound = ( await playoffsRoundDatabase.getFullPlayoffsRoundById( playoffsRoundID ) );
+	let roundCopy = lodash.cloneDeep( playoffsRound );
+	delete roundCopy.games;
+	delete roundCopy._id;
+	
+	playoffsRound.localWins = playoffsRound.games.filter( game => game.winner.toString() === playoffsRound.localTeamID.toString() ).length;
+	playoffsRound.visitorWins = playoffsRound.games.filter( game => game.winner.toString() === playoffsRound.visitorTeamID.toString() ).length;
+	
+	if ( playoffsRound.localWins >= gamesToWin ) {
+		roundCopy.winnerID = playoffsRound.localTeamID;
+		let gamesToRemove = playoffsRound.games.filter( game => game.winner == null );
+		for ( let game of gamesToRemove ) {
+			( await gameDomain.purgeGame( game._id ) );
+		}
+		
+		if ( playoffsRound.nextRound ) {
+			let nextRound = ( await playoffsRoundDatabase.getPlayoffsRoundById( playoffsRound.nextRound ) );
+			if ( playoffsRound._id.toString() === nextRound.prevRoundLocalID.toString() ) {
+				nextRound.localTeamID = playoffsRound.localTeamID;
+			} else if ( playoffsRound._id.toString() === nextRound.prevRoundVisitorID.toString() ) {
+				nextRound.visitorTeamID = playoffsRound.localTeamID;
+			}
+			( await playoffsRoundDatabase.updatePlayoffsRound( nextRound._id, nextRound ) );
+		} else {
+			( await competitionDomain.setEndOfCompetition( playoffsRound.competitionID ) );
+		}
+		( await playoffsRoundDatabase.updatePlayoffsRound( playoffsRound._id, roundCopy ) );
+	} else if ( playoffsRound.visitorWins >= gamesToWin ) {
+		roundCopy.winnerID = playoffsRound.visitorTeamID;
+		let gamesToRemove = playoffsRound.games.filter( game => game.winner == null );
+		for ( let game of gamesToRemove ) {
+			( await gameDomain.purgeGame( game._id ) );
+		}
+		if ( playoffsRound.nextRound ) {
+			let nextRound = ( await playoffsRoundDatabase.getPlayoffsRoundById( playoffsRound.nextRound ) );
+			if ( playoffsRound._id.toString() === nextRound.prevRoundLocalID.toString() ) {
+				nextRound.localTeamID = playoffsRound.visitorTeamID;
+			} else if ( playoffsRound._id.toString() === nextRound.prevRoundVisitorID.toString() ) {
+				nextRound.visitorTeamID = playoffsRound.visitorTeamID;
+			}
+			( await playoffsRoundDatabase.updatePlayoffsRound( nextRound._id, nextRound ) );
+		} else {
+			( await competitionDomain.setEndOfCompetition( playoffsRound.competitionID ) );
+		}
+		( await playoffsRoundDatabase.updatePlayoffsRound( playoffsRound._id, roundCopy ) );
+	}
+};
 
 
 exports.createPlayoffsRound = async ( playoffsRound ) => {

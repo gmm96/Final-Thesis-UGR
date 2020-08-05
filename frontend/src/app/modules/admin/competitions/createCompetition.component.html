@@ -112,6 +112,17 @@
                                 Debe proporcionar un <strong>número entero positivo impar</strong>. (p.e. 7)
                             </mat-error>
                         </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="long-label">Núm. equipos playoffs después de liga</mat-label>
+                            <input matInput type="text" formControlName="playoffsTeamsAfterLeague" autocomplete="off" [disableControl]="!canEditPlayoffsTeamNumber()">
+                            <mat-hint align="end">Si valor = 0, no hay playoffs</mat-hint>
+                            <mat-error *ngIf="errorHandling('playoffsTeamsAfterLeague', 'required')">
+                                Debe proporcionar un <strong>número máximo de partidos de playoffs por ronda</strong>
+                            </mat-error>
+                            <mat-error *ngIf="errorHandling('playoffsTeamsAfterLeague', 'pattern')">
+                                Debe proporcionar un <strong>número entero positivo</strong>. (p.e. 7)
+                            </mat-error>
+                        </mat-form-field>
                         <div class="teams-container">
                             <div class="teams-title">Lista de equipos ({{ competitionTeams.length }})</div>
                             <mat-form-field class="query col-12" appearance="outline" color="accent">

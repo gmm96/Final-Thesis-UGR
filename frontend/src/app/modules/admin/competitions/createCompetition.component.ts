@@ -46,6 +46,7 @@ export class CreateCompetitionComponent implements OnInit, OnDestroy {
             'minPlayerNumberPerTeam': [null, Validators.compose([Validators.required, Validators.pattern("^\\d+$")])],
             'leagueFixturesVsSameTeam': [null, Validators.compose([Validators.required, Validators.pattern("^\\d+$")])],
             'playoffsFixturesVsSameTeam': [null, Validators.compose([Validators.required, Validators.pattern("^(\\d*[13579]|0)$")])],
+            'playoffsTeamsAfterLeague': [null, Validators.compose([Validators.required, Validators.pattern("^(\\d*[13579]|0)$")])],
         });
         this.titleService.setTitle("Creación de competiciones");
     }
@@ -113,6 +114,11 @@ export class CreateCompetitionComponent implements OnInit, OnDestroy {
     resetCompetitionForm() {
         this.formDirective.resetForm();
         this.competitionTeams = [];
+    }
+
+    canEditPlayoffsTeamNumber() {
+        return this.competitionForm && this.competitionForm.get('leagueFixturesVsSameTeam').value && parseInt(this.competitionForm.get('leagueFixturesVsSameTeam').value) > 0 &&
+            this.competitionForm.get('playoffsFixturesVsSameTeam').value && parseInt(this.competitionForm.get('playoffsFixturesVsSameTeam').value) > 0;
     }
 
     public errorHandling = (control: string, error: string) => {

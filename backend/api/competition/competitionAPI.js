@@ -134,6 +134,7 @@ exports.createCompetition = async ( req, res ) => {
 			minPlayerNumberPerTeam: parseInt( req.body.minPlayerNumberPerTeam ),
 			leagueFixturesVsSameTeam: parseInt( req.body.leagueFixturesVsSameTeam ),
 			playoffsFixturesVsSameTeam: parseInt( req.body.playoffsFixturesVsSameTeam ),
+			playoffsTeamsAfterLeague: parseInt( req.body.playoffsTeamsAfterLeague ),
 			inProgress: true,
 			teams: req.body.teams,
 			createdAt: new Date().toISOString(),
