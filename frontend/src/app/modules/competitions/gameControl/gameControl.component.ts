@@ -403,6 +403,10 @@ export class GameControlComponent implements OnInit {
         return false;
     }
 
+    printPage() {
+        window.print();
+    }
+
     public errorHandling = (form, control: string, error: string) => {
         if (form) return form.controls[control].hasError(error);
     }

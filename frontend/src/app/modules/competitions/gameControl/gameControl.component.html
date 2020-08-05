@@ -55,11 +55,16 @@
         <div class="col-12 mat-elevation-z8">
             <div class="game-info-header d-flex justify-content-between align-items-center">
                 <span>Información del partido</span>
-                <button mat-icon-button class="button-collapse" type="button" data-toggle="collapse"
-                        data-target="#gameInfo" aria-expanded="false">
-                    <mat-icon class="arrow-down">arrow_drop_down</mat-icon>
-                    <mat-icon class="arrow-up">arrow_drop_up</mat-icon>
-                </button>
+                <div class="d-flex justify-content-end align-items-center">
+                    <button mat-icon-button class="print-button" type="button" (click)="printPage()">
+                        <mat-icon class="arrow-up">print</mat-icon>
+                    </button>
+                    <button mat-icon-button class="button-collapse" type="button" data-toggle="collapse"
+                            data-target="#gameInfo" aria-expanded="false">
+                        <mat-icon class="arrow-down">arrow_drop_down</mat-icon>
+                        <mat-icon class="arrow-up">arrow_drop_up</mat-icon>
+                    </button>
+                </div>
             </div>
             <div class="collapse game-info-content" id="gameInfo">
                 <div class="row">

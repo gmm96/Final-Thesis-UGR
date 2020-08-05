@@ -1,8 +1,8 @@
-<div class="playoffs container">
+<div class="playoffs container" *ngIf="competition">
     <div class="row">
         <div class="title col-12">
             <h2 class="title-container">Playoffs</h2>
-            <h6 class="subtile-container">Eliminatorias al mejor de {{competition.playoffsFixturesVsSameTeam}} partidos</h6>
+            <h6 class="subtile-container">Eliminatorias al mejor de {{competition?.playoffsFixturesVsSameTeam}} partidos</h6>
         </div>
     </div>
     <div class="row">

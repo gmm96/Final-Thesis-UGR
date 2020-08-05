@@ -1,4 +1,4 @@
-<div class="competition-details container-fluid">
+<div class="competition-details container-fluid" *ngIf="competition">
     <div class="details-header-intro row align-items-center">
         <div class="header-name col-md-6 col-12 text-md-left text-center">
             <div class="header-name-title">{{ competition?.name }}</div>
@@ -59,7 +59,7 @@
                             <span class="badge">
                                 <mat-icon class="counter-icon">person</mat-icon>
                             </span>
-                            <div class="counter-value">{{competitionNumberOfPlayers }}</div>
+                            <div class="counter-value">{{ competitionNumberOfPlayers }}</div>
                         </div>
                     </div>
                 </div>

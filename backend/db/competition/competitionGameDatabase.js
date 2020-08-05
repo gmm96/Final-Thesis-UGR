@@ -77,7 +77,7 @@ exports.getPrevTeamGamesInCompetition = async ( competitionID, teamID ) => {
 };
 
 
-exports.getUnplayedGamesByCompetitionForScheduling = async (competitionID) => {
+exports.getUnplayedGamesByCompetitionForScheduling = async ( competitionID ) => {
 	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
 	let result = ( await gameCursor.find( {
 		"competitionID": ObjectID( competitionID.toString() ),
@@ -89,6 +89,36 @@ exports.getUnplayedGamesByCompetitionForScheduling = async (competitionID) => {
 		"visitorTeamInfo.teamStats": null,
 	} )
 	.sort( { fixture: 1 } ).toArray() );
+	return result;
+}
+
+
+exports.getPlayedGamesBetweenTeamsForStandings = async ( competitionID, teamIDArray ) => {
+	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
+	
+	let matchups = [];
+	for ( var i = 0; i < teamIDArray.length; i++ ) {
+		for ( var j = i + 1; j < teamIDArray.length; j++ ) {
+			matchups.push( {
+				"localTeamInfo._id": ObjectID( teamIDArray[ i ].toString() ),
+				"visitorTeamInfo._id": ObjectID( teamIDArray[ j ].toString() ),
+			} )
+			matchups.push( {
+				"localTeamInfo._id": ObjectID( teamIDArray[ j ].toString() ),
+				"visitorTeamInfo._id": ObjectID( teamIDArray[ i ].toString() ),
+			} )
+		}
+	}
+	
+	let query = {
+		"$match": {
+			"compId": ObjectID( competitionID.toString() ),
+			"round": { $type: "int" },
+			"$or": matchups
+		}
+	}
+	
+	let result = ( await gameCursor.aggregate( [ query ] ).toArray() );
 	return result;
 }
 

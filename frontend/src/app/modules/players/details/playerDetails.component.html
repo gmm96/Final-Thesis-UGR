@@ -18,7 +18,7 @@
 
     <div class="details-navbar-links">
         <nav class="navbar navbar-expand-md navbar-light">
-            <div class="navbar-toggler-title navbar-toggler"><span>{{ currentTabField.toLowerCase() }}</span></div>
+            <div class="navbar-toggler-title navbar-toggler"><span>{{ currentTabField?.toLowerCase() }}</span></div>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
                     aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -47,10 +47,10 @@
             <app-player-info [player]="player"></app-player-info>
         </div>
         <div *ngSwitchCase="getPlayerDetailsTabs().competitions" [@animatedTabs]>
-            <app-player-competitions [playerID]="player._id"></app-player-competitions>
+            <app-player-competitions [playerID]="playerID"></app-player-competitions>
         </div>
         <div *ngSwitchCase="getPlayerDetailsTabs().stats" [@animatedTabs]>
-            <app-player-stats [playerID]="player._id"></app-player-stats>
+            <app-player-stats [playerID]="playerID"></app-player-stats>
         </div>
     </div>
 </div>

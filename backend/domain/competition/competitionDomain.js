@@ -320,12 +320,130 @@ exports.calculateTournamentTreeStats = async ( competition ) => {
 exports.getCompetitionLeagueTable = async ( competitionID ) => {
 	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
 	let result = ( await competitionTeamStatsDomain.getCompetitionTeamStatsByCompetition( competitionID ) );
-	if ( result ) result.sort( function ( a, b ) {
-		if ( a.stats.wonGames < b.stats.wonGames ) return 1;
-		if ( a.stats.wonGames > b.stats.wonGames ) return -1;
-		return 0;
-	} );
-	return result;
+	if ( !result ) return [];
+	
+	let leagueTable = [];
+	let statsGroupedByWonGames = lodash.groupBy( result, item => item.stats.wonGames );
+	let distinctSortedWonGames = Object.keys( statsGroupedByWonGames ).sort( ( a, b ) => b - a )
+	
+	for ( let wonGames of distinctSortedWonGames ) {
+		let teams2 = statsGroupedByWonGames[ wonGames ];	// result item
+		
+		// Criterio 1: victorias en total
+		if ( teams2.length == 1 ) {
+			leagueTable.push( teams2[ 0 ] );
+			continue;
+		}
+		
+		// Criterio 2: mayor número de victorias en partidos entre equipos
+		let teamIDs2 = teams2.map( it => it.teamID );
+		let commonGames = ( await gameDomain.getPlayedGamesBetweenTeamsForStandings( competitionID, teamIDs2 ) );
+		let wonGamesInCommonGames = teamIDs2.map( teamID => {
+			let wonGames = commonGames.filter( commonGame => commonGame.winner.toString() == teamID.toString() ).length;
+			return { teamID: teamID, wonGames: wonGames };
+		} )
+		
+		let commonGamesGroupedByWonGames = lodash.groupBy( wonGamesInCommonGames, item => item.wonGames );
+		let commonGamesGroupedByWonGamesKeys = Object.keys( commonGamesGroupedByWonGames ).sort( ( a, b ) => b - a )
+		
+		for ( let commonGamesGroupedByWonGamesKey of commonGamesGroupedByWonGamesKeys ) {
+			let teams3 = commonGamesGroupedByWonGames[ commonGamesGroupedByWonGamesKey ];	// wonGamesInCommonGames items
+			if ( teams3.length == 1 ) {
+				let teamStats = result.find( it => it.teamID.toString() == teams3[ 0 ].teamID.toString() )
+				leagueTable.push( teamStats );
+				continue;
+			}
+			
+			// Criterio 3: mayor suma puntos a favor en partidos entre ambos equipos
+			for ( let game of commonGames ) {
+				( await gameDomain.getTeamScore( game.localTeamInfo ) );
+				( await gameDomain.getTeamScore( game.visitorTeamInfo ) );
+			}
+			let commonGamesWithPoints = teams3.map( team => {
+				let points = commonGames.reduce( ( sum, commonGame ) => {
+					if ( commonGame.localTeamInfo._id.toString() == team.teamID.toString() ) {
+						return sum + commonGame.localTeamInfo.points
+					}
+					if ( commonGame.visitorTeamInfo._id.toString() == team.teamID.toString() ) {
+						return sum + commonGame.visitorTeamInfo.points
+					}
+					return sum;
+				}, 0 );
+				
+				return { teamID: team.teamID, points: points };
+			} )
+			
+			let commonGamesWithPointsGroupedByPoints = lodash.groupBy( commonGamesWithPoints, item => item.points );
+			let commonGamesWithPointsGroupedByPointsKeys = Object.keys( commonGamesWithPointsGroupedByPoints ).sort( ( a, b ) => b - a )
+			
+			for ( let commonGamesWithPointsGroupedByPointsKey of commonGamesWithPointsGroupedByPointsKeys ) {
+				let teams4 = commonGamesWithPointsGroupedByPoints[ commonGamesWithPointsGroupedByPointsKey ];	// commonGamesWithPoints items
+				if ( teams4.length == 1 ) {
+					let teamStats = result.find( it => it.teamID.toString() == teams4[ 0 ].teamID.toString() )
+					leagueTable.push( teamStats );
+					continue;
+				}
+				
+				// Criterio 4: mayor puntos a favor en alguno de los encuentros en común
+				let maxPointsInCommonGamesByTeam = teams4.map( team => {
+					let localMaxPoints = lodash.max( commonGames, commonGame => {
+						if ( commonGame.localTeamInfo._id.toString() == team.teamID.toString() ) {
+							return commonGame.points;
+						} else {
+							return 0;
+						}
+					} )
+					let visitorMaxPoints = lodash.max( commonGames, commonGame => {
+						if ( commonGame.visitorTeamInfo._id.toString() == team.teamID.toString() ) {
+							return commonGame.points;
+						} else {
+							return 0;
+						}
+					} )
+					return { teamID: team.teamID, maxPoints: Math.max( localMaxPoints, visitorMaxPoints ) };
+				} )
+				
+				let maxPointsInCommonGamesByTeamGrouped = lodash.groupBy( maxPointsInCommonGamesByTeam, item => item.points );
+				let maxPointsInCommonGamesByTeamKeys = Object.keys( maxPointsInCommonGamesByTeamGrouped ).sort( ( a, b ) => b - a )
+				
+				for ( let maxPointsInCommonGamesByTeamKey of maxPointsInCommonGamesByTeamKeys ) {
+					let teams5 = commonGamesWithPointsGroupedByPoints[ maxPointsInCommonGamesByTeamKey ]; // maxPointsInCommonGamesByTeam items
+					if ( teams5.length == 1 ) {
+						let teamStats = result.find( it => it.teamID.toString() == teams5[ 0 ].teamID.toString() )
+						leagueTable.push( teamStats );
+						continue;
+					}
+					
+					// Criterio 5: mayor diferencia de puntos total de competición
+					let teamsIDs5 = teams5.map( it => it.teamID );
+					let statsForTeams5 = result.find( it => teamsIDs5.findIndex( it.teamID.toString() != -1 ) );
+					
+					let pointsDiffInTeams5 = statsForTeams5.map( statsTeam => {
+						statsForTeams5.pointsDiff = statsTeam.stats.points - statsTeam.stats.opponentPoints;
+					} )
+					
+					let pointsDiffGrouped = lodash.groupBy( pointsDiffInTeams5, item => item.pointsDiff );
+					let pointsDiffGroupedKeys = Object.keys( pointsDiffGrouped ).sort( ( a, b ) => b - a )
+					
+					for ( let pointsDiffGroupedKey of pointsDiffGroupedKeys ) {
+						let teams6 = pointsDiffGrouped[ pointsDiffGroupedKey ];		// results items
+						if ( teams6.length == 1 ) {
+							leagueTable.push( teams6[ 0 ] );
+							continue;
+						}
+						
+						// Criterio 6: mayor puntos totales a favor de competición
+						let clonedTeams6 = lodash.cloneDeep( teams6 );
+						clonedTeams6.sort( ( a, b ) => b.stats.points - a.stats.points );
+						
+						leagueTable.push( ...clonedTeams6 )
+					}
+				}
+			}
+		}
+	}
+	
+	return leagueTable;
 };
 
 

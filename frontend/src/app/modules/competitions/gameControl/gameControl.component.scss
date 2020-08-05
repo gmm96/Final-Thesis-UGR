@@ -77,6 +77,10 @@
     .game-info {
         margin: 5px 0;
 
+        .print-button {
+            margin-right: 10px;
+        }
+
         .game-info-header {
             @include border-top-left-radius(8px);
             @include border-top-right-radius(8px);

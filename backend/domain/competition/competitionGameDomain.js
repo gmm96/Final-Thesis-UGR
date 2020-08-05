@@ -283,6 +283,13 @@ exports.getTeamScore = async ( teamInfo ) => {
 };
 
 
+exports.getPlayedGamesBetweenTeamsForStandings = async ( competitionID, teamIDArray ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !teamIDArray || !teamIDArray.length ) throw { code: 422, message: "Lista de identificadores de equipo inválida" };
+	return ( await gameDatabase.getPlayedGamesBetweenTeamsForStandings( competitionID, teamIDArray ) );
+};
+
+
 exports.purgeGame = async ( gameID ) => {
 	if ( !gameID ) throw { code: 422, message: "Identificador de partido inválido" };
 	

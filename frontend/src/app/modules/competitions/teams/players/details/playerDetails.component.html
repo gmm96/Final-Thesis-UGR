@@ -1,14 +1,14 @@
-<div class="player-details container-fluid">
+<div class="player-details container-fluid" *ngIf="player">
     <div class="details-header-intro row align-items-center">
         <div class="header-name col-12 col-md-7 offset-md-1 col-lg-7 offset-lg-1 order-2 order-md-1 text-md-left text-center">
             <div class="header-name-title">
                 <span class="underline" (click)="goToPlayerPage()" matTooltip="Ir a página personal de jugador">
-                    {{player.name + " " + player.surname}}
+                    {{player?.name + " " + player?.surname}}
                 </span>
             </div>
             <div class="header-name-subtitle">
-                <span class="underline" (click)="goToTeamPage()" matTooltip="Ir a página de equipo en {{this.competition.name}}">
-                    {{team.name}}
+                <span class="underline" (click)="goToTeamPage()" matTooltip="Ir a página de equipo en {{competition?.name}}">
+                    {{team?.name}}
                 </span>
             </div>
         </div>
@@ -19,7 +19,7 @@
 
     <div class="details-navbar-links">
         <nav class="navbar navbar-expand-md navbar-light">
-            <div class="navbar-toggler-title navbar-toggler"><span>{{ currentTabField.toLowerCase() }}</span></div>
+            <div class="navbar-toggler-title navbar-toggler"><span>{{ currentTabField?.toLowerCase() }}</span></div>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
                     aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
