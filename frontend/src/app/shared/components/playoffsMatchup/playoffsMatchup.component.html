@@ -1,30 +1,30 @@
-<div class="playoffs-matchup-table-container w-100">
+<div class="playoffs-matchup-table-container w-100" *ngIf="games">
     <mat-table [dataSource]="dataSource" class="table-responsive playoffs-matchup-table">
         <div class="table-shadow">
             <ng-container matColumnDef="localTeamName">
                 <mat-cell class="local-team" *matCellDef="let element">
-                    {{ element.localTeamName }}
+                    {{ element?.localTeamName }}
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="gameStatus">
                 <mat-cell class="gameStatus text-center d-flex flex-column justify-content-center align-items-center" *matCellDef="let element">
-                    <div class="time" *ngIf="element.gameStatus.date && element.gameStatus.time">
-                        {{ element.gameStatus.time }}
+                    <div class="time" *ngIf="element?.gameStatus?.date && element?.gameStatus?.time">
+                        {{ element?.gameStatus?.time }}
                     </div>
-                    <div class="date" *ngIf="element.gameStatus.date && element.gameStatus.time">
-                        {{ element.gameStatus.date }}
+                    <div class="date" *ngIf="element?.gameStatus?.date && element?.gameStatus?.time">
+                        {{ element?.gameStatus?.date }}
                     </div>
-                    <div class="text" *ngIf="element.gameStatus.result && element.gameStatus.text">
-                        {{ element.gameStatus.text }}
+                    <div class="text" *ngIf="element?.gameStatus?.result && element?.gameStatus?.text">
+                        {{ element?.gameStatus?.text }}
                     </div>
-                    <div class="result" *ngIf="element.gameStatus.result && element.gameStatus.text">
-                        {{ element.gameStatus.result }}
+                    <div class="result" *ngIf="element?.gameStatus?.result && element?.gameStatus?.text">
+                        {{ element?.gameStatus?.result }}
                     </div>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="visitorTeamName">
                 <mat-cell class="visitor-team" *matCellDef="let element">
-                    {{ element.visitorTeamName }}
+                    {{ element?.visitorTeamName }}
                 </mat-cell>
             </ng-container>
             <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="goToGame(row)"></mat-row>

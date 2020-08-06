@@ -1,7 +1,6 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
 import * as moment from "moment";
 
 @Component({
@@ -45,14 +44,15 @@ export class PlayerTableComponent implements OnInit, OnDestroy {
     setDataTable() {
         if (this.roster) {
             this.rosterCompatible = this.roster.map(item => {
+                let today = moment(new Date());
                 return {
                     _id: item._id,
                     name: item.name + " " + item.surname,
-                    age: (moment(item.birthDate).locale("es-ES").fromNow(true)).replace(" años", ""),
+                    age: today.diff(moment(item.birthDate), "years"),
                     height: item.height,
                     weight: item.weight,
                     avatar: item.avatar ? "http://localhost:3000" + item.avatar : null
-                }
+                };
             });
             this.dataSource = new MatTableDataSource(this.rosterCompatible);
             this.changeDetectorRef.detectChanges();

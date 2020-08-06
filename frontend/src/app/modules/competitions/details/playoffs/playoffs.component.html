@@ -7,7 +7,10 @@
     </div>
     <div class="row">
         <div class="table-container-playoffs col-12 col-md-10 offset-md-1">
-            <app-game-table-collapsible [rounds]="playoffsRounds"></app-game-table-collapsible>
+            <app-game-table-collapsible [rounds]="playoffsRounds" *ngIf="playoffsRounds && objectKeys(playoffsRounds).length"></app-game-table-collapsible>
+            <div class="no-data" *ngIf="!playoffsRounds || !objectKeys(playoffsRounds).length">
+                <span>No hay rondas de playoffs disponibles todavía.</span>
+            </div>
         </div>
     </div>
 </div>

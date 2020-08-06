@@ -1,8 +1,6 @@
-import {Component, Input, OnDestroy, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CompetitionsService} from "../../../../core/services/competitions/competitions.service";
-import * as lodash from 'lodash';
-import {dependenciesFromGlobalMetadata} from "@angular/compiler/src/render3/r3_factory";
 
 @Component({
     selector: 'app-playoffs',
@@ -12,12 +10,13 @@ import {dependenciesFromGlobalMetadata} from "@angular/compiler/src/render3/r3_f
 export class PlayoffsComponent implements OnInit, OnDestroy {
 
     @Input('competition') competition;
-    playoffsRounds: any = [];
+    playoffsRounds: any;
+    objectKeys = Object.keys;
 
     constructor(
         private activatedRoute: ActivatedRoute,
         private router: Router,
-        private competitionsService: CompetitionsService
+        private competitionsService: CompetitionsService,
     ) {
     }
 
