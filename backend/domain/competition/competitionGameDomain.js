@@ -248,7 +248,7 @@ exports.finishGame = async ( competitionID, gameID ) => {
 		let leagueRemainingGames = ( await gameDatabase.getLeagueRemainingGames( competitionID ) );
 		if ( !leagueRemainingGames || !leagueRemainingGames.length ) {
 			if ( competition.playoffsFixturesVsSameTeam && competition.playoffsTeamsAfterLeague ) {
-				// TODO create playoffs after league
+				( await competitionDomain.generatePlayoffsRoundsAfterEndOfLeague( competitionID ) );
 			} else {
 				( await competitionDomain.setEndOfCompetition( competitionID ) );
 			}

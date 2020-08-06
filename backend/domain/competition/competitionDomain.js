@@ -214,54 +214,106 @@ exports.generatePlayoffsRoundsWithoutLeague = async ( competition, randomizeTeam
 	
 	if ( !competition.playoffsFixturesVsSameTeam ) {
 		throw { code: 422, message: "Formato de competición inválido, se necesitan las partidos de playoffs." };
-	} else {
-		let treeStats = ( await exports.calculateTournamentTreeStats( competition ) );
-		
-		let roundMatchups = [];
-		let allMatchups = [];
-		let currentStackTeams = randomizeTeamsIDs.map( id => {
-			return { _id: id, type: "TEAM" }
-		} );
-		
-		for ( let i = 1; i <= treeStats.nRoundLevels; ++i ) {
-			for ( let j = 0; j < treeStats.nMatchupsPerRound[ i ]; ++j ) {
-				let localTeam = ( await domainTools.getRandomElementFromArray( currentStackTeams ) );
-				let visitorTeam = ( await domainTools.getRandomElementFromArray( currentStackTeams ) );
-				
-				let newPlayoffMatchup = {
-					localTeamID: ( localTeam.type == "TEAM" ) ? localTeam._id : null,
-					visitorTeamID: ( visitorTeam.type == "TEAM" ) ? visitorTeam._id : null,
-					competitionID: competition._id,
-					round: 2 ** ( treeStats.nRoundLevels - i ),
-					nextRound: null,
-					prevRoundLocalID: ( localTeam.type == "MATCHUP" ) ? localTeam._id : null,
-					prevRoundVisitorID: ( visitorTeam.type == "MATCHUP" ) ? visitorTeam._id : null,
-					winnerID: null
-				};
-				let createdPlayoffsRound = ( await competitionPlayoffsRoundDomain.createPlayoffsRound( newPlayoffMatchup ) );
-				
-				if ( createdPlayoffsRound.prevRoundLocalID || createdPlayoffsRound.prevRoundVisitorID ) {
-					let editedRound;
-					if ( createdPlayoffsRound.prevRoundLocalID ) {
-						editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundLocalID, createdPlayoffsRound._id ) );
-					} else if ( createdPlayoffsRound.prevRoundVisitorID ) {
-						editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundVisitorID, createdPlayoffsRound._id ) );
-					}
-					let index = allMatchups.findIndex( round => round._id.toString() === editedRound._id.toString() );
-					allMatchups[ index ] = editedRound;
-				}
-				
-				roundMatchups.push( { _id: createdPlayoffsRound._id, type: "MATCHUP" } );
-				allMatchups.push( createdPlayoffsRound );
-			}
-			currentStackTeams = [ ...currentStackTeams, ...roundMatchups ];
-			roundMatchups = [];
-		}
-		competition[ 'games' ] = ( await exports.parsePlayoffsRoundToGames( competition._id, 2 ** ( treeStats.nRoundLevels - 1 ) ) );
-		competition[ 'playoffsRounds' ] = allMatchups;
-		return allMatchups;
 	}
 	
+	let roundMatchups = [];
+	let allMatchups = [];
+	let treeStats = ( await exports.calculateTournamentTreeStats( competition.teams.length ) );
+	let currentStackTeamsOrMatchups = randomizeTeamsIDs.map( id => {
+		return { _id: id, type: "TEAM" }
+	} );
+	
+	for ( let i = 1; i <= treeStats.nRoundLevels; ++i ) {
+		for ( let j = 0; j < treeStats.nMatchupsPerRound[ i ]; ++j ) {
+			let localTeam = ( await domainTools.getRandomElementFromArray( currentStackTeamsOrMatchups ) );
+			let visitorTeam = ( await domainTools.getRandomElementFromArray( currentStackTeamsOrMatchups ) );
+			
+			let newPlayoffMatchup = {
+				localTeamID: ( localTeam.type == "TEAM" ) ? localTeam._id : null,
+				visitorTeamID: ( visitorTeam.type == "TEAM" ) ? visitorTeam._id : null,
+				competitionID: competition._id,
+				round: 2 ** ( treeStats.nRoundLevels - i ),
+				nextRound: null,
+				prevRoundLocalID: ( localTeam.type == "MATCHUP" ) ? localTeam._id : null,
+				prevRoundVisitorID: ( visitorTeam.type == "MATCHUP" ) ? visitorTeam._id : null,
+				winnerID: null
+			};
+			let createdPlayoffsRound = ( await competitionPlayoffsRoundDomain.createPlayoffsRound( newPlayoffMatchup ) );
+			
+			if ( createdPlayoffsRound.prevRoundLocalID || createdPlayoffsRound.prevRoundVisitorID ) {
+				let editedRound;
+				if ( createdPlayoffsRound.prevRoundLocalID ) {
+					editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundLocalID, createdPlayoffsRound._id ) );
+				} else if ( createdPlayoffsRound.prevRoundVisitorID ) {
+					editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundVisitorID, createdPlayoffsRound._id ) );
+				}
+				let index = allMatchups.findIndex( round => round._id.toString() === editedRound._id.toString() );
+				allMatchups[ index ] = editedRound;
+			}
+			
+			roundMatchups.push( { _id: createdPlayoffsRound._id, type: "MATCHUP" } );
+			allMatchups.push( createdPlayoffsRound );
+		}
+		currentStackTeamsOrMatchups = [ ...currentStackTeamsOrMatchups, ...roundMatchups ];
+		roundMatchups = [];
+	}
+	competition[ 'games' ] = ( await exports.parsePlayoffsRoundToGames( competition._id, 2 ** ( treeStats.nRoundLevels - 1 ) ) );
+	competition[ 'playoffsRounds' ] = allMatchups;
+	return allMatchups;
+};
+
+
+exports.generatePlayoffsRoundsAfterEndOfLeague = async ( competitionID ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	let competition = ( await competitionDatabase.getCompetitionById( competitionID ) );
+	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	let leagueTable = ( await exports.getCompetitionLeagueTable( competitionID ) );
+	
+	if ( !competition.playoffsFixturesVsSameTeam && !competition.playoffsTeamsAfterLeague ) {
+		throw { code: 422, message: "Formato de competición inválido, se necesitan los partidos de playoffs." };
+	}
+	
+	let roundMatchups = [];
+	let currentStackTeamsOrMatchups = leagueTable.slice( 0, competition.playoffsTeamsAfterLeague ).map( teamSt => {
+		return { _id: teamSt.teamID, type: "TEAM" };
+	} );
+	let treeStats = ( await exports.calculateTournamentTreeStats( currentStackTeamsOrMatchups.length ) );
+	
+	for ( let i = 1; i <= treeStats.nRoundLevels; ++i ) {
+		let neededTeams = treeStats.nMatchupsPerRound[ i ] * 2;
+		let currentRoundStack = currentStackTeamsOrMatchups.splice( currentStackTeamsOrMatchups.length - neededTeams, currentStackTeamsOrMatchups.length );
+		
+		for ( let j = 0; j < treeStats.nMatchupsPerRound[ i ]; ++j ) {
+			let localTeam = currentRoundStack[ j ]
+			let visitorTeam = currentRoundStack[ currentRoundStack.length - 1 - j ];
+			
+			let newPlayoffMatchup = {
+				localTeamID: ( localTeam.type == "TEAM" ) ? localTeam._id : null,
+				visitorTeamID: ( visitorTeam.type == "TEAM" ) ? visitorTeam._id : null,
+				competitionID: competition._id,
+				round: 2 ** ( treeStats.nRoundLevels - i ),
+				nextRound: null,
+				prevRoundLocalID: ( localTeam.type == "MATCHUP" ) ? localTeam._id : null,
+				prevRoundVisitorID: ( visitorTeam.type == "MATCHUP" ) ? visitorTeam._id : null,
+				winnerID: null
+			};
+			let createdPlayoffsRound = ( await competitionPlayoffsRoundDomain.createPlayoffsRound( newPlayoffMatchup ) );
+			
+			if ( createdPlayoffsRound.prevRoundLocalID || createdPlayoffsRound.prevRoundVisitorID ) {
+				let editedRound;
+				if ( createdPlayoffsRound.prevRoundLocalID ) {
+					editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundLocalID, createdPlayoffsRound._id ) );
+				} else if ( createdPlayoffsRound.prevRoundVisitorID ) {
+					editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundVisitorID, createdPlayoffsRound._id ) );
+				}
+			}
+			
+			roundMatchups.push( { _id: createdPlayoffsRound._id, type: "MATCHUP" } );
+		}
+		currentStackTeamsOrMatchups = [ ...currentStackTeamsOrMatchups, ...roundMatchups ];
+		roundMatchups = [];
+	}
+	( await exports.parsePlayoffsRoundToGames( competition._id, 2 ** ( treeStats.nRoundLevels - 1 ) ) );
 };
 
 
@@ -302,11 +354,11 @@ exports.parsePlayoffsRoundToGames = async ( competitionID, roundNumber ) => {
 };
 
 
-exports.calculateTournamentTreeStats = async ( competition ) => {
-	if ( !competition ) throw { code: 422, message: "Objecto competición dañádo" };
+exports.calculateTournamentTreeStats = async ( teamsInCompetition ) => {
+	if ( !teamsInCompetition ) throw { code: 422, message: "Número de equipos de competición inválido" };
 	
 	let result = {};
-	result.nTeams = competition.teams.length;
+	result.nTeams = teamsInCompetition;
 	result.nMatchups = result.nTeams - 1;
 	result.nRoundLevels = Math.ceil( Math.log( result.nTeams ) / Math.log( 2 ) );
 	
