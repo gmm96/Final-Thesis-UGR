@@ -165,7 +165,7 @@ export class ManagePlayersComponent implements OnInit, OnDestroy {
     }
 
     setDateFormat() {
-        this.playerForm.controls['birthDate'].setValue(this.playerForm.value.birthDate.toISOString());
+        if (this.playerForm.value.birthDate) this.playerForm.get('birthDate').setValue(this.playerForm.value.birthDate.toISOString());
     }
 
     public errorHandling = (control: string, error: string) => {

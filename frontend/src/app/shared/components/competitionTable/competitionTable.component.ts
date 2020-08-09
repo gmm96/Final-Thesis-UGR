@@ -51,6 +51,9 @@ export class CompetitionTableComponent implements OnInit, OnDestroy {
                     sex: item.sex.charAt(0).toUpperCase(),
                 }
             });
+            this.competitionsCompatible.sort( (a, b) => {
+                return b.season - a.season;
+            })
             this.dataSource = new MatTableDataSource(this.competitionsCompatible);
         }
     }

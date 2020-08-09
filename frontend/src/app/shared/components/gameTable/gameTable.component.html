@@ -3,7 +3,7 @@
         <mat-label>Filtro</mat-label>
         <input matInput (keyup)="applyFilter($event)">
     </mat-form-field>
-    <div class="table-border table-responsive shadow">
+    <div class="table-border shadow">
         <mat-table [dataSource]="dataSource" class="table-responsive game-table">
             <caption class="caption-fixture-info">
                 <div class="fixture-info-container">

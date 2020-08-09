@@ -51,6 +51,9 @@ export class TeamTableComponent implements OnInit, OnDestroy {
                     avatar: item.avatar? "http://localhost:3000" + item.avatar : null
                 }
             });
+            this.teamsCompatible.sort( (a, b) => {
+                return a.name.localeCompare(b.name);
+            })
             this.dataSource = new MatTableDataSource(this.teamsCompatible);
             this.dataSource.paginator = this.paginator;
         }

@@ -99,8 +99,7 @@
                                 <mat-icon matPrefix [color]="searchInput.focused ? 'accent' : ''" class="search-icon">search</mat-icon>
                                 <mat-label>Identificación personal</mat-label>
                                 <input matInput [(ngModel)]="playerQueryToSearch" [ngModelOptions]="{standalone: true}" #searchInput="matInput" [matAutocomplete]="autoPlayers"
-                                       [disabled]="canEditOptionSearchBox() && !selectedTeamToEdit" type="text" (input)="searchPlayerToAdd($event)"
-                                       (keydown.enter)="addFirstFilteredOptionPlayers($event)">
+                                       [disabled]="canEditOptionSearchBox() && !selectedTeamToEdit" type="text" (input)="searchPlayerToAdd($event)">
                             </mat-form-field>
                             <div class="players-wrapper" *ngIf="teamPlayers.length">
                                 <div class="player d-flex align-items-center justify-content-between" *ngFor="let player of teamPlayers; index as i">
@@ -144,7 +143,7 @@
     </mat-option>
 </mat-autocomplete>
 
-<mat-autocomplete class="autocomplete-header" #autoPlayers="matAutocomplete" (optionSelected)="addPlayerToTeam($event)">
+<mat-autocomplete class="autocomplete-header" #autoPlayers="matAutocomplete" (optionSelected)="addPlayerToTeam($event)" autoActiveFirstOption>
     <mat-option *ngFor="let option of filteredOptionsPlayers" [value]="option" class="autocomplete-option">
         <mat-icon class="icon-type">person</mat-icon>
         <span class="result-name">{{ option.idCard + " ( " + option.name + " " + option.surname + " )"}}</span>

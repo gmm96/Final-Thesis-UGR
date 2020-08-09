@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {AuthService} from "../../core/auth/auth.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Title} from "@angular/platform-browser";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
     selector: 'app-login',
@@ -15,7 +16,8 @@ export class LoginComponent implements OnInit {
         private router: Router,
         private loginService: AuthService,
         public fb: FormBuilder,
-        private titleService: Title
+        private titleService: Title,
+        private toastr: ToastrService,
     ) {
     }
 
@@ -24,7 +26,7 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         this.loginForm = this.fb.group({
-            'username': [null, Validators.email],
+            'username': [null, Validators.compose([Validators.required, Validators.email])],
             'password': [null, Validators.required]
         });
         this.titleService.setTitle("Login");
@@ -46,8 +48,9 @@ export class LoginComponent implements OnInit {
                 );
                 let me = await this.loginService.getMe()
                 this.router.navigate(['/admin']);
+                this.toastr.success("Usuario identificado correctamente", "Operación satisfactoria");
             } catch (e) {
-                console.log("ERROR!")
+                this.toastr.error("Usuario y/o contraseña inválido/s.", "Error");
             }
         }
     }

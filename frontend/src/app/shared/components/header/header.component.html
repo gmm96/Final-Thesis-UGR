@@ -11,7 +11,7 @@
                 <mat-icon *ngIf="!openedSearchBox">search</mat-icon>
                 <mat-icon *ngIf="openedSearchBox">close</mat-icon>
             </button>
-            <div class="searchbox mat-elevation-z8 col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3" *ngIf="openedSearchBox" [@floatingSearchBox]>
+            <div class="searchbox mat-elevation-z8 col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3 d-print-none" *ngIf="openedSearchBox" [@floatingSearchBox]>
                 <form>
                     <mat-form-field class="search-engine-input col-sm-12" appearance="outline" color="primary">
                         <mat-icon matPrefix [color]="searchInput.focused ? 'primary' : ''">search</mat-icon>
@@ -30,7 +30,7 @@
                 <mat-icon *ngIf="!openedAdminPanel">build</mat-icon>
                 <mat-icon *ngIf="openedAdminPanel">close</mat-icon>
             </button>
-            <div class="admin-panel mat-elevation-z8 col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3 text-center" *ngIf="openedAdminPanel" [@adminPanel]>
+            <div class="admin-panel mat-elevation-z8 col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3 text-center d-print-none" *ngIf="openedAdminPanel" [@adminPanel]>
                 <div class="admin-action" (click)="goToAdminPage()">
                     Ir a panel de administración
                 </div>

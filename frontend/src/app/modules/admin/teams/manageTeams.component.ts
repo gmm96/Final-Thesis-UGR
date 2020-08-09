@@ -165,7 +165,7 @@ export class ManageTeamsComponent implements OnInit, OnDestroy {
         this.initalTeamPlayer = lodash.cloneDeep( this.selectedTeamToEdit.players );
     }
 
-    addPlayerToTeam(event) {
+    async addPlayerToTeam(event) {
         let playerToAdd = event.option.value;
         if (!this.teamPlayers.some(player => player.idCard == playerToAdd.idCard)) this.teamPlayers.push(event.option.value);
         this.playerQueryToSearch = "";

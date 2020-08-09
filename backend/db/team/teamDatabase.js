@@ -25,6 +25,7 @@ exports.getTeamListByName = async ( name ) => {
 
 
 exports.getPlayerTeam = async ( playerID ) => {
+	if ( !ObjectID.isValid( playerID ) ) throw { code: 404, message: "Identificador de jugador inválido" };
 	let result = ( await teamCursor.findOne( { players: { $elemMatch: { _id: ObjectID( playerID.toString() ) } } } ) );
 	return result;
 }
@@ -36,7 +37,7 @@ exports.getPlayersWithTeam = async () => {
 		{ $group: { _id: 1, players: { $addToSet: "$players" } } },
 		{ $project: { players: 1, _id: 0 } }
 	] ).toArray() );
-	if ( result[0].players && result[0].players.length ) {
+	if ( result && result[0] && result[0].players && result[0].players.length ) {
 		return result[0].players;
 	} else {
 		return [];
@@ -60,14 +61,3 @@ exports.purgeTeam = async ( id ) => {
 	let result = ( await teamCursor.deleteOne( { _id: ObjectID( id.toString() ) } ) );
 	return ( result.result.n === 1 && result.result.ok === 1 );
 };
-
-// exports.countTeamsInCompetition = async ( competitionID ) => {
-// 	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Invalid competition id" };
-// 	return ( await teamCursor.find( { "competitions": ObjectID( competitionID.toString() ) } ).count() );
-// };
-//
-// exports.getTeamsInCompetition = async ( competitionID ) => {
-// 	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Invalid competition id" };
-// 	return ( await dbModule.findResultToArray( teamCursor, { "competitions": ObjectID( competitionID.toString() ) } ) );
-// };
-

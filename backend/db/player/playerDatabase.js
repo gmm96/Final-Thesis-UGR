@@ -66,9 +66,3 @@ exports.purgePlayer = async ( playerID ) => {
 	let result = ( await playerCursor.deleteOne( { _id: ObjectID( playerID.toString() ) } ) );
 	return ( result.result.n === 1 && result.result.ok === 1 );
 };
-
-
-// exports.countPlayersInTeam = async ( teamID ) => {
-// 	if ( !ObjectID.isValid( teamID ) ) throw { code: 422, message: "Invalid team id" };
-// 	return ( await ( await playerCursor.find( { "competitions.teamID": ObjectID( teamID.toString() ) } ) ).count() );
-// };

@@ -79,9 +79,9 @@ exports.getAdminByEmailAndPassword = async ( email, password ) => {
 	if ( !admin ) {
 		return null;
 	}
-	/*if ( admin.password !== password ) {
+	if ( !domainTools.comparePasswords(password, admin.password) ) {
 		console.log( admin.password, password );
 		return null;
-	}*/
+	}
 	return admin;
 };

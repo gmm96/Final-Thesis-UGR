@@ -129,7 +129,7 @@
                                 <mat-icon matPrefix [color]="searchInput.focused ? 'accent' : ''" class="search-icon">search</mat-icon>
                                 <mat-label>Nombre de equipo</mat-label>
                                 <input matInput [(ngModel)]="teamQueryToSearch" [ngModelOptions]="{standalone: true}" #searchInput="matInput" [matAutocomplete]="auto"
-                                       type="text" (input)="searchTeamToAdd($event)" (keydown.enter)="addFirstFilteredOption($event)">
+                                       type="text" (input)="searchTeamToAdd($event)">
                             </mat-form-field>
                             <div class="teams-wrapper" *ngIf="competitionTeams.length">
                                 <div class="team d-flex align-items-center justify-content-between" *ngFor="let team of competitionTeams; index as i">
@@ -163,7 +163,7 @@
 </div>
 
 
-<mat-autocomplete class="autocomplete-header" #auto="matAutocomplete" (optionSelected)="addTeamToCompetition($event)">
+<mat-autocomplete class="autocomplete-header" #auto="matAutocomplete" (optionSelected)="addTeamToCompetition($event)" autoActiveFirstOption>
     <mat-option *ngFor="let option of filteredOptions" [value]="option" class="autocomplete-option">
         <mat-icon class="icon-type">people</mat-icon>
         <span class="result-name">{{ option.name + " ( " + option.city + " )"}}</span>

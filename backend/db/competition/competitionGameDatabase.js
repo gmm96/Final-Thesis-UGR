@@ -6,15 +6,14 @@ let ObjectID = require( 'mongodb' ).ObjectID;
 
 
 exports.getGameById = async ( id ) => {
-	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Identificador de partido inválido" };
+	if ( !ObjectID.isValid( id ) ) throw { code: 404, message: "Identificador de partido inválido" };
 	let result = ( await gameCursor.findOne( { _id: ObjectID( id.toString() ) } ) );
 	return result;
 };
 
 
 exports.getGamesByCompetitionAndFixture = async ( competitionID, fixture ) => {
-	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
-	// let result = ( await dbModule.findResultToArray( gameCursor, { competitionID: ObjectID( competitionID.toString() ), fixture: fixture } ) );
+	if ( !ObjectID.isValid( competitionID ) ) throw { code: 404, message: "Identificador de competición inválido" };
 	let result = ( await gameCursor.aggregate( [
 		{ $match: { competitionID: ObjectID( competitionID.toString() ), fixture: fixture, round: { $type: "int" } } },
 		{
@@ -154,10 +153,4 @@ exports.purgeGame = async ( id ) => {
 	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Identificador de partido inválido" };
 	let result = ( await gameCursor.deleteOne( { _id: ObjectID( id.toString() ) } ) );
 	return ( result.result.n === 1 && result.result.ok === 1 );
-};
-
-exports.deleteGamesByCompetition = async ( competitionID ) => {
-	if ( !ObjectID.isValid( competitionID ) ) throw { code: 422, message: "Identificador de competición inválido" };
-	let result = ( await gameCursor.deleteMany( { competitionID: ObjectID( competitionID.toString() ) } ) );
-	return ( !!result.result.n && !!result.result.ok );
 };

@@ -27,6 +27,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     game: any;
     @ViewChild('formDirective', {static: true}) formDirective: FormGroupDirective;
     minDate: Date;
+    minDateString: string;
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -51,6 +52,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
             (await this.setFilteredOptions(value));
         });
         this.minDate = new Date();
+        this.minDate.setSeconds(0, 0);
+        this.minDateString = this.minDate.toISOString().replace(/:00.000Z/, "");
     }
 
     ngOnDestroy() {

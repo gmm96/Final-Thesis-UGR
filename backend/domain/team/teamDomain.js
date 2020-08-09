@@ -6,7 +6,7 @@ var lodash = require( "lodash" );
 
 
 exports.getTeamById = async ( id ) => {
-	if ( !id ) throw { code: 422, message: "Identificador de equipo inválido" };
+	if ( !id ) throw { code: 404, message: "Identificador de equipo inválido" };
 	let team = ( await teamDatabase.getTeamById( id ) );
 	if ( !team ) throw { code: 404, message: "El equipo especificado no se encuentra en el sistema" };
 	return team;
@@ -32,14 +32,14 @@ exports.getPlayersWithTeam = async () => {
 
 
 exports.hasPlayerAnyTeam = async ( playerID ) => {
-	if ( !playerID ) throw { code: 422, message: "Identificador de jugador inválido" };
+	if ( !playerID ) throw { code: 404, message: "Identificador de jugador inválido" };
 	let result = ( await teamDatabase.getPlayerTeam( playerID ) );
 	return result;
 }
 
 
 exports.getTeamCompetitions = async ( teamID ) => {
-	if ( !teamID ) throw { code: 422, message: "Identificador de equipo inválido" };
+	if ( !teamID ) throw { code: 404, message: "Identificador de equipo inválido" };
 	let result = ( await competitionDomain.hasTeamPlayedAnyCompetition( teamID ) );
 	let parsedResult = result.map( ( competition ) => {
 		let parsedCompetition = lodash.cloneDeep( competition );
@@ -170,74 +170,3 @@ exports.teamParametersValidator = async ( team, avatar ) => {
 	if ( await domainTools.hasArrayDuplicatedElements( team.players ) ) throw { code: 422, message: "Lista de jugadores de equipo inválida, jugador duplicado" };
 	if ( avatar ) ( await domainTools.checkUploadedImage( avatar ) );
 };
-
-
-// exports.addTeamToCompetition = async ( competitionID, newTeam, players ) => {
-// 	if ( !competitionID ) throw { code: 422, message: "Invalid competition id" };
-//
-// 	let existingCompetition = ( await competitionDomain.getCompetitionById( competitionID ) );
-// 	if ( !existingCompetition ) {
-// 		throw { code: 422, message: "Specified competition is not in system" };
-// 	}
-//
-// 	let currentTeamNumber = ( await exports.countTeamsInCompetition( competitionID ) );
-// 	if ( existingCompetition.maxTeamNumber && currentTeamNumber >= existingCompetition.maxTeamNumber ) {
-// 		throw { code: 422, message: "Reached maximum number of teams per this competition" };
-// 	}
-// 	newTeam.competitions.push( existingCompetition._id );
-//
-// 	if ( players.length < existingCompetition.minPlayerNumberPerTeam ) {
-// 		throw { code: 422, message: "Cannot create team, minimum number of players has not been reached" };
-// 	} else if ( players.length > existingCompetition.maxPlayerNumberPerTeam ) {
-// 		throw { code: 422, message: "Cannot create team, maximum number of players reached." };
-// 	}
-//
-// 	for ( let player of players ) {
-// 		if ( player._id ) {
-// 			let isPlayerInCompetition = ( await playerDomain.isPlayerInCompetition( existingCompetition._id, player._id ) );
-// 			if ( isPlayerInCompetition ) throw { code: 422, message: "Player id " + player._id + " already enrolled in this competition" };
-// 		} else {
-// 			let validityResult = await playerDomain.checkCreatePlayerValidity( player );
-// 		}
-// 	}
-//
-// 	let returnedTeam = ( await exports.createTeam( newTeam ) );
-// 	returnedTeam.players = [];
-//
-// 	for ( let player of players ) {
-// 		if ( player._id ) {
-// 			let returnedPlayer = ( await playerDomain.getPlayerById( player._id ) );
-// 			returnedPlayer.competitions.push( { teamID: returnedTeam._id, competitionID: existingCompetition._id } );
-// 			let updatedPlayer = ( await playerDomain.updatePlayer( returnedPlayer._id, returnedPlayer ) );
-// 			returnedTeam.players.push( updatedPlayer );
-// 		} else {
-// 			player.competitions = [ { teamID: returnedTeam._id, competitionID: existingCompetition._id } ];
-// 			let returnedPlayer = ( await playerDomain.createPlayer( player ) );
-// 			returnedTeam.players.push( returnedPlayer );
-// 		}
-// 	}
-//
-// 	return returnedTeam;
-// };
-
-
-// exports.countTeamsInCompetition = async ( competitionID ) => {
-// 	if ( !competitionID ) throw { code: 422, message: "Invalid competition id" };
-// 	let existingCompetition = ( await competitionDomain.getCompetitionById( competitionID ) );
-// 	if ( !existingCompetition ) {
-// 		throw { code: 422, message: "Specified competition is not in system" };
-// 	}
-//
-// 	return ( await teamDatabase.countTeamsInCompetition( competitionID ) );
-// };
-//
-//
-// exports.getTeamsInCompetition = async ( competitionID ) => {
-// 	if ( !competitionID ) throw { code: 422, message: "Invalid competition id" };
-// 	let existingCompetition = ( await competitionDomain.getCompetitionById( competitionID ) );
-// 	if ( !existingCompetition ) {
-// 		throw { code: 422, message: "Specified competition is not in system" };
-// 	};
-//
-// 	return ( await teamDatabase.getTeamsInCompetition( competitionID ) );
-// };

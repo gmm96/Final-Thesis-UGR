@@ -101,7 +101,7 @@
                 <form [formGroup]="gameForm" #formDirective="ngForm">
                     <mat-form-field appearance="legacy" color="accent">
                         <mat-label>Fecha y hora *</mat-label>
-                        <input matInput formControlName="time" type="datetime-local" min="{{ minDate.toISOString() }}">
+                        <input matInput formControlName="time" type="datetime-local" min="{{ minDateString }}">
                     </mat-form-field>
                     <mat-form-field appearance="legacy" color="accent">
                         <mat-label>Localización *</mat-label>

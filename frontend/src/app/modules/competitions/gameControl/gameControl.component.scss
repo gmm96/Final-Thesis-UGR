@@ -228,6 +228,16 @@
                             height: 54px;
                             width: 36px;
                             margin-right: 5px;
+
+
+                        }
+
+                        .mat-card-image {
+                            margin: 0;
+
+                            &:first-child {
+                                margin-top: 0;
+                            }
                         }
 
                         .player-number {

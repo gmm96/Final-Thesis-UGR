@@ -8,14 +8,14 @@ let saltRounds = 2.88;
 exports.gameType = { league: "league", playoffs: "playoffs" };
 exports.playoffMatchupCompetitorType = { team: "team", matchup: "matchup" };
 
-exports.encryptPassword = async ( password ) => {
-	let hashedPassword = await new Promise( ( resolve, reject ) => {
-		bcrypt.hash( password, saltRounds, function ( err, hash ) {
-			if ( err ) reject( err );
-			resolve( hash )
-		} );
-	} );
+exports.encryptPassword = ( password ) => {
+	let hashedPassword = bcrypt.hashSync(password, saltRounds);
 	return hashedPassword;
+};
+
+exports.comparePasswords = ( plainPassword, encryptedPassword ) => {
+	let areTheSame = bcrypt.compareSync(plainPassword, encryptedPassword)
+	return areTheSame;
 };
 
 

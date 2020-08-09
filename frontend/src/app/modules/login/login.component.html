@@ -8,12 +8,12 @@
             <mat-card-content class="login-card-content">
                 <form [formGroup]="loginForm">
                     <mat-form-field class="username col-sm-12">
-                        <input matInput placeholder="Username" formControlName="username">
+                        <input matInput placeholder="Email" formControlName="username">
                         <mat-error *ngIf="errorHandling('username', 'required')">
-                            You must provide a<strong>name</strong>
+                            Debe introducir un <strong>email</strong>
                         </mat-error>
                         <mat-error *ngIf="errorHandling('username', 'email')">
-                            You must provide a<strong>name</strong>
+                            Debe introducir un <strong>email</strong> válido
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field class="password col-sm-12">

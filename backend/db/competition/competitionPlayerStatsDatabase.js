@@ -31,7 +31,7 @@ exports.purgeCompetitionPlayerStats = async ( competitionPlayerStatsID ) => {
 };
 
 exports.getCompetitionPlayerStatsByPlayerId = async ( playerID ) => {
-	if ( !ObjectID.isValid( playerID ) ) throw { code: 422, message: "Identificador de estadísticas de jugador inválido" };
+	if ( !ObjectID.isValid( playerID ) ) throw { code: 404, message: "Identificador de estadísticas de jugador inválido" };
 	let result = ( await dbModule.findResultToArray( competitionPlayerStatsCursor, { playerID: ObjectID( playerID.toString() ) } ) );
 	return result;
 }

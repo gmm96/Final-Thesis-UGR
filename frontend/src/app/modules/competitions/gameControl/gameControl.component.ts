@@ -119,7 +119,7 @@ export class GameControlComponent implements OnInit {
         this.visitorTeam = this.game.visitorTeamInfo.team;
         if (this.localTeam.avatar) this.localTeam.avatar = 'http://localhost:3000' + this.localTeam.avatar;
         if (this.visitorTeam.avatar) this.visitorTeam.avatar = 'http://localhost:3000' + this.visitorTeam.avatar;
-        this.game.time = new Date(this.game.time).toLocaleString();
+        if (this.game.time) this.game.time = new Date(this.game.time).toLocaleString().slice(0, -3);;
 
         if (!this.isGameStarted()) {
             this.localTeam.players.forEach((player) => {
@@ -149,7 +149,7 @@ export class GameControlComponent implements OnInit {
             if (this.currentQuarter <= 4) {
                 this.possibleMinutes = Array.from(Array((10)), (v, i) => i + (this.currentQuarter - 1) * 10 + 1);
             } else {
-                this.possibleMinutes = Array.from(Array((5)), (v, i) => i + 40 + 1 + (this.currentQuarter - 4) * 5);
+                this.possibleMinutes = Array.from(Array((5)), (v, i) => i + 40 + 1 + (this.currentQuarter - 4 - 1) * 5);
             }
             this.updateMinute(this.game.events[0].minute);
         }
@@ -306,7 +306,6 @@ export class GameControlComponent implements OnInit {
                     selected = this.visitorTeamPlayersForm.value[player._id + '_selected'];
                     number = parseInt(this.visitorTeamPlayersForm.value[player._id + "_number"]);
                     startingLineup = this.visitorTeamPlayersForm.value[player._id.toString() + "_startingLineup"];
-
                 } finally {
                     if (selected && number) {
                         initParams.visitorTeam.push({_id: player._id, number: number, startingLineup: startingLineup});
@@ -325,6 +324,9 @@ export class GameControlComponent implements OnInit {
                 (await this.getGame());
             } catch (e) {
                 this.toastr.error((e && e.error && e.error.message) ? e.error.message : "Error desconococido, vuelva a intentarlo.", "Error");
+                this.resetForm(this.localTeamPlayersForm);
+                this.resetForm(this.visitorTeamPlayersForm);
+                this.resetForm(this.refereesForm);
             }
         }
     }

@@ -21,7 +21,7 @@ exports.getAllAdmins = async () => {
 };
 
 exports.createAdmin = async ( admin ) => {
-	result = ( await adminCursor.insertOne( admin ) );
+	let result = ( await adminCursor.insertOne( admin ) );
 	return result.ops[ 0 ];
 };
 

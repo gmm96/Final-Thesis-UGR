@@ -49,15 +49,3 @@ exports.updateCompetitionTeamStats = async ( id, competitionTeamStats ) => {
 	
 	return ( await competitionTeamStatsDatabase.updateCompetitionTeamStats( id, competitionTeamStats ) );
 };
-
-
-exports.purgeCompetitionTeamStats = async ( competitionTeamStatsID ) => {
-	if ( !competitionTeamStatsID ) throw { code: 422, message: "Identificador de estadísticas de equipo inválido" };
-	
-	let existingCompetitionTeamStats = ( await competitionTeamStatsDatabase.getCompetitionTeamStatsById( competitionTeamStatsID ) );
-	if ( !existingCompetitionTeamStats ) {
-		throw { code: 422, message: "Las estadísticas del equipo especificado no se encuentran en el sistema" };
-	}
-	
-	return ( await competitionTeamStatsDatabase.purgeCompetitionTeamStats( competitionTeamStatsID ) );
-};

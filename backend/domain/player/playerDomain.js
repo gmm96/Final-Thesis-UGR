@@ -7,7 +7,7 @@ var lodash = require( "lodash" );
 
 
 exports.getPlayerById = async ( id ) => {
-	if ( !id ) throw { code: 422, message: "Identificador de jugador inválido" };
+	if ( !id ) throw { code: 404, message: "Identificador de jugador inválido" };
 	let player = ( await playerDatabase.getPlayerById( id ) );
 	if ( !player ) throw { code: 404, message: "El jugador especificado no se encuentra en el sistema" };
 	return player;
@@ -43,7 +43,7 @@ exports.getPlayersWithNoTeam = async ( idCard ) => {
 
 
 exports.getPlayerCompetitions = async ( playerID ) => {
-	if ( !playerID ) throw { code: 422, message: "Identificador de jugador inválido" };
+	if ( !playerID ) throw { code: 404, message: "Identificador de jugador inválido" };
 	let result = ( await competitionDomain.getPlayerCompetitions( playerID ) );
 	let parsedResult = result.map( ( competition ) => {
 		let parsedCompetition = lodash.cloneDeep( competition );
@@ -58,9 +58,9 @@ exports.getPlayerCompetitions = async ( playerID ) => {
 
 
 exports.getAverageCompetitionPlayerStats = async ( playerID ) => {
-	if ( !playerID ) throw { code: 422, message: "Identificador de jugador inválido" };
+	if ( !playerID ) throw { code: 404, message: "Identificador de jugador inválido" };
 	let player = ( await playerDatabase.getPlayerById( playerID ) );
-	if ( !player ) throw { code: 422, message: "El jugador especificado no se encuentra en el sistema" };
+	if ( !player ) throw { code: 404, message: "El jugador especificado no se encuentra en el sistema" };
 	
 	let allCompetitionStats = ( await competitionPlayerStatsDomain.hasPlayerPlayedAnyCompetition( playerID ) );
 	let playedGames = 0, points = 0, fouls = 0;
@@ -175,69 +175,3 @@ exports.playerParametersValidator = async ( player, avatar ) => {
 	if ( !player.height ) throw { code: 422, message: "Altura de jugador inválido" };
 	if ( avatar ) ( await domainTools.checkUploadedImage( avatar ) );
 };
-
-
-// exports.addNewPlayerToTeam = async ( player, competitionID, teamID ) => {
-// 	if ( !competitionID ) throw { code: 422, message: "Invalid competition id" };
-// 	if ( !teamID ) throw { code: 422, message: "Invalid team id" };
-//
-// 	let existingCompetition = ( await competitionDomain.getCompetitionById( competitionID ) );
-// 	if ( !existingCompetition ) throw { code: 422, message: "Specified competition is not in system" };
-//
-// 	let existingTeam = ( await teamDomain.getTeamById( teamID ) );
-// 	if ( !existingTeam ) throw { code: 422, message: "Specified team is not in system" };
-//
-// 	if ( ( await exports.countPlayersInTeam( existingTeam._id ) ) >= existingCompetition.maxPlayerNumberPerTeam ) {
-// 		throw { code: 422, message: "Reached maximum number of registered players for this team" };
-// 	}
-//
-// 	let validityResult = await exports.checkCreatePlayerValidity( player );
-//
-// 	player.competitions.push( { "teamID": existingTeam._id, "competitionID": existingCompetition._id } );
-// 	return ( await exports.createPlayer( player ) );
-// };
-
-
-// exports.addExistingPlayerToTeam = async ( playerID, competitionID, teamID ) => {
-// 	if ( !playerID ) throw { code: 422, message: "Invalid player id" };
-// 	if ( !teamID ) throw { code: 422, message: "Invalid team id" };
-// 	if ( !competitionID ) throw { code: 422, message: "Invalid competition id" };
-//
-// 	let existingCompetition = ( await competitionDomain.getCompetitionById( competitionID ) );
-// 	if ( !existingCompetition ) throw { code: 422, message: "Specified competition is not in system" };
-//
-// 	let existingTeam = ( await teamDomain.getTeamById( teamID ) );
-// 	if ( !existingTeam ) throw { code: 422, message: "Specified team is not in system" };
-//
-// 	let existingPlayer = ( await exports.getPlayerById( playerID ) );
-// 	if ( !existingPlayer ) throw { code: 422, message: "Specified player is not in system" };
-//
-// 	if ( ( await exports.countPlayersInTeam( existingTeam._id ) ) >= existingCompetition.maxPlayerNumberPerTeam ) {
-// 		throw { code: 422, message: "Reached maximum number of registered players for this team" };
-// 	}
-//
-// 	let isPlayerInCompetition = ( await exports.isPlayerInCompetition( competitionID, existingPlayer._id ) );
-// 	if ( isPlayerInCompetition ) throw { code: 422, message: "Player id " + existingPlayer._id + " already enrolled in this competition" };
-//
-// 	existingPlayer.competitions.push( { "teamID": existingTeam._id, "competitionID": existingCompetition._id } );
-// 	return ( await exports.updatePlayer( existingPlayer._id, existingPlayer ) );
-// };
-
-
-// exports.removePlayerFromTeam = async ( playerID, teamID, competitionID ) => {
-// 	if ( !playerID ) throw { code: 422, message: "Invalid player id" };
-//
-// 	let player = ( await exports.getPlayerById( playerID ) );
-// 	let playerCompetitionIndex = player.competitions.findIndex( competition =>
-// 		competition.teamID.toString() == teamID.toString() && competition.competitionID.toString() == competitionID.toString()
-// 	);
-// 	if ( playerCompetitionIndex == -1 ) throw { code: 422, message: "Player is not registered in this competition" };
-//
-// 	let competition = ( await competitionDomain.getCompetitionById( competitionID ) );
-// 	if ( !competition ) throw { code: 422, message: "Specified competition is not in system" };
-// 	if ( competition.inProgress ) throw { code: 422, message: "Cannot remove player from team, competition has already started" };
-//
-// 	player.competitions.splice( playerCompetitionIndex, 1 );
-//
-// 	return ( await exports.updatePlayer( playerID, player ) );
-// };

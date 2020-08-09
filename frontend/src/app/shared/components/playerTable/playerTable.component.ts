@@ -54,6 +54,9 @@ export class PlayerTableComponent implements OnInit, OnDestroy {
                     avatar: item.avatar ? "http://localhost:3000" + item.avatar : null
                 };
             });
+            this.rosterCompatible.sort((a, b) => {
+                return a.name.localeCompare(b.name);
+            });
             this.dataSource = new MatTableDataSource(this.rosterCompatible);
             this.changeDetectorRef.detectChanges();
         }

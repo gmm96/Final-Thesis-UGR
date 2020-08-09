@@ -68,9 +68,3 @@ exports.updatePlayoffsRound = async ( id, playoffsRound ) => {
 	let result = ( await playoffsCursor.findOneAndUpdate( { _id: ObjectID( id.toString() ) }, { $set: playoffsRound }, { returnOriginal: false } ) );
 	return result.value;
 };
-
-exports.purgePlayoffsRound = async ( id ) => {
-	if ( !ObjectID.isValid( id ) ) throw { code: 422, message: "Identificador de ronda de playoffs inválido" };
-	let result = ( await playoffsCursor.deleteOne( { _id: ObjectID( id.toString() ) } ) );
-	return ( result.result.n === 1 && result.result.ok === 1 );
-};

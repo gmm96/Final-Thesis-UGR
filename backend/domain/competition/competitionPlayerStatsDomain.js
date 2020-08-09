@@ -50,7 +50,7 @@ exports.purgeCompetitionPlayerStats = async ( competitionPlayerStatsID ) => {
 };
 
 exports.hasPlayerPlayedAnyCompetition = async ( playerID ) => {
-	if ( !playerID ) throw { code: 422, message: "Identificador de jugador inválido" };
+	if ( !playerID ) throw { code: 404, message: "Identificador de jugador inválido" };
 	let competitionPlayerStats = ( await competitionPlayerStatsDatabase.getCompetitionPlayerStatsByPlayerId( playerID ) );
 	return competitionPlayerStats;
 }

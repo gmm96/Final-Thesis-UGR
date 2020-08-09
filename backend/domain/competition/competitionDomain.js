@@ -13,7 +13,7 @@ var underscore = require( "underscore" );
 
 
 exports.getCompetitionById = async ( id ) => {
-	if ( !id ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !id ) throw { code: 404, message: "Identificador de competición inválido" };
 	return ( await competitionDatabase.getCompetitionById( id ) );
 };
 
@@ -104,9 +104,9 @@ exports.competitionParametersValidator = async ( competition ) => {
 
 
 exports.hasTeamPlayedAnyCompetition = async ( teamID ) => {
-	if ( !teamID ) throw { code: 422, message: "Identificador de equipo inválido" };
+	if ( !teamID ) throw { code: 404, message: "Identificador de equipo inválido" };
 	let existingTeam = ( await teamDomain.getTeamById( teamID ) );
-	if ( !existingTeam ) throw { code: 422, message: "El equipo especificado no se encuentra en el sistema" };
+	if ( !existingTeam ) throw { code: 404, message: "El equipo especificado no se encuentra en el sistema" };
 	let playedCompetitions = ( await competitionDatabase.getCompetitionPlayedByTeam( existingTeam._id ) );
 	return playedCompetitions;
 };
@@ -286,7 +286,6 @@ exports.generatePlayoffsRoundsAfterEndOfLeague = async ( competitionID ) => {
 		for ( let j = 0; j < treeStats.nMatchupsPerRound[ i ]; ++j ) {
 			let localTeam = currentRoundStack[ j ]
 			let visitorTeam = currentRoundStack[ currentRoundStack.length - 1 - j ];
-			
 			let newPlayoffMatchup = {
 				localTeamID: ( localTeam.type == "TEAM" ) ? localTeam._id : null,
 				visitorTeamID: ( visitorTeam.type == "TEAM" ) ? visitorTeam._id : null,
@@ -297,17 +296,21 @@ exports.generatePlayoffsRoundsAfterEndOfLeague = async ( competitionID ) => {
 				prevRoundVisitorID: ( visitorTeam.type == "MATCHUP" ) ? visitorTeam._id : null,
 				winnerID: null
 			};
-			let createdPlayoffsRound = ( await competitionPlayoffsRoundDomain.createPlayoffsRound( newPlayoffMatchup ) );
 			
-			if ( createdPlayoffsRound.prevRoundLocalID || createdPlayoffsRound.prevRoundVisitorID ) {
+			debugger;
+			let createdPlayoffsRound = ( await competitionPlayoffsRoundDomain.createPlayoffsRound( newPlayoffMatchup ) );
+			debugger;
+			
+			if ( createdPlayoffsRound.prevRoundLocalID != null || createdPlayoffsRound.prevRoundVisitorID != null ) {
+				
 				let editedRound;
 				if ( createdPlayoffsRound.prevRoundLocalID ) {
 					editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundLocalID, createdPlayoffsRound._id ) );
-				} else if ( createdPlayoffsRound.prevRoundVisitorID ) {
+				}
+				if ( createdPlayoffsRound.prevRoundVisitorID ) {
 					editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundVisitorID, createdPlayoffsRound._id ) );
 				}
 			}
-			
 			roundMatchups.push( { _id: createdPlayoffsRound._id, type: "MATCHUP" } );
 		}
 		currentStackTeamsOrMatchups = [ ...currentStackTeamsOrMatchups, ...roundMatchups ];
@@ -319,16 +322,18 @@ exports.generatePlayoffsRoundsAfterEndOfLeague = async ( competitionID ) => {
 
 exports.parsePlayoffsRoundToGames = async ( competitionID, roundNumber ) => {
 	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
-	if ( !round ) throw { code: 422, message: "Ronda inválida" };
+	if ( !roundNumber ) throw { code: 422, message: "Ronda inválida" };
 	let competition = ( await competitionDatabase.getCompetitionById( competitionID ) );
 	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
 	
-	let playoffsRounds = ( await competitionPlayoffsRoundDomain.getPlayoffsRoundsByCompetitionAndRound( competitionID, round ) );
+	let playoffsRounds = ( await competitionPlayoffsRoundDomain.getPlayoffsRoundsByCompetitionAndRound( competitionID, roundNumber ) );
 	if ( !playoffsRounds || !playoffsRounds.length ) throw { code: 422, message: "Las rondas de playoffs especificadas no se encuentran en el sistema" };
 	
+	debugger;
 	let allRoundGames = [];
 	for ( let round of playoffsRounds ) {
 		for ( let index of underscore.range( 1, competition.playoffsFixturesVsSameTeam + 1 ) ) {
+			debugger;
 			let game = {
 				competitionID: competition._id,
 				winner: null,
@@ -346,8 +351,11 @@ exports.parsePlayoffsRoundToGames = async ( competitionID, roundNumber ) => {
 				fixture: index,
 				round: round._id,
 			};
+			debugger;
 			let createdGame = ( await gameDomain.createGame( game ) );
+			debugger;
 			allRoundGames.push( createdGame );
+			debugger;
 		}
 	}
 	return allRoundGames;
@@ -458,27 +466,27 @@ exports.getCompetitionLeagueTable = async ( competitionID ) => {
 							return 0;
 						}
 					} )
-					return { teamID: team.teamID, maxPoints: Math.max( localMaxPoints, visitorMaxPoints ) };
+					return { teamID: team.teamID, maxPoints: Math.max( localMaxPoints ? localMaxPoints : 0, visitorMaxPoints ? visitorMaxPoints : 0 ) };
 				} )
 				
-				let maxPointsInCommonGamesByTeamGrouped = lodash.groupBy( maxPointsInCommonGamesByTeam, item => item.points );
+				let maxPointsInCommonGamesByTeamGrouped = lodash.groupBy( maxPointsInCommonGamesByTeam, item => item.maxPoints );
 				let maxPointsInCommonGamesByTeamKeys = Object.keys( maxPointsInCommonGamesByTeamGrouped ).sort( ( a, b ) => b - a )
 				
 				for ( let maxPointsInCommonGamesByTeamKey of maxPointsInCommonGamesByTeamKeys ) {
 					let teams5 = commonGamesWithPointsGroupedByPoints[ maxPointsInCommonGamesByTeamKey ]; // maxPointsInCommonGamesByTeam items
 					if ( teams5.length == 1 ) {
-						let teamStats = result.find( it => it.teamID.toString() == teams5[ 0 ].teamID.toString() )
+						let teamStats = result.find( it => it.teamID.toString() == teams5[ 0 ].teamID.toString() );
 						leagueTable.push( teamStats );
 						continue;
 					}
 					
 					// Criterio 5: mayor diferencia de puntos total de competición
-					let teamsIDs5 = teams5.map( it => it.teamID );
-					let statsForTeams5 = result.find( it => teamsIDs5.findIndex( it.teamID.toString() != -1 ) );
+					let statsForTeams5 = result.filter( stats => teams5.findIndex( team5 => team5.teamID.toString() == stats.teamID.toString() ) != -1 );					// let statsForTeams5 = result.filter( it => teamsIDs5.findIndex( it.teamID.toString() != -1 ) );
 					
 					let pointsDiffInTeams5 = statsForTeams5.map( statsTeam => {
-						statsForTeams5.pointsDiff = statsTeam.stats.points - statsTeam.stats.opponentPoints;
-					} )
+						statsTeam.pointsDiff = statsTeam.stats.points - statsTeam.stats.opponentPoints;
+						return statsTeam;
+					} );
 					
 					let pointsDiffGrouped = lodash.groupBy( pointsDiffInTeams5, item => item.pointsDiff );
 					let pointsDiffGroupedKeys = Object.keys( pointsDiffGrouped ).sort( ( a, b ) => b - a )
@@ -506,15 +514,15 @@ exports.getCompetitionLeagueTable = async ( competitionID ) => {
 
 
 exports.getPlayerCompetitions = async ( playerID ) => {
-	if ( !playerID ) throw { code: 422, message: "Identificador de jugador inválido" };
+	if ( !playerID ) throw { code: 404, message: "Identificador de jugador inválido" };
 	let result = ( await competitionDatabase.getPlayerCompetitions( playerID ) );
 	return result;
 };
 
 
 exports.getGamesByCompetitionAndFixture = async ( competitionID, fixtureNumber ) => {
-	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
-	if ( !fixtureNumber ) throw { code: 422, message: "Número de jornada inválido" };
+	if ( !competitionID ) throw { code: 404, message: "Identificador de competición inválido" };
+	if ( !fixtureNumber ) throw { code: 404, message: "Número de jornada inválido" };
 	let result = ( await gameDomain.getGamesByCompetitionAndFixture( competitionID, fixtureNumber ) );
 	return result;
 };
@@ -564,15 +572,15 @@ exports.getCompetitionTeamStatsByCompetitionAndTeam = async ( competitionID, tea
 
 
 exports.getCompetitionPlayerStatsByCompetitionTeamAndPlayer = async ( competitionID, teamID, playerID ) => {
-	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
-	if ( !teamID ) throw { code: 422, message: "Identificador de equipo inválido" };
-	if ( !playerID ) throw { code: 422, message: "Identificador de jugador inválido" };
+	if ( !competitionID ) throw { code: 404, message: "Identificador de competición inválido" };
+	if ( !teamID ) throw { code: 404, message: "Identificador de equipo inválido" };
+	if ( !playerID ) throw { code: 404, message: "Identificador de jugador inválido" };
 	let competition = ( await competitionDatabase.getCompetitionById( competitionID ) );
-	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	if ( !competition ) throw { code: 404, message: "La competición especificada no se encuentra en el sistema" };
 	let team = ( await teamDomain.getTeamById( teamID ) );
-	if ( !team ) throw { code: 422, message: "El equipo especificado no se encuentra en el sistema" };
+	if ( !team ) throw { code: 404, message: "El equipo especificado no se encuentra en el sistema" };
 	let player = ( await playerDomain.getPlayerById( playerID ) );
-	if ( !player ) throw { code: 422, message: "El jugador especificado no se encuentra en el sistema" };
+	if ( !player ) throw { code: 404, message: "El jugador especificado no se encuentra en el sistema" };
 	
 	return ( await competitionPlayerStatsDomain.getCompetitionPlayerStatsByCompetitionTeamAndPlayer( competitionID, teamID, playerID ) );
 };
@@ -619,8 +627,8 @@ exports.getUnplayedGamesByCompetitionForScheduling = async ( competitionID ) => 
 
 
 exports.getFullGameById = async ( competitionID, gameID ) => {
-	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
-	if ( !gameID ) throw { code: 422, message: "Identificador de equipo inválido" };
+	if ( !competitionID ) throw { code: 404, message: "Identificador de competición inválido" };
+	if ( !gameID ) throw { code: 404, message: "Identificador de equipo inválido" };
 	return ( await gameDomain.getFullGameById( competitionID, gameID ) );
 };
 
@@ -648,19 +656,3 @@ exports.setEndOfCompetition = async ( competitionID ) => {
 	competition.inProgress = false;
 	let endedCompetition = ( await competitionDatabase.updateCompetition( competitionID, competition ) );
 };
-
-
-//
-//
-// exports.deleteCompetitionSchedule = async ( competitionID ) => {
-// 	if ( !competitionID ) throw { code: 422, message: "Invalid competition id" };
-//
-// 	let existingCompetition = ( await competitionDatabase.getCompetitionById( competitionID ) );
-// 	if ( !existingCompetition ) {
-// 		throw { code: 422, message: "Specified competition is not in system" };
-// 	}
-//game
-// 	return ( await gameDomain.deleteCompetitionSchedule( competitionID ) );
-// };
-//
-//

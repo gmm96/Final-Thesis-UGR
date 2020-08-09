@@ -46,7 +46,7 @@ export class CreateCompetitionComponent implements OnInit, OnDestroy {
             'minPlayerNumberPerTeam': [null, Validators.compose([Validators.required, Validators.pattern("^\\d+$")])],
             'leagueFixturesVsSameTeam': [null, Validators.compose([Validators.required, Validators.pattern("^\\d+$")])],
             'playoffsFixturesVsSameTeam': [null, Validators.compose([Validators.required, Validators.pattern("^(\\d*[13579]|0)$")])],
-            'playoffsTeamsAfterLeague': [null, Validators.compose([Validators.required, Validators.pattern("^(\\d*[13579]|0)$")])],
+            'playoffsTeamsAfterLeague': [null, Validators.compose([Validators.required, Validators.pattern("^\\d+$")])],
         });
         this.titleService.setTitle("Creación de competiciones");
     }
@@ -95,14 +95,6 @@ export class CreateCompetitionComponent implements OnInit, OnDestroy {
         this.teamQueryToSearch = "";
         this.filteredOptions = [];
         this.changeDetectorRef.detectChanges();
-    }
-
-    addFirstFilteredOption(event) {
-        event.preventDefault();
-        if (this.filteredOptions.length && this.teamQueryToSearch.length) {
-            event.option = {value: this.filteredOptions[0]};
-            this.addTeamToCompetition(event);
-        }
     }
 
     removeTeamFromList(name) {

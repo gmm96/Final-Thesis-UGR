@@ -164,7 +164,7 @@ exports.advanceNextQuarter = async ( event, game ) => {
 		if ( quarter === 2 ) {
 			timeoutsRemaining = 3;
 		} else if ( quarter >= 4 ) {
-			timeoutsRemaining += 1;
+			timeoutsRemaining = 1;
 		}
 		gameCopy.localTeamInfo.quarterStats.push( {
 			points: 0,
@@ -177,7 +177,7 @@ exports.advanceNextQuarter = async ( event, game ) => {
 		if ( quarter === 2 ) {
 			timeoutsRemaining = 3;
 		} else if ( quarter >= 4 ) {
-			timeoutsRemaining += 1;
+			timeoutsRemaining = 1;
 		}
 		gameCopy.visitorTeamInfo.quarterStats.push( {
 			points: 0,

@@ -71,7 +71,7 @@ import {MaterialFileInputModule} from "ngx-material-file-input";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {ToastrModule} from "ngx-toastr";
 import {AuthGuardService} from "../core/auth/auth-guard.service";
-import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MomentDateModule} from '@angular/material-moment-adapter';
+import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {CompetitionsService} from "../core/services/competitions/competitions.service";
 import {TeamTableComponent} from "./components/teamTable/teamTable.component";
 import {TeamListComponent} from "../modules/competitions/details/teamList/teamList.component";
@@ -144,7 +144,12 @@ import {TeamListComponent} from "../modules/competitions/details/teamList/teamLi
         MatNativeDateModule,
         MaterialFileInputModule,
         MatCheckboxModule,
-        ToastrModule.forRoot()
+        ToastrModule.forRoot({
+            timeOut: 3000,
+            closeButton: true,
+            progressBar: true,
+            progressAnimation: "decreasing"
+        })
     ],
     providers: [
         AuthService,
@@ -154,10 +159,10 @@ import {TeamListComponent} from "../modules/competitions/details/teamList/teamLi
         TeamsService,
         CompetitionsService,
         {provide: MatPaginatorIntl, useClass: MatPaginatorIntlSpa},
-        { provide: LOCALE_ID, useValue: 'es-ES' },
-        { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
-        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-        { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
+        {provide: LOCALE_ID, useValue: 'es-ES'},
+        {provide: MAT_DATE_LOCALE, useValue: 'es-ES'},
+        {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+        {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
     ],
     exports: [
         CommonModule,

@@ -268,8 +268,7 @@
                                     <span *ngSwitchCase="'startQuarter'">Inicio del cuarto {{ event.quarter }}</span>
                                     <span *ngSwitchCase="'endQuarter'">Final del cuarto {{ event.quarter }}</span>
                                     <span *ngSwitchCase="'timeOut'">Tiempo muerto solicitado por {{ getTeamNameByTeamId( event.teamID ) }}</span>
-                                    <span *ngSwitchCase="'basket'">Canasta de {{ event.data }}
-                                        P {{ getTeamNameByTeamId( event.teamID ) }}
+                                    <span *ngSwitchCase="'basket'">Canasta de {{ event.data }}P {{ getTeamNameByTeamId( event.teamID ) }}
                                         #{{ getPlayerNameByPlayerId( event.teamID, event.playerID ).number }}</span>
                                     <span *ngSwitchCase="'freeThrow'">Tiro libre {{ event.data ? "convertido" : "fallado" }}
                                         {{ getTeamNameByTeamId( event.teamID ) }}
@@ -304,7 +303,7 @@
         <mat-icon>expand_less</mat-icon>
     </button>
 
-    <div class="row no-gutters" *ngIf="openedBottomSheet || canCloseBottomSheet">
+    <div class="row no-gutters d-print-none" *ngIf="openedBottomSheet || canCloseBottomSheet">
         <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
             <div class="bottom-sheet mat-elevation-z24" *ngIf="openedBottomSheet" [@bottomSheet]>
                 <div class="bottomSheet-header d-flex justify-content-between align-items-center">
@@ -572,10 +571,11 @@
                         <span>-</span>
                         <span>Titular</span>
                         <span>-</span>
+                        <span>ID Jugador</span>
+                        <span>-</span>
                         <span>Jugador</span>
                     </div>
-                    <div class="player-container d-flex align-items-center justify-content-start"
-                         *ngFor="let player of localPlayers">
+                    <div class="player-container d-flex align-items-center justify-content-between" *ngFor="let player of localPlayers">
                         <mat-checkbox class="mat-form-checkbox"
                                       [formControlName]="player?._id?.toString() + '_selected'"></mat-checkbox>
                         <mat-form-field appearance="legacy" color="accent" class="player-number">
@@ -626,10 +626,11 @@
                         <span>-</span>
                         <span>Titular</span>
                         <span>-</span>
+                        <span>ID Jugador</span>
+                        <span>-</span>
                         <span>Jugador</span>
                     </div>
-                    <div class="player-container d-flex align-items-center justify-content-start"
-                         *ngFor="let player of visitorPlayers">
+                    <div class="player-container d-flex align-items-center justify-content-between" *ngFor="let player of visitorPlayers">
                         <mat-checkbox class="mat-form-checkbox"
                                       [formControlName]="player?._id?.toString() + '_selected'"></mat-checkbox>
                         <mat-form-field appearance="legacy" color="accent" class="player-number">

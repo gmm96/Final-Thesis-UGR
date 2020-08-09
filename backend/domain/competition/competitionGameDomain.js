@@ -17,13 +17,13 @@ exports.getGameById = async ( gameID ) => {
 
 
 exports.getFullGameById = async ( competitionID, gameID ) => {
-	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
-	if ( !gameID ) throw { code: 422, message: "Identificador de partido inválido" };
+	if ( !competitionID ) throw { code: 404, message: "Identificador de competición inválido" };
+	if ( !gameID ) throw { code: 404, message: "Identificador de partido inválido" };
 	
 	let competition = ( await competitionDomain.getCompetitionById( competitionID ) );
-	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	if ( !competition ) throw { code: 404, message: "La competición especificada no se encuentra en el sistema" };
 	let game = ( await gameDatabase.getGameById( gameID ) );
-	if ( !game ) throw { code: 422, message: "El partido especificado no se encuentra en el sistema" };
+	if ( !game ) throw { code: 404, message: "El partido especificado no se encuentra en el sistema" };
 	
 	game.localTeamInfo.team = competition.teams.find( team => team._id.toString() === game.localTeamInfo._id.toString() );
 	game.visitorTeamInfo.team = competition.teams.find( team => team._id.toString() === game.visitorTeamInfo._id.toString() );
@@ -39,11 +39,11 @@ exports.getFullGameById = async ( competitionID, gameID ) => {
 
 
 exports.getGamesByCompetitionAndFixture = async ( competitionID, fixture ) => {
-	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !competitionID ) throw { code: 404, message: "Identificador de competición inválido" };
 	let competition = ( await competitionDomain.getCompetitionById( competitionID ) );
-	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	if ( !competition ) throw { code: 404, message: "La competición especificada no se encuentra en el sistema" };
 	if ( fixture < 1 || fixture > ( competition.teams.length - 1 ) * competition.leagueFixturesVsSameTeam ) {
-		throw { code: 422, message: "Número de jornada inválida" };
+		throw { code: 404, message: "Número de jornada inválida" };
 	}
 	let result = ( await gameDatabase.getGamesByCompetitionAndFixture( competitionID, fixture ) );
 	return result;
@@ -65,12 +65,12 @@ exports.getCurrentFixture = async ( competitionID ) => {
 
 
 exports.getNextTeamGamesInCompetition = async ( competitionID, teamID ) => {
-	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !competitionID ) throw { code: 404, message: "Identificador de competición inválido" };
 	let competition = ( await competitionDomain.getCompetitionById( competitionID ) );
-	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
-	if ( !teamID ) throw { code: 422, message: "Identificador de equipo inválido" };
+	if ( !competition ) throw { code: 404, message: "La competición especificada no se encuentra en el sistema" };
+	if ( !teamID ) throw { code: 404, message: "Identificador de equipo inválido" };
 	let team = ( await teamDomain.getTeamById( teamID ) );
-	if ( !team ) throw { code: 422, message: "El equipo especificado no se encuentra en el sistema" };
+	if ( !team ) throw { code: 404, message: "El equipo especificado no se encuentra en el sistema" };
 	
 	let result = ( await gameDatabase.getNextTeamGamesInCompetition( competitionID, teamID ) );
 	if ( result.length ) {
@@ -85,12 +85,12 @@ exports.getNextTeamGamesInCompetition = async ( competitionID, teamID ) => {
 
 
 exports.getPrevTeamGamesInCompetition = async ( competitionID, teamID ) => {
-	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !competitionID ) throw { code: 404, message: "Identificador de competición inválido" };
 	let competition = ( await competitionDomain.getCompetitionById( competitionID ) );
-	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
-	if ( !teamID ) throw { code: 422, message: "Identificador de equipo inválido" };
+	if ( !competition ) throw { code: 404, message: "La competición especificada no se encuentra en el sistema" };
+	if ( !teamID ) throw { code: 404, message: "Identificador de equipo inválido" };
 	let team = ( await teamDomain.getTeamById( teamID ) );
-	if ( !team ) throw { code: 422, message: "El equipo especificado no se encuentra en el sistema" };
+	if ( !team ) throw { code: 404, message: "El equipo especificado no se encuentra en el sistema" };
 	
 	let result = ( await gameDatabase.getPrevTeamGamesInCompetition( competitionID, teamID ) );
 	if ( result.length ) {
@@ -132,6 +132,7 @@ exports.isGameStarted = async ( game ) => {
 
 
 exports.createGame = async ( game ) => {
+	debugger;
 	( await exports.competitionGameParametersValidator( game ) );
 	let competition = ( await competitionDomain.getCompetitionById( game.competitionID ) );
 	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
@@ -145,6 +146,7 @@ exports.createGame = async ( game ) => {
 	if ( !competition.teams.find( team => team._id.toString() == visitorTeam._id.toString() ) )
 		throw { code: 422, message: "El equipo visitante especificado no se encuentra en la competición" };
 	
+	debugger;
 	game.createdAt = new Date().toISOString();
 	game.updatedAt = new Date().toISOString();
 	game.time = null;
@@ -179,6 +181,18 @@ exports.startGame = async ( competitionID, gameID, initGame ) => {
 	
 	if ( game.time && game.location ) {
 		if ( !( await exports.isGameStarted( game ) ) ) {
+			let localNumbers = initGame.localTeam.map( player => player.number );
+			let visitorNumbers = initGame.visitorTeam.map( player => player.number );
+			if ( await domainTools.hasArrayDuplicatedElements( localNumbers ) ) {
+				throw { code: 422, message: "Alguno de los dorsales del equipo local se encuentra repetido, imposible iniciar partido." };
+			} else if ( await domainTools.hasArrayDuplicatedElements( visitorNumbers ) ) {
+				throw { code: 422, message: "Alguno de los dorsales del equipo visitante se encuentra repetido, imposible iniciar partido." };
+			}
+			let localStartingLineupNumber = initGame.localTeam.filter( player => player.startingLineup ).length;
+			let visitorStartingLineupNumber = initGame.visitorTeam.filter( player => player.startingLineup ).length;
+			if ( localStartingLineupNumber > 5 || visitorStartingLineupNumber > 5 ) {
+				throw { code: 422, message: "Alguno de los equipos supera los 5 jugadores titulares, imposible iniciar el partido." };
+			}
 			delete game._id;
 			game.referees = initGame.referees;
 			( await exports.createTeamInfoStats( game.localTeamInfo, initGame.localTeam ) );
@@ -241,8 +255,6 @@ exports.finishGame = async ( competitionID, gameID ) => {
 	( exports.updateCompetitionPlayerStatsAfterGame( game, game.localTeamInfo ) );
 	( exports.updateCompetitionPlayerStatsAfterGame( game, game.visitorTeamInfo ) );
 	
-	// TODO checks after end of game
-	
 	// Si es partido de liga
 	if ( typeof game.round == "number" ) {
 		let leagueRemainingGames = ( await gameDatabase.getLeagueRemainingGames( competitionID ) );
@@ -261,6 +273,7 @@ exports.finishGame = async ( competitionID, gameID ) => {
 			let allPlayoffsRoundByRoundNumber = ( await competitionPlayoffsRoundDomain.getPlayoffsRoundsByCompetitionAndRound( competitionID, playoffsRound.round ) );
 			let playoffsRoundsUnfinished = allPlayoffsRoundByRoundNumber.filter( round => round.winnerID == null );
 			if ( playoffsRound.round != 1 && !playoffsRoundsUnfinished.length ) {
+				debugger;
 				( await competitionDomain.parsePlayoffsRoundToGames( competitionID, playoffsRound.round / 2 ) );
 			}
 		}
