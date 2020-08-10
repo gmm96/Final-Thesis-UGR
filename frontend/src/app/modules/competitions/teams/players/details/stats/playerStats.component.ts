@@ -1,7 +1,5 @@
-import {Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
 import {CompetitionsService} from "../../../../../../core/services/competitions/competitions.service";
 
 @Component({
@@ -41,18 +39,24 @@ export class CompetitionPlayerStatsComponent implements OnInit, OnDestroy {
             if (this.competitionPlayerStats) {
                 this.tableData = [
                     {name: "Partidos jugados", value: this.competitionPlayerStats.stats.playedGames},
-                    {name: "Partidos totales", value: this.competitionPlayerStats.stats.points},
-                    {name: "Partidos por partido", value: (!this.competitionPlayerStats.stats.playedGames)? 0 : this.competitionPlayerStats.stats.points / this.competitionPlayerStats.stats.playedGames},
+                    {name: "Puntos totales", value: this.competitionPlayerStats.stats.points},
+                    {
+                        name: "Puntos por partido",
+                        value: (!this.competitionPlayerStats.stats.playedGames) ? 0 : Math.round(this.competitionPlayerStats.stats.points / this.competitionPlayerStats.stats.playedGames * 100) / 100
+                    },
                     {name: "Faltas totales", value: this.competitionPlayerStats.stats.fouls},
-                    {name: "Faltas por partido", value: (!this.competitionPlayerStats.stats.playedGames)? 0 : this.competitionPlayerStats.stats.fouls / this.competitionPlayerStats.stats.playedGames },
+                    {
+                        name: "Faltas por partido",
+                        value: (!this.competitionPlayerStats.stats.playedGames) ? 0 : Math.round(this.competitionPlayerStats.stats.fouls / this.competitionPlayerStats.stats.playedGames * 100) / 100
+                    },
                 ];
             } else {
                 this.tableData = [
                     {name: "Partidos jugados", value: 0},
-                    {name: "Partidos totales", value: 0},
-                    {name: "Partidos por partido", value: 0},
+                    {name: "Puntos totales", value: 0},
+                    {name: "Puntos por partido", value: 0},
                     {name: "Faltas totales", value: 0},
-                    {name: "Faltas por partido", value: 0 },
+                    {name: "Faltas por partido", value: 0},
                 ];
             }
         }

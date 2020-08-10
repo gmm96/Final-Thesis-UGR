@@ -18,12 +18,10 @@ exports.getFullPlayoffsRoundById = async ( playoffsRoundID ) => {
 };
 
 
-exports.getPlayoffsRoundsByCompetitionAndRound = async ( competitionID, round ) => {
-	debugger;
+exports.getPlayoffsRoundsByCompetitionAndRound = async ( competitionID, roundNumber ) => {
 	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
-	if ( !round ) throw { code: 422, message: "Ronda inválido" };
-	debugger;
-	return ( await playoffsRoundDatabase.getPlayoffsRoundsByCompetitionAndRound( competitionID, round ) );
+	if ( !roundNumber ) throw { code: 422, message: "Ronda inválido" };
+	return ( await playoffsRoundDatabase.getPlayoffsRoundsByCompetitionAndRound( competitionID, roundNumber ) );
 };
 
 
@@ -49,49 +47,72 @@ exports.checkIfEndPlayoffsRound = async ( playoffsRoundID, gamesToWin ) => {
 		if ( game.winner ) return game.winner.toString() === playoffsRound.visitorTeamID.toString();
 	} ).length;
 	
-	debugger;
 	if ( playoffsRound.localWins >= gamesToWin ) {
-		debugger;
 		roundCopy.winnerID = playoffsRound.localTeamID;
 		let gamesToRemove = playoffsRound.games.filter( game => game.winner == null );
 		for ( let game of gamesToRemove ) {
 			( await gameDomain.purgeGame( game._id ) );
 		}
 		if ( playoffsRound.nextRound ) {
-			debugger;
 			let nextRound = ( await playoffsRoundDatabase.getPlayoffsRoundById( playoffsRound.nextRound ) );
 			if ( nextRound.prevRoundLocalID && playoffsRound._id.toString() === nextRound.prevRoundLocalID.toString() ) {
 				nextRound.localTeamID = playoffsRound.localTeamID;
 			} else if ( nextRound.prevRoundVisitorID && playoffsRound._id.toString() === nextRound.prevRoundVisitorID.toString() ) {
 				nextRound.visitorTeamID = playoffsRound.localTeamID;
 			}
-			debugger;
 			( await playoffsRoundDatabase.updatePlayoffsRound( nextRound._id, nextRound ) );
 		} else {
 			( await competitionDomain.setEndOfCompetition( playoffsRound.competitionID ) );
 		}
 		( await playoffsRoundDatabase.updatePlayoffsRound( playoffsRound._id, roundCopy ) );
 	} else if ( playoffsRound.visitorWins >= gamesToWin ) {
-		debugger;
 		roundCopy.winnerID = playoffsRound.visitorTeamID;
 		let gamesToRemove = playoffsRound.games.filter( game => game.winner == null );
 		for ( let game of gamesToRemove ) {
 			( await gameDomain.purgeGame( game._id ) );
 		}
 		if ( playoffsRound.nextRound ) {
-			debugger;
 			let nextRound = ( await playoffsRoundDatabase.getPlayoffsRoundById( playoffsRound.nextRound ) );
 			if ( nextRound.prevRoundLocalID && playoffsRound._id.toString() === nextRound.prevRoundLocalID.toString() ) {
 				nextRound.localTeamID = playoffsRound.visitorTeamID;
 			} else if ( nextRound.prevRoundVisitorID && playoffsRound._id.toString() === nextRound.prevRoundVisitorID.toString() ) {
 				nextRound.visitorTeamID = playoffsRound.visitorTeamID;
 			}
-			debugger;
 			( await playoffsRoundDatabase.updatePlayoffsRound( nextRound._id, nextRound ) );
 		} else {
 			( await competitionDomain.setEndOfCompetition( playoffsRound.competitionID ) );
 		}
 		( await playoffsRoundDatabase.updatePlayoffsRound( playoffsRound._id, roundCopy ) );
+	}
+};
+
+
+exports.setHomeCourtAdvantage = async ( competitionID, roundNumber ) => {
+	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !roundNumber ) throw { code: 422, message: "Ronda inválido" };
+	
+	let competition = ( await competitionDomain.getCompetitionById( competitionID ) );
+	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
+	
+	if ( competition.playoffsFixturesVsSameTeam && competition.playoffsTeamsAfterLeague ) {
+		let orderedTeamsByStandings = ( await competitionDomain.getCompetitionLeagueTable( competitionID ) ).map( teamSt => {
+			return teamSt.teamID;
+		} );
+		let playoffsRounds = ( await exports.getPlayoffsRoundsByCompetitionAndRound( competitionID, roundNumber ) );
+		
+		for ( let round of playoffsRounds ) {
+			let localIndex = orderedTeamsByStandings.findIndex( teamID => teamID.toString() == round.localTeamID.toString() );
+			let visitorIndex = orderedTeamsByStandings.findIndex( teamID => teamID.toString() == round.visitorTeamID.toString() );
+			if ( visitorIndex < localIndex ) {
+				let teamAux = round.localTeamID;
+				let prevRoundAux = round.prevRoundLocalID;
+				round.localTeamID = round.visitorTeamID;
+				round.prevRoundLocalID = round.prevRoundVisitorID;
+				round.visitorTeamID = teamAux;
+				round.prevRoundVisitorID = prevRoundAux;
+				( await exports.updatePlayoffsRound( round._id, round ) );
+			}
+		}
 	}
 };
 

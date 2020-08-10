@@ -128,7 +128,7 @@
 </div>
 
 
-<mat-autocomplete class="autocomplete-header" #auto="matAutocomplete" (optionSelected)="setPlayerToEdit($event)">
+<mat-autocomplete class="autocomplete-header" #auto="matAutocomplete" (optionSelected)="setPlayerToEdit($event)" autoActiveFirstOption>
     <mat-option *ngFor="let option of filteredOptions" [value]="option" class="autocomplete-option">
         <mat-icon class="icon-type">person</mat-icon>
         <span class="result-name">{{ option.idCard + " ( " + option.name + " " + option.surname + " )"}}</span>

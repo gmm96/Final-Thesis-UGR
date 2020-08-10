@@ -19,7 +19,7 @@
     </div>
 </div>
 
-<mat-autocomplete class="autocomplete-home" #auto="matAutocomplete" (optionSelected)="goToResultPage($event)">
+<mat-autocomplete class="autocomplete-home" #auto="matAutocomplete" (optionSelected)="goToResultPage($event)" autoActiveFirstOption>
     <mat-option *ngFor="let option of filteredOptions" [value]="option" [ngSwitch]="option.type" class="autocomplete-option">
         <mat-icon class="icon-type" *ngSwitchCase="'PLAYER'">person</mat-icon>
         <mat-icon class="icon-type" *ngSwitchCase="'TEAM'">people</mat-icon>

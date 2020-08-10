@@ -132,7 +132,6 @@ exports.isGameStarted = async ( game ) => {
 
 
 exports.createGame = async ( game ) => {
-	debugger;
 	( await exports.competitionGameParametersValidator( game ) );
 	let competition = ( await competitionDomain.getCompetitionById( game.competitionID ) );
 	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
@@ -146,7 +145,6 @@ exports.createGame = async ( game ) => {
 	if ( !competition.teams.find( team => team._id.toString() == visitorTeam._id.toString() ) )
 		throw { code: 422, message: "El equipo visitante especificado no se encuentra en la competición" };
 	
-	debugger;
 	game.createdAt = new Date().toISOString();
 	game.updatedAt = new Date().toISOString();
 	game.time = null;
@@ -173,6 +171,7 @@ exports.startGame = async ( competitionID, gameID, initGame ) => {
 	if ( !competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
 	if ( !gameID ) throw { code: 422, message: "Identificador de partido inválido" };
 	if ( !initGame || !initGame.localTeam || !initGame.visitorTeam || !initGame.referees ) throw { code: 422, message: "Parámetros de inicio de partido inválidos" };
+	if ( !initGame.localTeam.length || !initGame.visitorTeam.length ) throw { code: 422, message: "Debe añadir al menos un jugador por equipo para comenzar el partido" };
 	
 	let competition = ( await competitionDomain.getCompetitionById( competitionID ) );
 	if ( !competition ) throw { code: 422, message: "La competición especificada no se encuentra en el sistema" };
@@ -273,7 +272,7 @@ exports.finishGame = async ( competitionID, gameID ) => {
 			let allPlayoffsRoundByRoundNumber = ( await competitionPlayoffsRoundDomain.getPlayoffsRoundsByCompetitionAndRound( competitionID, playoffsRound.round ) );
 			let playoffsRoundsUnfinished = allPlayoffsRoundByRoundNumber.filter( round => round.winnerID == null );
 			if ( playoffsRound.round != 1 && !playoffsRoundsUnfinished.length ) {
-				debugger;
+				( await competitionPlayoffsRoundDomain.setHomeCourtAdvantage( competitionID, playoffsRound.round / 2 ) );
 				( await competitionDomain.parsePlayoffsRoundToGames( competitionID, playoffsRound.round / 2 ) );
 			}
 		}
@@ -344,8 +343,8 @@ exports.purgeGame = async ( gameID ) => {
 
 exports.competitionGameParametersValidator = async ( game ) => {
 	if ( !game.competitionID ) throw { code: 422, message: "Identificador de competición inválido" };
-	if ( !game.localTeamInfo || !game.localTeamInfo._id ) throw { code: 422, message: "Identificador de competición inválido" };
-	if ( !game.visitorTeamInfo || !game.visitorTeamInfo._id ) throw { code: 422, message: "Identificador de competición inválido" };
+	if ( !game.localTeamInfo || !game.localTeamInfo._id ) throw { code: 422, message: "Identificador de equipo inválido" };
+	if ( !game.visitorTeamInfo || !game.visitorTeamInfo._id ) throw { code: 422, message: "Identificador de equipo inválido" };
 	if ( !game.fixture ) throw { code: 422, message: "Número de jornada inválido" };
 	if ( !game.round ) throw { code: 422, message: "Ronda de partido inválida" };
 };

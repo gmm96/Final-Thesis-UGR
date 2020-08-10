@@ -82,7 +82,7 @@
 </div>
 
 
-<mat-autocomplete class="autocomplete-header" #auto="matAutocomplete" (optionSelected)="setSelectedCompetition($event)">
+<mat-autocomplete class="autocomplete-header" #auto="matAutocomplete" (optionSelected)="setSelectedCompetition($event)" autoActiveFirstOption>
     <mat-option *ngFor="let option of filteredOptions" [value]="option" class="autocomplete-option">
         <mat-icon class="icon-type">emoji_events</mat-icon>
         <span class="result-name">{{ option.name + " ( " + option.organizer + " - " + option.season + " )"}}</span>

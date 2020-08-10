@@ -37,9 +37,15 @@ export class PlayerStatsComponent implements OnInit, OnDestroy {
             this.tableData = [
                 {name: "Partidos jugados", value: this.competitionPlayerStats.stats.playedGames},
                 {name: "Puntos totales", value: this.competitionPlayerStats.stats.points},
-                {name: "Puntos por partido", value: (this.competitionPlayerStats.stats.playedGames)? this.competitionPlayerStats.stats.points / this.competitionPlayerStats.stats.playedGames : 0},
-                {name: "Faltas totales", value: this.competitionPlayerStats.stats.fouls },
-                {name: "Faltas por partido", value: (this.competitionPlayerStats.stats.playedGames)? this.competitionPlayerStats.stats.fouls / this.competitionPlayerStats.stats.playedGames : 0},
+                {
+                    name: "Puntos por partido",
+                    value: (this.competitionPlayerStats.stats.playedGames) ? Math.round(this.competitionPlayerStats.stats.points / this.competitionPlayerStats.stats.playedGames * 100) / 100 : 0
+                },
+                {name: "Faltas totales", value: this.competitionPlayerStats.stats.fouls},
+                {
+                    name: "Faltas por partido",
+                    value: (this.competitionPlayerStats.stats.playedGames) ? Math.round(this.competitionPlayerStats.stats.fouls / this.competitionPlayerStats.stats.playedGames * 100) / 100 : 0
+                },
             ];
         }
     }

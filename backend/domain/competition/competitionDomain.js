@@ -14,7 +14,9 @@ var underscore = require( "underscore" );
 
 exports.getCompetitionById = async ( id ) => {
 	if ( !id ) throw { code: 404, message: "Identificador de competición inválido" };
-	return ( await competitionDatabase.getCompetitionById( id ) );
+	let result = (await competitionDatabase.getCompetitionById( id ));
+	if (!result) throw { code: 404, message: "La competición especificada no se encuentra en el sistema" };
+	return result;
 };
 
 
@@ -244,7 +246,8 @@ exports.generatePlayoffsRoundsWithoutLeague = async ( competition, randomizeTeam
 				let editedRound;
 				if ( createdPlayoffsRound.prevRoundLocalID ) {
 					editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundLocalID, createdPlayoffsRound._id ) );
-				} else if ( createdPlayoffsRound.prevRoundVisitorID ) {
+				}
+				if ( createdPlayoffsRound.prevRoundVisitorID ) {
 					editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundVisitorID, createdPlayoffsRound._id ) );
 				}
 				let index = allMatchups.findIndex( round => round._id.toString() === editedRound._id.toString() );
@@ -297,12 +300,9 @@ exports.generatePlayoffsRoundsAfterEndOfLeague = async ( competitionID ) => {
 				winnerID: null
 			};
 			
-			debugger;
 			let createdPlayoffsRound = ( await competitionPlayoffsRoundDomain.createPlayoffsRound( newPlayoffMatchup ) );
-			debugger;
 			
 			if ( createdPlayoffsRound.prevRoundLocalID != null || createdPlayoffsRound.prevRoundVisitorID != null ) {
-				
 				let editedRound;
 				if ( createdPlayoffsRound.prevRoundLocalID ) {
 					editedRound = ( await competitionPlayoffsRoundDomain.setNextRound( createdPlayoffsRound.prevRoundLocalID, createdPlayoffsRound._id ) );
@@ -329,11 +329,9 @@ exports.parsePlayoffsRoundToGames = async ( competitionID, roundNumber ) => {
 	let playoffsRounds = ( await competitionPlayoffsRoundDomain.getPlayoffsRoundsByCompetitionAndRound( competitionID, roundNumber ) );
 	if ( !playoffsRounds || !playoffsRounds.length ) throw { code: 422, message: "Las rondas de playoffs especificadas no se encuentran en el sistema" };
 	
-	debugger;
 	let allRoundGames = [];
 	for ( let round of playoffsRounds ) {
 		for ( let index of underscore.range( 1, competition.playoffsFixturesVsSameTeam + 1 ) ) {
-			debugger;
 			let game = {
 				competitionID: competition._id,
 				winner: null,
@@ -351,11 +349,8 @@ exports.parsePlayoffsRoundToGames = async ( competitionID, roundNumber ) => {
 				fixture: index,
 				round: round._id,
 			};
-			debugger;
 			let createdGame = ( await gameDomain.createGame( game ) );
-			debugger;
 			allRoundGames.push( createdGame );
-			debugger;
 		}
 	}
 	return allRoundGames;

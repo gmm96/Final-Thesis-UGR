@@ -35,7 +35,7 @@
                             <span class="badge">
                                 <mat-icon class="counter-icon"
                                           *ngIf="competition?.inProgress">play_circle_filled</mat-icon>
-                                <mat-icon class="counter-icon" *ngIf="!competition?.inProgress">stop_circle</mat-icon>
+                                <mat-icon class="counter-icon" *ngIf="!competition?.inProgress">stop</mat-icon>
                             </span>
                             <div class="counter-value" [matTooltip]="( competition?.inProgress ) ? 'Jugando' : 'Finalizada'">
                                 {{ ( competition?.inProgress ) ? "Jugando" : "Finalizada"}}
