@@ -87,7 +87,7 @@ exports.competitionParametersValidator = async ( competition ) => {
 	if ( !competition.name ) throw { code: 422, message: "Nombre de competición inválido" };
 	if ( !competition.organizer ) throw { code: 422, message: "Organizador de competición inválido" };
 	if ( !competition.season ) throw { code: 422, message: "Temporada de competición inválido" };
-	if ( !competition.minTeamNumber ) throw { code: 422, message: "Número mínimo de equipos de competición inválido" };
+	if ( !competition.minTeamNumber || competition.minTeamNumber < 2 ) throw { code: 422, message: "Número mínimo de equipos de competición inválido" };
 	if ( competition.minTeamNumber > competition.teams.length ) throw { code: 422, message: "Número de equipos de competición inválido" };
 	if ( !competition.minPlayerNumberPerTeam ) throw { code: 422, message: "Número mínimo de jugadores por equipo de competición inválido" };
 	if ( !competition.leagueFixturesVsSameTeam && !competition.playoffsFixturesVsSameTeam ) throw { code: 422, message: "Formato de competición inválido" };

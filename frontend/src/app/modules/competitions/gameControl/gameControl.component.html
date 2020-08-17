@@ -172,32 +172,33 @@
                 </div>
                 <div class="collapse d-print-block player-list d-sm-block" id="localRosterTeam">
                     <ng-container *ngFor="let player of localPlayers; index as i">
-                        <div class="player-display">
-                            <!--                            <div class="player-info">-->
-                            <img class="player-pic d-none d-md-block" mat-card-image
-                                 [src]="(player?.avatar)? 'http://localhost:3000' + player?.avatar : '/assets/images/defaultuser.png'">
-                            <div class="player-number d-flex justify-content-between align-items-center">
-                                <span [matTooltip]="player?.name + ' ' + player?.surname">#{{ player?.stats?.number || '0' + i }}</span>
-                                <div class="starter-badge" *ngIf="player?.stats?.startingLineup" matTooltip="Titular"
-                                     matTooltipPosition="right"
-                                     matTooltipClass="chip-tooltip">T
+                        <div class="player-display d-flex">
+                            <div class="img-container d-none d-md-block">
+                                <img class="player-pic" mat-card-image
+                                     [src]="(player?.avatar)? 'http://localhost:3000' + player?.avatar : '/assets/images/defaultuser.png'">
+                            </div>
+                            <div class="player-info d-flex flex-column align-items-center justify-content-center w-100">
+                                <div class="number-and-name d-flex align-items-center w-100">
+                                    <div class="player-number" [matTooltip]="player?.name + ' ' + player?.surname">#{{ player?.stats?.number || 0 + i }}</div>
+                                    <div class="player-name"> {{ player?.name + ' ' + player?.surname }} </div>
                                 </div>
-                            </div>
-                            <div class="player-points" matTooltip="{{ player?.stats?.points || '0' }} puntos"
-                                 matTooltipPosition="right"
-                                 matTooltipClass="chip-tooltip">{{ player?.stats?.points || '0' }}P
-                            </div>
-                            <div class="player-fouls">
-                                <div class="foul-cell"
-                                     [matTooltip]="player?.stats?.fouls[ 0 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 0 ]) : null">{{ player?.stats?.fouls[ 0 ] || " " }}</div>
-                                <div class="foul-cell"
-                                     [matTooltip]="player?.stats?.fouls[ 1 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 1 ]) : null">{{ player?.stats?.fouls[ 1 ] || " " }}</div>
-                                <div class="foul-cell"
-                                     [matTooltip]="player?.stats?.fouls[ 2 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 2 ]) : null">{{ player?.stats?.fouls[ 2 ] || " " }}</div>
-                                <div class="foul-cell"
-                                     [matTooltip]="player?.stats?.fouls[ 3 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 3 ]) : null">{{ player?.stats?.fouls[ 3 ] || " " }}</div>
-                                <div class="foul-cell"
-                                     [matTooltip]="player?.stats?.fouls[ 4 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 4 ]) : null">{{ player?.stats?.fouls[ 4 ] || " " }}</div>
+                                <div class="points-and-fouls d-flex align-items-center w-100">
+                                    <div class="player-fouls">
+                                        <div class="foul-cell"
+                                             [matTooltip]="player?.stats?.fouls[ 0 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 0 ]) : null">{{ player?.stats?.fouls[ 0 ] || " " }}</div>
+                                        <div class="foul-cell"
+                                             [matTooltip]="player?.stats?.fouls[ 1 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 1 ]) : null">{{ player?.stats?.fouls[ 1 ] || " " }}</div>
+                                        <div class="foul-cell"
+                                             [matTooltip]="player?.stats?.fouls[ 2 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 2 ]) : null">{{ player?.stats?.fouls[ 2 ] || " " }}</div>
+                                        <div class="foul-cell"
+                                             [matTooltip]="player?.stats?.fouls[ 3 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 3 ]) : null">{{ player?.stats?.fouls[ 3 ] || " " }}</div>
+                                        <div class="foul-cell"
+                                             [matTooltip]="player?.stats?.fouls[ 4 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 4 ]) : null">{{ player?.stats?.fouls[ 4 ] || " " }}</div>
+                                    </div>
+                                    <div class="player-points" matTooltip="{{ player?.stats?.points || '0' }} puntos" matTooltipPosition="right"
+                                         matTooltipClass="chip-tooltip">{{ player?.stats?.points || '0' }}P </div>
+                                    <div class="starter-badge" *ngIf="player?.stats?.startingLineup" matTooltip="Titular" matTooltipPosition="right" matTooltipClass="chip-tooltip">T</div>
+                                </div>
                             </div>
                         </div>
                         <mat-divider [inset]="false"></mat-divider>
@@ -207,7 +208,7 @@
         </div>
         <div class="team col-12 col-sm-6 col-xl-3 order-xl-2">
             <div class="game-team-roster game-visitor-team-roster mat-elevation-z8">
-                <div class="game-team-roster-title justify-content-between justify-content-sm-start">
+                <div class="game-team-roster-title justify-content-between justify-content-sm-end">
                     <div>Plantilla {{visitorTeam?.name}}</div>
                     <button mat-icon-button class="button-collapse d-block d-sm-none" type="button"
                             data-toggle="collapse" data-target="#visitorRosterTeam" aria-expanded="false">
@@ -217,33 +218,33 @@
                 </div>
                 <div class="collapse d-print-block player-list d-sm-block" id="visitorRosterTeam">
                     <ng-container *ngFor="let player of visitorPlayers; index as i">
-                        <div class="player-display">
-                            <!--                            <div class="player-info">-->
-                            <img class="player-pic d-none d-md-block" mat-card-image
-                                 [src]="(player?.avatar)? 'http://localhost:3000' + player?.avatar : '/assets/images/defaultuser.png'">
-                            <div class="player-number d-flex align-items-center justify-content-between">
-                                <div class="starter-badge" *ngIf="player?.stats?.startingLineup" matTooltip="Titular"
-                                     matTooltipPosition="left"
-                                     matTooltipClass="chip-tooltip">T
+                        <div class="player-display d-flex">
+                            <div class="img-container d-none d-md-block">
+                                <img class="player-pic" mat-card-image
+                                     [src]="(player?.avatar)? 'http://localhost:3000' + player?.avatar : '/assets/images/defaultuser.png'">
+                            </div>
+                            <div class="player-info d-flex flex-column align-items-center justify-content-center w-100">
+                                <div class="number-and-name d-flex align-items-center w-100 flex-row-reverse">
+                                    <div class="player-number" [matTooltip]="player?.name + ' ' + player?.surname">#{{ player?.stats?.number || 0 + i }}</div>
+                                    <div class="player-name"> {{ player?.name + ' ' + player?.surname }} </div>
                                 </div>
-                                <span [matTooltip]="player?.name + ' ' + player?.surname">#{{ player?.stats?.number || '0' + i }}</span>
-                            </div>
-                            <div class="player-points" matTooltip="{{ player?.stats?.points || '0' }} puntos"
-                                 matTooltipPosition="left"
-                                 matTooltipClass="chip-tooltip">{{ player?.stats?.points || '0' }}P
-                            </div>
-                            <!--                            </div>-->
-                            <div class="player-fouls">
-                                <div class="foul-cell"
-                                     [matTooltip]="player?.stats?.fouls[ 0 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 0 ]) : null">{{ player?.stats?.fouls[ 0 ] || " " }}</div>
-                                <div class="foul-cell"
-                                     [matTooltip]="player?.stats?.fouls[ 1 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 1 ]) : null">{{ player?.stats?.fouls[ 1 ] || " " }}</div>
-                                <div class="foul-cell"
-                                     [matTooltip]="player?.stats?.fouls[ 2 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 2 ]) : null">{{ player?.stats?.fouls[ 2 ] || " " }}</div>
-                                <div class="foul-cell"
-                                     [matTooltip]="player?.stats?.fouls[ 3 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 3 ]) : null">{{ player?.stats?.fouls[ 3 ] || " " }}</div>
-                                <div class="foul-cell"
-                                     [matTooltip]="player?.stats?.fouls[ 4 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 4 ]) : null">{{ player?.stats?.fouls[ 4 ] || " " }}</div>
+                                <div class="points-and-fouls d-flex align-items-center w-100 flex-row-reverse">
+                                    <div class="player-fouls">
+                                        <div class="foul-cell"
+                                             [matTooltip]="player?.stats?.fouls[ 0 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 0 ]) : null">{{ player?.stats?.fouls[ 0 ] || " " }}</div>
+                                        <div class="foul-cell"
+                                             [matTooltip]="player?.stats?.fouls[ 1 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 1 ]) : null">{{ player?.stats?.fouls[ 1 ] || " " }}</div>
+                                        <div class="foul-cell"
+                                             [matTooltip]="player?.stats?.fouls[ 2 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 2 ]) : null">{{ player?.stats?.fouls[ 2 ] || " " }}</div>
+                                        <div class="foul-cell"
+                                             [matTooltip]="player?.stats?.fouls[ 3 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 3 ]) : null">{{ player?.stats?.fouls[ 3 ] || " " }}</div>
+                                        <div class="foul-cell"
+                                             [matTooltip]="player?.stats?.fouls[ 4 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 4 ]) : null">{{ player?.stats?.fouls[ 4 ] || " " }}</div>
+                                    </div>
+                                    <div class="player-points" matTooltip="{{ player?.stats?.points || '0' }} puntos" matTooltipPosition="right"
+                                         matTooltipClass="chip-tooltip">{{ player?.stats?.points || '0' }}P </div>
+                                    <div class="starter-badge" *ngIf="player?.stats?.startingLineup" matTooltip="Titular" matTooltipPosition="right" matTooltipClass="chip-tooltip">T</div>
+                                </div>
                             </div>
                         </div>
                         <mat-divider [inset]="false"></mat-divider>

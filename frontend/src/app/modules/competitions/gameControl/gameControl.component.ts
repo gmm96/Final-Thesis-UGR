@@ -379,7 +379,7 @@ export class GameControlComponent implements OnInit {
                 return "en defensa";
                 break;
             case "A":
-                return "en ataque";
+                return "en ataqque";
                 break;
             case "U":
                 return "antideportiva";
