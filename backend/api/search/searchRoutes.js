@@ -1,5 +1,4 @@
 var search = require( './searchAPI' );
-var permissions = require( '../permissions' );
 var passport = require( 'passport' );
 
 

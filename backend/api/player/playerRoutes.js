@@ -1,5 +1,4 @@
 var player = require( "../player/playerAPI" );
-var permissions = require( "../permissions" );
 var passport = require( "passport" );
 const formidableMiddleware = require('express-formidable');
 
