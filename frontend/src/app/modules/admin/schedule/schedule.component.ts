@@ -6,6 +6,7 @@ import {CompetitionsService} from "../../../core/services/competitions/competiti
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {ToastrService} from "ngx-toastr";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-admin-schedule',
@@ -36,6 +37,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
         private competitionsService: CompetitionsService,
         private fb: FormBuilder,
         private toastr: ToastrService,
+        private titleService: Title
     ) {
     }
 
@@ -54,6 +56,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
         this.minDate = new Date();
         this.minDate.setSeconds(0, 0);
         this.minDateString = this.minDate.toISOString().replace(/:00.000Z/, "");
+        this.titleService.setTitle("Gestion de calendario");
     }
 
     ngOnDestroy() {

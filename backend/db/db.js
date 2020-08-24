@@ -1,5 +1,5 @@
 var MongoClient = require( 'mongodb' ).MongoClient;
-var url = 'mongodb://administrator:mongoLO@localhost:27017';
+var url = 'mongodb://administrator:trabajoFinGrado@localhost:27017';
 
 let dbConnection = null;
 let dbCursor = null;

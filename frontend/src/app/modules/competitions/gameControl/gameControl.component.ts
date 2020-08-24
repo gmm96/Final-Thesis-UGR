@@ -7,6 +7,7 @@ import {Subscription} from "rxjs";
 import {CompetitionsService} from "../../../core/services/competitions/competitions.service";
 import {ToastrService} from "ngx-toastr";
 import {AuthService} from "../../../core/auth/auth.service";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-game-control',
@@ -53,7 +54,8 @@ export class GameControlComponent implements OnInit {
         private activatedRoute: ActivatedRoute,
         private competitionsService: CompetitionsService,
         private toastr: ToastrService,
-        private loginService: AuthService
+        private loginService: AuthService,
+        private titleService: Title
     ) {
     }
 
@@ -66,6 +68,7 @@ export class GameControlComponent implements OnInit {
             this.gameID = params['gameID'];
             this.competition = (await this.competitionsService.getFullCompetitionInfo(this.competitionID));
             (await this.getGame());
+            this.titleService.setTitle( this.game.localTeamInfo.team.name + " - " + this.game.visitorTeamInfo.team.name + " | " + this.competition.name );
         });
 
         this.windowScrolled = false;
@@ -100,7 +103,6 @@ export class GameControlComponent implements OnInit {
             referee2: new FormControl(null),
             referee3: new FormControl(null),
         });
-
         this.changeDetectorRef.detectChanges();
     }
 

@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="col-2 score d-flex justify-content-center align-items-center flex-column">
-            <div class="quarter">{{ currentQuarter ? ( ( !game.winner ) ? "Cuarto " + currentQuarter : "Finalizado" ) : "Sin comenzar" }}</div>
+            <div class="quarter">{{ currentQuarter ? ( !game.winner ? ( currentQuarter <= 4 ? "Cuarto " + currentQuarter : "Prórroga " + ( currentQuarter - 4 ) ) : "Finalizado" ) : "Sin comenzar" }}</div>
             <div class="score-container d-flex align-items-center flex-row">
                 <div class="score-value local-score">{{game?.localTeamInfo?.points}}</div>
                 <div class="score-separator">-</div>
@@ -179,7 +179,8 @@
                             </div>
                             <div class="player-info d-flex flex-column align-items-center justify-content-center w-100">
                                 <div class="number-and-name d-flex align-items-center w-100">
-                                    <div class="player-number" [matTooltip]="player?.name + ' ' + player?.surname">#{{ player?.stats?.number || 0 + i }}</div>
+                                    <div class="player-number" [matTooltip]="player?.name + ' ' + player?.surname">
+                                        #{{ player?.stats?.number || 0 + i }}</div>
                                     <div class="player-name"> {{ player?.name + ' ' + player?.surname }} </div>
                                 </div>
                                 <div class="points-and-fouls d-flex align-items-center w-100">
@@ -195,9 +196,14 @@
                                         <div class="foul-cell"
                                              [matTooltip]="player?.stats?.fouls[ 4 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 4 ]) : null">{{ player?.stats?.fouls[ 4 ] || " " }}</div>
                                     </div>
-                                    <div class="player-points" matTooltip="{{ player?.stats?.points || '0' }} puntos" matTooltipPosition="right"
-                                         matTooltipClass="chip-tooltip">{{ player?.stats?.points || '0' }}P </div>
-                                    <div class="starter-badge" *ngIf="player?.stats?.startingLineup" matTooltip="Titular" matTooltipPosition="right" matTooltipClass="chip-tooltip">T</div>
+                                    <div class="player-points" matTooltip="{{ player?.stats?.points || '0' }} puntos"
+                                         matTooltipPosition="right"
+                                         matTooltipClass="chip-tooltip">{{ player?.stats?.points || '0' }}P
+                                    </div>
+                                    <div class="starter-badge" *ngIf="player?.stats?.startingLineup"
+                                         matTooltip="Titular" matTooltipPosition="right" matTooltipClass="chip-tooltip">
+                                        T
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -225,7 +231,8 @@
                             </div>
                             <div class="player-info d-flex flex-column align-items-center justify-content-center w-100">
                                 <div class="number-and-name d-flex align-items-center w-100 flex-row-reverse">
-                                    <div class="player-number" [matTooltip]="player?.name + ' ' + player?.surname">#{{ player?.stats?.number || 0 + i }}</div>
+                                    <div class="player-number" [matTooltip]="player?.name + ' ' + player?.surname">
+                                        #{{ player?.stats?.number || 0 + i }}</div>
                                     <div class="player-name"> {{ player?.name + ' ' + player?.surname }} </div>
                                 </div>
                                 <div class="points-and-fouls d-flex align-items-center w-100 flex-row-reverse">
@@ -241,9 +248,14 @@
                                         <div class="foul-cell"
                                              [matTooltip]="player?.stats?.fouls[ 4 ]? 'Falta ' + getFoulType(player?.stats?.fouls[ 4 ]) : null">{{ player?.stats?.fouls[ 4 ] || " " }}</div>
                                     </div>
-                                    <div class="player-points" matTooltip="{{ player?.stats?.points || '0' }} puntos" matTooltipPosition="right"
-                                         matTooltipClass="chip-tooltip">{{ player?.stats?.points || '0' }}P </div>
-                                    <div class="starter-badge" *ngIf="player?.stats?.startingLineup" matTooltip="Titular" matTooltipPosition="right" matTooltipClass="chip-tooltip">T</div>
+                                    <div class="player-points" matTooltip="{{ player?.stats?.points || '0' }} puntos"
+                                         matTooltipPosition="right"
+                                         matTooltipClass="chip-tooltip">{{ player?.stats?.points || '0' }}P
+                                    </div>
+                                    <div class="starter-badge" *ngIf="player?.stats?.startingLineup"
+                                         matTooltip="Titular" matTooltipPosition="right" matTooltipClass="chip-tooltip">
+                                        T
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -266,8 +278,12 @@
                                 <div class="event-text-container" [ngSwitch]="event?.type">
                                     <span *ngSwitchCase="'startGame'">Inicio del partido</span>
                                     <span *ngSwitchCase="'endGame'">Final del partido</span>
-                                    <span *ngSwitchCase="'startQuarter'">Inicio del cuarto {{ event.quarter }}</span>
-                                    <span *ngSwitchCase="'endQuarter'">Final del cuarto {{ event.quarter }}</span>
+                                    <span *ngSwitchCase="'startQuarter'"> {{ event.quarter <= 4 ?
+										"Inicio del cuarto " + event.quarter : "Inicio de la prórroga " + ( event.quarter - 4 ) }}
+                                    </span>
+                                    <span *ngSwitchCase="'endQuarter'">{{ event.quarter <= 4 ?
+										"Final del cuarto " + event.quarter : "Final de la prórroga " + ( event.quarter - 4 ) }}
+                                    </span>
                                     <span *ngSwitchCase="'timeOut'">Tiempo muerto solicitado por {{ getTeamNameByTeamId( event.teamID ) }}</span>
                                     <span *ngSwitchCase="'basket'">Canasta de {{ event.data }}P {{ getTeamNameByTeamId( event.teamID ) }}
                                         #{{ getPlayerNameByPlayerId( event.teamID, event.playerID ).number }}</span>
@@ -576,7 +592,8 @@
                         <span>-</span>
                         <span>Jugador</span>
                     </div>
-                    <div class="player-container d-flex align-items-center justify-content-between" *ngFor="let player of localPlayers">
+                    <div class="player-container d-flex align-items-center justify-content-between"
+                         *ngFor="let player of localPlayers">
                         <mat-checkbox class="mat-form-checkbox"
                                       [formControlName]="player?._id?.toString() + '_selected'"></mat-checkbox>
                         <mat-form-field appearance="legacy" color="accent" class="player-number">
@@ -631,7 +648,8 @@
                         <span>-</span>
                         <span>Jugador</span>
                     </div>
-                    <div class="player-container d-flex align-items-center justify-content-between" *ngFor="let player of visitorPlayers">
+                    <div class="player-container d-flex align-items-center justify-content-between"
+                         *ngFor="let player of visitorPlayers">
                         <mat-checkbox class="mat-form-checkbox"
                                       [formControlName]="player?._id?.toString() + '_selected'"></mat-checkbox>
                         <mat-form-field appearance="legacy" color="accent" class="player-number">
