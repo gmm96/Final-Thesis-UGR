@@ -21,7 +21,9 @@ exports.createCompetitionPlayerStats = async ( competitionID, teamID, playerID )
 			playedGames: 0,
 			points: 0,
 			fouls: 0
-		}
+		},
+		createdAt: new Date().toISOString(),
+		updatedAt: new Date().toISOString()
 	};
 	
 	return ( await competitionPlayerStatsDatabase.createCompetitionPlayerStats( newCompetitionPlayerStats ) );
@@ -34,6 +36,7 @@ exports.updateCompetitionPlayerStats = async ( id, competitionPlayerStats ) => {
 	let existingCompetitionPlayerStats = ( await competitionPlayerStatsDatabase.getCompetitionPlayerStatsById( id ) );
 	if ( !existingCompetitionPlayerStats ) throw { code: 422, message: "Las estadísticas del jugador especificado no se encuentran en el sistema" };
 	
+	competitionPlayerStats["updatedAt"] = new Date().toISOString();
 	return ( await competitionPlayerStatsDatabase.updateCompetitionPlayerStats( id, competitionPlayerStats ) );
 };
 

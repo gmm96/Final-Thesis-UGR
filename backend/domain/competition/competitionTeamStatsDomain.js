@@ -34,7 +34,9 @@ exports.createCompetitionTeamStats = async ( competitionID, teamID ) => {
 			wonGames: 0,
 			points: 0,
 			opponentPoints: 0
-		}
+		},
+		createdAt: new Date().toISOString(),
+		updateAt: new Date().toISOString()
 	};
 	
 	return ( await competitionTeamStatsDatabase.createCompetitionTeamStats( newCompetitionTeamStats ) );
@@ -46,6 +48,8 @@ exports.updateCompetitionTeamStats = async ( id, competitionTeamStats ) => {
 	
 	let existingCompetitionTeamStats = ( await competitionTeamStatsDatabase.getCompetitionTeamStatsById( id ) );
 	if ( !existingCompetitionTeamStats ) throw { code: 422, message: "Las estadísticas del equipo especificado no se encuentran en el sistema" };
+	
+	competitionTeamStats.updatedAt = new Date().toISOString();
 	
 	return ( await competitionTeamStatsDatabase.updateCompetitionTeamStats( id, competitionTeamStats ) );
 };

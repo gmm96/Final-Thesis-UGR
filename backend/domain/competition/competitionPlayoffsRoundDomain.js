@@ -120,6 +120,8 @@ exports.setHomeCourtAdvantage = async ( competitionID, roundNumber ) => {
 exports.createPlayoffsRound = async ( playoffsRound ) => {
 	( await exports.playoffsRoundParametersValidator( playoffsRound ) );
 	( await exports.checkIfPlayoffRoundParametersExists( playoffsRound ) );
+	playoffsRound["createdAt"] = new Date().toISOString();
+	playoffsRound["updatedAt"] = new Date().toISOString();
 	
 	return ( await playoffsRoundDatabase.createPlayoffsRound( playoffsRound ) );
 };
@@ -133,6 +135,7 @@ exports.updatePlayoffsRound = async ( playoffsRoundID, playoffsRound ) => {
 	let existingPlayoffsRound = ( await playoffsRoundDatabase.getPlayoffsRoundById( playoffsRoundID ) );
 	if ( !existingPlayoffsRound ) throw { code: 422, message: "La ronda de playoffs especificada no se encuentra en el sistema" };
 	
+	playoffsRound["updatedAt"] = new Date().toISOString();
 	return ( await playoffsRoundDatabase.updatePlayoffsRound( playoffsRoundID, playoffsRound ) );
 };
 
