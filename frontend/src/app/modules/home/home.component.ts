@@ -5,6 +5,7 @@ import {Subscription} from "rxjs";
 import {FormControl} from "@angular/forms";
 import {SearchBoxResultInterface} from "../../core/services/home/home";
 import {Title} from "@angular/platform-browser";
+import {environment} from "../../../environments/environment";
 
 @Component({
     selector: 'app-home',
@@ -14,6 +15,7 @@ import {Title} from "@angular/platform-browser";
 
 export class HomeComponent implements OnInit, OnDestroy {
 
+    production = environment.backendURL;
     searchControlHome = new FormControl();
     searchSubscription: Subscription;
     filteredOptions: SearchBoxResultInterface[] = [];

@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import * as moment from "moment";
+import {environment} from "../../../../environments/environment";
 
 @Component({
     selector: 'app-team-table',
@@ -48,7 +49,7 @@ export class TeamTableComponent implements OnInit, OnDestroy {
                     name: item.name,
                     city: item.city,
                     playersLength: (item.players && item.players.length)? item.players.length : 0,
-                    avatar: item.avatar? "http://localhost:3000" + item.avatar : null
+                    avatar: item.avatar? environment.backendURL + item.avatar : null
                 }
             });
             this.teamsCompatible.sort( (a, b) => {

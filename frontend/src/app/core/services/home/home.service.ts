@@ -1,6 +1,7 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Home, SearchBoxResultInterface} from "./home";
+import {environment} from "../../../../environments/environment";
 
 @Injectable()
 export class HomeService {
@@ -10,11 +11,7 @@ export class HomeService {
     ) {
     }
 
-    getPosts(): Promise<Home> {
-        return this.http.get<Home>("http://reqres.in/api/users").toPromise()
-    }
-
     async searchResults(text: string): Promise<any[]> {
-        return await this.http.get<any[]>("http://localhost:3000/search?q=" + text).toPromise();
+        return await this.http.get<any[]>(environment.backendURL + "/search?q=" + text).toPromise();
     }
 }

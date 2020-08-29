@@ -2,6 +2,7 @@ import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SimpleChanges} f
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import * as moment from "moment";
+import {environment} from "../../../../environments/environment";
 
 @Component({
     selector: 'app-player-table',
@@ -51,7 +52,7 @@ export class PlayerTableComponent implements OnInit, OnDestroy {
                     age: today.diff(moment(item.birthDate), "years"),
                     height: item.height,
                     weight: item.weight,
-                    avatar: item.avatar ? "http://localhost:3000" + item.avatar : null
+                    avatar: item.avatar ? environment.backendURL + item.avatar : null
                 };
             });
             this.rosterCompatible.sort((a, b) => {

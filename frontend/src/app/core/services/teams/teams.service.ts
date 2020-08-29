@@ -1,5 +1,6 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
+import {environment} from "../../../../environments/environment";
 
 @Injectable()
 export class TeamsService {
@@ -10,15 +11,15 @@ export class TeamsService {
     }
 
     getTeamInformation(teamID: string): Promise<any> {
-        return this.http.get("http://localhost:3000/teams/" + teamID).toPromise();
+        return this.http.get(environment.backendURL + "/teams/" + teamID).toPromise();
     }
 
     getTeamArrayByName(name: string): Promise<any> {
-        return this.http.get("http://localhost:3000/teams?q=" + name).toPromise();
+        return this.http.get(environment.backendURL + "/teams?q=" + name).toPromise();
     }
 
     getTeamCompetitions(teamID: string): Promise<any> {
-        return (this.http.get("http://localhost:3000/teams/" + teamID + "/competitions").toPromise());
+        return (this.http.get(environment.backendURL + "/teams/" + teamID + "/competitions").toPromise());
     }
 
     async createTeam(team: any, avatar?: File): Promise<any> {
@@ -30,7 +31,7 @@ export class TeamsService {
         }
         if (avatar) formData.append("avatar", avatar);
 
-        let result = (await this.http.post("http://localhost:3000/teams", formData).toPromise());
+        let result = (await this.http.post(environment.backendURL + "/teams", formData).toPromise());
         return result;
     }
 
@@ -43,12 +44,12 @@ export class TeamsService {
         }
         if (avatar) formData.append("avatar", avatar);
 
-        let result = (await this.http.put("http://localhost:3000/teams/" + teamID, formData).toPromise());
+        let result = (await this.http.put(environment.backendURL + "/teams/" + teamID, formData).toPromise());
         return result;
     }
 
     async deleteTeam(teamID: string) {
-        let result = (await this.http.delete("http://localhost:3000/teams/" + teamID).toPromise());
+        let result = (await this.http.delete(environment.backendURL + "/teams/" + teamID).toPromise());
         return result;
     }
 }

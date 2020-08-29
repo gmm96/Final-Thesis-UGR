@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Router} from "@angular/router";
+import {environment} from "../../../environments/environment";
 
 @Injectable()
 export class AuthService {
@@ -12,13 +13,13 @@ export class AuthService {
 
     async login(params: LoginParams): Promise<boolean> {
         // now returns an Observable of Config
-        let result =  (await this.http.post<Session>("http://localhost:3000/login", params).toPromise())
+        let result =  (await this.http.post<Session>(environment.backendURL + "/login", params).toPromise())
         this.saveToken(result)
         return true
     }
 
     getMe(): Promise<Me> {
-        return this.http.get<Me>("http://localhost:3000/admin").toPromise()
+        return this.http.get<Me>(environment.backendURL + "/admin").toPromise()
     }
 
     getToken(): string {
