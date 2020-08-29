@@ -4,6 +4,7 @@ import {Subscription} from "rxjs";
 import {Animations} from "../../../shared/animations";
 import {TeamsService} from "../../../core/services/teams/teams.service";
 import {Title} from "@angular/platform-browser";
+import {environment} from "../../../../environments/environment";
 
 @Component({
     selector: 'app-team-details',
@@ -34,7 +35,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
             this.team = (await this.teamsService.getTeamInformation(this.teamID));
             this.titleService.setTitle((this.team) ? this.team.name + " - Equipos" : "Equipos");
             if (this.team) {
-                if (this.team.avatar) this.team.avatar = 'http://localhost:3000' + this.team.avatar;
+                if (this.team.avatar) this.team.avatar = environment.backendURL + this.team.avatar;
                 this.changeDetectorRef.detectChanges();
             }
         });

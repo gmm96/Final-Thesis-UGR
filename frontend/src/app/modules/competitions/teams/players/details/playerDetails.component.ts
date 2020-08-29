@@ -4,6 +4,7 @@ import {Subscription} from "rxjs";
 import {Animations} from "../../../../../shared/animations";
 import {CompetitionsService} from "../../../../../core/services/competitions/competitions.service";
 import {Title} from "@angular/platform-browser";
+import {environment} from "../../../../../../environments/environment";
 
 @Component({
     selector: 'app-competition-player-details',
@@ -46,7 +47,7 @@ export class CompetitionPlayerDetailsComponent implements OnInit, OnDestroy {
             if (!this.player) {
                 this.router.navigate(["/notFound"]);
             }
-            if (this.player.avatar) this.player.avatar = 'http://localhost:3000' + this.player.avatar;
+            if (this.player.avatar) this.player.avatar = environment.backendURL + this.player.avatar;
             this.titleService.setTitle((this.player) ? this.player.name + " " + this.player.surname + " en " + this.competition.name + " - Jugador en competición" : "Jugadores en competición");
             this.changeDetectorRef.detectChanges();
         });

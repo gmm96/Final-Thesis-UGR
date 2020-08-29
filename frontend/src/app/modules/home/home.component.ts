@@ -15,7 +15,6 @@ import {environment} from "../../../environments/environment";
 
 export class HomeComponent implements OnInit, OnDestroy {
 
-    production = environment.backendURL;
     searchControlHome = new FormControl();
     searchSubscription: Subscription;
     filteredOptions: SearchBoxResultInterface[] = [];

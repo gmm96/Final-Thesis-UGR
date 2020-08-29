@@ -5,6 +5,7 @@ import {Animations} from "../../../shared/animations";
 import {PlayersService} from "../../../core/services/players/players.service";
 import {Title} from "@angular/platform-browser";
 import {ManagePlayerActions} from "../../admin/players/managePlayers.component";
+import {environment} from "../../../../environments/environment";
 
 @Component({
     selector: 'app-player-details',
@@ -35,7 +36,7 @@ export class PlayerDetailsComponent implements OnInit, OnDestroy {
             this.player = (await this.playersService.getPlayerInformation(this.playerID));
             this.titleService.setTitle((this.player) ? this.player.name + " " + this.player.surname + " - Jugadores" : "Jugadores");
             if (this.player) {
-                if (this.player.avatar) this.player.avatar = 'http://localhost:3000' + this.player.avatar;
+                if (this.player.avatar) this.player.avatar = environment.backendURL + this.player.avatar;
                 this.changeDetectorRef.detectChanges();
             }
         });

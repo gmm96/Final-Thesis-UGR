@@ -8,6 +8,7 @@ import {CompetitionsService} from "../../../core/services/competitions/competiti
 import {ToastrService} from "ngx-toastr";
 import {AuthService} from "../../../core/auth/auth.service";
 import {Title} from "@angular/platform-browser";
+import {environment} from "../../../../environments/environment";
 
 @Component({
     selector: 'app-game-control',
@@ -119,8 +120,8 @@ export class GameControlComponent implements OnInit {
         this.game = (await this.competitionsService.getFullGameById(this.competitionID, this.gameID));
         this.localTeam = this.game.localTeamInfo.team;
         this.visitorTeam = this.game.visitorTeamInfo.team;
-        if (this.localTeam.avatar) this.localTeam.avatar = 'http://localhost:3000' + this.localTeam.avatar;
-        if (this.visitorTeam.avatar) this.visitorTeam.avatar = 'http://localhost:3000' + this.visitorTeam.avatar;
+        if (this.localTeam.avatar) this.localTeam.avatar = environment.backendURL + this.localTeam.avatar;
+        if (this.visitorTeam.avatar) this.visitorTeam.avatar = environment.backendURL + this.visitorTeam.avatar;
         if (this.game.time) this.game.time = new Date(this.game.time).toLocaleString().slice(0, -3);;
 
         if (!this.isGameStarted()) {
@@ -418,5 +419,9 @@ export class GameControlComponent implements OnInit {
 
     public errorHandling = (form, control: string, error: string) => {
         if (form) return form.controls[control].hasError(error);
+    }
+
+    getAvatar(file) {
+        return environment.backendURL + file;
     }
 };

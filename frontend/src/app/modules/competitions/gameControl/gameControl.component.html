@@ -175,7 +175,7 @@
                         <div class="player-display d-flex">
                             <div class="img-container d-none d-md-block">
                                 <img class="player-pic" mat-card-image
-                                     [src]="(player?.avatar)? 'http://localhost:3000' + player?.avatar : '/assets/images/defaultuser.png'">
+                                     [src]="(player?.avatar)? getAvatar(player?.avatar) : '/assets/images/defaultuser.png'">
                             </div>
                             <div class="player-info d-flex flex-column align-items-center justify-content-center w-100">
                                 <div class="number-and-name d-flex align-items-center w-100">
@@ -227,7 +227,7 @@
                         <div class="player-display d-flex">
                             <div class="img-container d-none d-md-block">
                                 <img class="player-pic" mat-card-image
-                                     [src]="(player?.avatar)? 'http://localhost:3000' + player?.avatar : '/assets/images/defaultuser.png'">
+                                     [src]="(player?.avatar)? getAvatar(player?.avatar) : '/assets/images/defaultuser.png'">
                             </div>
                             <div class="player-info d-flex flex-column align-items-center justify-content-center w-100">
                                 <div class="number-and-name d-flex align-items-center w-100 flex-row-reverse">
