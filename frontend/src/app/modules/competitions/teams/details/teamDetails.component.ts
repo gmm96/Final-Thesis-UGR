@@ -4,6 +4,7 @@ import {Subscription} from "rxjs";
 import {Animations} from "../../../../shared/animations";
 import {Title} from "@angular/platform-browser";
 import {CompetitionsService} from "../../../../core/services/competitions/competitions.service";
+import {environment} from "../../../../../environments/environment";
 
 @Component({
     selector: 'app-competition-team-details',
@@ -26,7 +27,7 @@ export class CompetitionTeamDetailsComponent implements OnInit, OnDestroy {
         private router: Router,
         private titleService: Title,
         private changeDetectorRef: ChangeDetectorRef,
-        private competitionsService: CompetitionsService
+        private competitionsService: CompetitionsService,
     ) {
     }
 
@@ -39,7 +40,7 @@ export class CompetitionTeamDetailsComponent implements OnInit, OnDestroy {
             if (!this.team) {
                 this.router.navigate(["/notFound"]);
             }
-            if (this.team.avatar) this.team.avatar = 'http://localhost:3000' + this.team.avatar;
+            if (this.team.avatar) this.team.avatar = environment.backendURL + this.team.avatar;
             this.titleService.setTitle((this.team) ? this.team.name + " en " + this.competition.name + " - Equipo en competición" : "Equipos en competición");
             this.changeDetectorRef.detectChanges();
         });

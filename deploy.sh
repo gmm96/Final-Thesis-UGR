@@ -23,7 +23,7 @@ cd ..
 mongo < create_db_admin.js
 mongo -u administrator -p trabajoFinGrado < init_mongo.js
 
-node --inspect "backend/server.js"
+node "backend/server.js"
 cd frontend
 npm run start
 cd ..

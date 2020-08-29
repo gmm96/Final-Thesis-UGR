@@ -1,4 +1,4 @@
-import {LOCALE_ID, NgModule} from '@angular/core';
+import {isDevMode, LOCALE_ID, NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatButtonModule} from "@angular/material/button";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -75,7 +75,6 @@ import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-mome
 import {CompetitionsService} from "../core/services/competitions/competitions.service";
 import {TeamTableComponent} from "./components/teamTable/teamTable.component";
 import {TeamListComponent} from "../modules/competitions/details/teamList/teamList.component";
-
 
 @NgModule({
     declarations: [
