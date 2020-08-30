@@ -1,4 +1,4 @@
-<div class="player-details container-fluid">
+<div class="player-details container-fluid" *ngIf="player">
     <div class="details-header-intro row align-items-center">
         <div class="header-name col-12 col-md-7 offset-md-1 col-lg-7 offset-lg-1 order-2 order-md-1 text-md-left text-center">
             <div class="header-name-title">{{player?.name + " " + player?.surname}}</div>
