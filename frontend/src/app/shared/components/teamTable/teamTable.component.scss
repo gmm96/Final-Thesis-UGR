@@ -19,7 +19,7 @@
 
         .team-name {
             flex: none;
-            width: 60%;
+            width: 50%;
             img {
                 @include border_radius(5px);
                 width: 40px;
@@ -36,7 +36,7 @@
         mat-header-cell:first-of-type {
             justify-content: flex-start;
             flex: none;
-            width: 60%;
+            width: 50%;
             padding-left: 76px !important;
         }
         mat-header-cell {

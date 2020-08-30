@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                 this._filter(value)
             }
         );
-        this.titleService.setTitle("Inicio");
+        this.titleService.setTitle("Actapp");
     }
 
     ngOnDestroy() {

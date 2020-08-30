@@ -15,25 +15,9 @@ exports.getAdminByEmail = async ( email ) => {
 	return result;
 };
 
-exports.getAllAdmins = async () => {
-	let result = ( await dbModule.findResultToArray( adminCursor, {} ) );
-	return result;
-};
-
 exports.createAdmin = async ( admin ) => {
 	let result = ( await adminCursor.insertOne( admin ) );
 	return result.ops[ 0 ];
 };
-
-exports.updateAdmin = async ( id, admin ) => {
-	let result = ( await adminCursor.findOneAndUpdate( { _id: ObjectID( id.toString() ) }, { $set: admin }, { returnOriginal: false } ) );
-	return result.value;
-};
-
-exports.deleteAdmin = async ( id ) => {
-	let result = ( await adminCursor.deleteOne( { _id: ObjectID( id.toString() ) } ) );
-	return ( result.result.n === 1 && result.result.ok === 1 );
-};
-
 
 
