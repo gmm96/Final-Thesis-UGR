@@ -4,7 +4,7 @@
 
 export const environment = {
     production: false,
-    backendURL: "http://actapp.tk:3000",
+    backendURL: "http://164.90.188.202:3000",
 };
 
 /*
