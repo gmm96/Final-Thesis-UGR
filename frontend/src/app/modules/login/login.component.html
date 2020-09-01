@@ -18,8 +18,8 @@
                     </mat-form-field>
                     <mat-form-field class="password col-sm-12">
                         <mat-label>Contraseña</mat-label>
-                        <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
-                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                        <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" (keyup.enter)="login($event)">
+                        <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
                                 [attr.aria-pressed]="hide">
                             <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
                         </button>
@@ -29,7 +29,7 @@
                     </mat-form-field>
 
                     <div class="button-wrapper">
-                        <button mat-flat-button color="primary" (click)="login($event)">Login</button>
+                        <button mat-flat-button color="primary" type="button" (click)="login($event)">Login</button>
                     </div>
 
                 </form>
