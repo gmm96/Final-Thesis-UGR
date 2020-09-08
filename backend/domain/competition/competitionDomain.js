@@ -601,7 +601,7 @@ exports.updateGameTimeAndLocation = async ( competitionID, gameID, param ) => {
 	let existingGame = ( await gameDomain.getGameById( gameID ) );
 	if ( !existingGame ) throw { code: 422, message: "El equipo especificado no se encuentra en el sistema" };
 	if ( existingGame.localTeamInfo.playerStats || existingGame.localTeamInfo.quarterStats || existingGame.visitorTeamInfo.playerStats || existingGame.visitorTeamInfo.quarterStats ) {
-		throw { code: 422, message: "Imposible modificar la fecha y localización del partido, ya ha comenzaod" };
+		throw { code: 422, message: "Imposible modificar la fecha y localización del partido, ya ha comenzado" };
 	}
 	
 	existingGame.location = param.location;

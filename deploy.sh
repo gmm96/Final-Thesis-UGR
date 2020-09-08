@@ -22,6 +22,10 @@ ufw --force enable
 # Instalar node_modules para backend y frontend
 cd backend
 npm install 
+if [ ! -d "media" ]
+then
+	mkdir -p media/players media/teams
+fi
 cd ..
 cd frontend 
 npm install
