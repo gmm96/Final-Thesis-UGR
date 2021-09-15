@@ -1,0 +1,52 @@
+<div *ngIf="games">
+    <mat-form-field class="table-filter w-100">
+        <mat-label>Filtro</mat-label>
+        <input matInput (keyup)="applyFilter($event)">
+    </mat-form-field>
+    <div class="table-border shadow">
+        <mat-table [dataSource]="dataSource" class="table-responsive game-table">
+            <caption class="caption-fixture-info">
+                <div class="fixture-info-container">
+                    <div class="fixture-number" *ngIf="gameCompatible && gameCompatible?.length">
+                        {{( showCaption ) ? "Jornada " + gameCompatible[ 0 ]?.fixture : ""}}</div>
+                    <div class="fixture-date" *ngIf="minDate && maxDate">{{ minDate }} - {{ maxDate }}</div>
+                </div>
+            </caption>
+            <div class="table-shadow">
+                <ng-container matColumnDef="localTeamName">
+                    <mat-cell class="local-team text-left" *matCellDef="let element">
+                        {{ element?.localTeamName }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="gameStatus">
+                    <mat-cell class="gameStatus text-center d-flex flex-column justify-content-center align-items-center" *matCellDef="let element">
+                        <div class="time" *ngIf="element?.gameStatus?.date && element?.gameStatus?.time">
+                            {{ element?.gameStatus?.time }}
+                        </div>
+                        <div class="date" *ngIf="element?.gameStatus?.date && element?.gameStatus?.time">
+                            {{ element?.gameStatus?.date }}
+                        </div>
+                        <div class="text" *ngIf="element?.gameStatus?.result && element?.gameStatus?.text">
+                            {{ element?.gameStatus?.text }}
+                        </div>
+                        <div class="result" *ngIf="element?.gameStatus?.result && element?.gameStatus?.text">
+                            {{ element?.gameStatus?.result }}
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="visitorTeamName">
+                    <mat-cell class="visitor-team text-right" *matCellDef="let element">
+                        {{ element?.visitorTeamName }}
+                    </mat-cell>
+                </ng-container>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="goToGame(row)"></mat-row>
+            </div>
+        </mat-table>
+        <div class="no-data" *ngIf="!dataSource || dataSource?.filteredData?.length == 0">
+            <span>No hay datos para este filtro</span>
+        </div>
+        <mat-paginator [length]="dataSource?.filteredData?.length" [pageSizeOptions]="[5, 10, 25, 50]" [pageSize]="5"
+                       [hidden]="!showPaginator"
+                       *ngIf="dataSource && dataSource?.filteredData?.length > 0"></mat-paginator>
+    </div>
+</div>

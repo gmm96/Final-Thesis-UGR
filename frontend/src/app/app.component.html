@@ -1,0 +1,7 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<app-header></app-header>
+
+<div class="content">
+    <router-outlet *ngIf="loaded"></router-outlet>
+    <app-loader *ngIf="!loaded"></app-loader>
+</div>

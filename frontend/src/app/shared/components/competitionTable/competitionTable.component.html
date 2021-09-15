@@ -1,0 +1,49 @@
+<div *ngIf="competitions">
+    <mat-form-field class="table-filter w-100">
+        <mat-label>Filtro</mat-label>
+        <input matInput (keyup)="applyFilter($event)">
+    </mat-form-field>
+    <div class="table-border table-responsive shadow">
+        <mat-table [dataSource]="dataSource" class="table-responsive competition-table">
+            <div class="table-shadow">
+                <ng-container matColumnDef="teamName">
+                    <mat-header-cell *matHeaderCellDef>Equipo</mat-header-cell>
+                    <mat-cell class="team-name" *matCellDef="let element" matTooltip="{{ element?.teamName }}">
+                        {{ element?.teamName }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="competitionName">
+                    <mat-header-cell *matHeaderCellDef>Competición</mat-header-cell>
+                    <mat-cell class="competition-name" *matCellDef="let element" [matTooltip]="element?.competitionName">
+                        {{ element?.competitionName }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="season">
+                    <mat-header-cell *matHeaderCellDef>Temporada</mat-header-cell>
+                    <mat-cell class="season" *matCellDef="let element" [matTooltip]="element?.season">
+                        {{ element?.season }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="class">
+                    <mat-header-cell *matHeaderCellDef>Categoría</mat-header-cell>
+                    <mat-cell class="category" *matCellDef="let element" [matTooltip]="element?.class">
+                        {{ element?.class }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="sex" class="hidden-sm">
+                    <mat-header-cell *matHeaderCellDef>Sexo</mat-header-cell>
+                    <mat-cell class="sex" *matCellDef="let element" [matTooltip]="element?.sex">
+                        {{ element?.sex }}
+                    </mat-cell>
+                </ng-container>
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="goToPageInCompetition(row)"></mat-row>
+            </div>
+        </mat-table>
+        <div class="no-data" *ngIf="!dataSource || dataSource?.filteredData?.length == 0">
+            <span>No hay datos para este filtro</span>
+        </div>
+    </div>
+</div>

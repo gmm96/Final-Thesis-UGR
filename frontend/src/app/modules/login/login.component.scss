@@ -1,0 +1,18 @@
+@import 'src/assets/scss/base';
+
+.login {
+    @extend .center-background-img;
+    background-image: url("src/assets/images/background.jpg");
+
+    .login-card {
+        padding-left: 15px;
+        padding-right: 15px;
+        .password {
+            margin-top: 10px;
+        }
+
+        .button-wrapper {
+            margin: 30px 0 5px 15px;
+        }
+    }
+}

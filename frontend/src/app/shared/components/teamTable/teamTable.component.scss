@@ -1,0 +1,92 @@
+@import "src/assets/scss/base";
+
+.table-border {
+    @include border_radius(10px);
+
+    .team-table {
+        display: table;
+        overflow-x: auto;
+
+        .mat-row {
+            background-color: white;
+        }
+        .mat-row:nth-child(even) {
+            background-color: rgba(0, 0, 0, .05);
+        }
+        .mat-row:hover {
+            cursor: pointer;
+        }
+
+        .team-name {
+            flex: none;
+            width: 50%;
+            img {
+                @include border_radius(5px);
+                width: 40px;
+                height: 40px;
+                margin: 8px 12px 8px 0;
+            }
+        }
+
+        mat-cell {
+            $mat-cell-padding: 5px;
+            padding-top: $mat-cell-padding;
+            padding-bottom: $mat-cell-padding;
+        }
+        mat-cell.team-city {
+            word-break: break-word;
+        }
+        mat-header-cell:first-of-type {
+            justify-content: flex-start;
+            flex: none;
+            width: 50%;
+            padding-left: 76px !important;
+        }
+        mat-header-cell {
+            justify-content: center;
+        }
+        .team-city, .team-players-length {
+            justify-content: center;
+        }
+        .mat-header-row {
+            background-color: $indigo-900;
+            border-bottom: 3px solid $orange;
+
+            .mat-header-cell {
+                color: white;
+            }
+        }
+        mat-header-cell:last-of-type, mat-cell:last-of-type {
+            padding-right: 3px;
+        }
+        mat-header-cell:first-of-type, mat-cell:first-of-type {
+            padding-left: 12px;
+        }
+
+    }
+
+    .no-data {
+        font-size: 14px;
+        padding: 10px 24px;
+    }
+}
+
+$filer-color: $orange;
+.table-filter {
+    font-size: 14px;
+
+    ::ng-deep.mat-form-field-underline {
+        /*change color of underline*/
+        background-color: $filer-color;
+    }
+
+    ::ng-deep.mat-form-field-ripple {
+        /*change color of underline when focused*/
+        background-color: $filer-color;;
+    }
+}
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+    color: $filer-color;
+}
+

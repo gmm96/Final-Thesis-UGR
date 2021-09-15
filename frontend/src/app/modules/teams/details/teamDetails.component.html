@@ -1,0 +1,45 @@
+<div class="team-details container-fluid" *ngIf="team">
+    <div class="details-header-intro row align-items-center">
+        <div class="header-name col-12 col-md-7 offset-md-1 col-lg-7 offset-lg-1 order-2 order-md-1 text-md-left text-center">
+            <div class="header-name-title">{{team?.name}}</div>
+        </div>
+        <div class="header-pic col-12 col-md-4 col-lg-4 order-1 order-md-2">
+            <img mat-card-image [src]="team?.avatar || '/assets/images/defaultteam.png'">
+        </div>
+    </div>
+
+    <div class="details-navbar-links">
+        <nav class="navbar navbar-expand-md navbar-light">
+            <div class="navbar-toggler-title navbar-toggler"><span>{{ currentTabField?.toLowerCase() }}</span></div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-toggler-content collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
+                <ul class="navbar-links nav navbar-nav text-center">
+                    <li [class.active]="currentTabField === getTeamDetailsTabs().info">
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openTeamInfo()">Información</a>
+                    </li>
+                    <li [class.active]="currentTabField === getTeamDetailsTabs().roster">
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openTeamRoster()">Plantilla</a>
+                    </li>
+                    <li [class.active]="currentTabField === getTeamDetailsTabs().competitions">
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openCompetitions()">Competiciones</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <div class="competition-details-content w-100" [ngSwitch]="currentTabField" [@avoidAnimatedTabsFirstEvent]>
+        <div *ngSwitchCase="getTeamDetailsTabs().info" [@animatedTabs]>
+            <app-team-info [team]="team"></app-team-info>
+        </div>
+        <div *ngSwitchCase="getTeamDetailsTabs().roster" [@animatedTabs]>
+            <app-team-roster [teamRoster]="(team?.players && team?.players?.length)? team?.players : []"></app-team-roster>
+        </div>
+        <div *ngSwitchCase="getTeamDetailsTabs().competitions" [@animatedTabs]>
+            <app-team-competitions [teamID]="teamID"></app-team-competitions>
+        </div>
+    </div>
+</div>

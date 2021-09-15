@@ -1,0 +1,136 @@
+<div class="admin-players">
+    <div class="admin-header">
+        <div class="title">Gestión de jugadores</div>
+        <div class="disclaimer alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center"
+             role="alert">
+            <mat-icon color="primary">priority_high</mat-icon>
+            <span>Recuerde que necesita crear y/o editar los jugadores necesarios antes de seguir con la gestión de equipos</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="admin-content container">
+        <div class="row">
+            <div class="form-wrapper col-12 col-md-10 offset-md-1 col-xl-8 offset-xl-2">
+                <div class="form-header">
+                    <form [formGroup]="optionForm" class="d-flex row align-items-center">
+                        <mat-radio-group
+                                class="radio-group d-flex col-12 col-md-3 align-items-center justify-content-center"
+                                formControlName="action">
+                            <mat-radio-button class="radio-button" color="primary"
+                                              value="{{ getManagePlayerActions().create }}" [checked]="true">
+                                Crear
+                            </mat-radio-button>
+                            <mat-radio-button class="radio-button" color="primary"
+                                              value="{{ getManagePlayerActions().edit }}">
+                                Editar
+                            </mat-radio-button>
+                        </mat-radio-group>
+                        <mat-form-field class="query col-12 col-md-8 offset-md-1" appearance="outline" color="accent">
+                            <mat-icon matPrefix [color]="searchInput.focused ? 'accent' : ''" class="search-icon">search</mat-icon>
+                            <mat-label>Identificación personal</mat-label>
+                            <input matInput formControlName="idCard" [disableControl]="!canEditOptionSearchBox()"
+                                   #searchInput="matInput" [matAutocomplete]="auto" [readonly]="selectedPlayerToEdit" (keydown.enter)="addFirstFilteredOption($event)">
+                            <button mat-button *ngIf="selectedPlayerToEdit" matSuffix mat-icon-button aria-label="Clear" (click)="clearPlayerToEdit()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </form>
+                </div>
+                <div class="form-content mat-elevation-z8 rounded">
+                    <form [formGroup]="playerForm" class="player-form" #formDirective="ngForm" enctype="multipart/form-data" method="post">
+                        <div class="player-form-title">{{ canEditOptionSearchBox()? "Editar jugador" : "Crear jugador" }}</div>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Nombre</mat-label>
+                            <input matInput type="text" formControlName="name" [disableControl]="canEditOptionSearchBox() && !selectedPlayerToEdit">
+                            <mat-error *ngIf="errorHandling('name', 'required')">
+                                Debe proporcionar un <strong>nombre</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Apellido/s</mat-label>
+                            <input matInput type="text" formControlName="surname" [disableControl]="canEditOptionSearchBox() && !selectedPlayerToEdit">
+                            <mat-error *ngIf="errorHandling('surname', 'required')">
+                                Debe proporcionar un <strong>apellido</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="long-label">Identificación personal</mat-label>
+                            <input matInput type="text" formControlName="idCard" [disableControl]="canEditOptionSearchBox() && !selectedPlayerToEdit">
+                            <mat-error *ngIf="errorHandling('idCard', 'required')">
+                                Debe proporcionar una <strong>identificación personal</strong>
+                            </mat-error>
+                            <mat-error *ngIf="errorHandling('idCard', 'pattern')">
+                                Debe proporcionar una <strong>identificación personal</strong> formada por 8 dígitos y una letra
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="birthDate col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="long-label">Fecha de nacimiento</mat-label>
+                            <input matInput [matDatepicker]="picker" formControlName="birthDate" (click)="picker.open()" [max]="maxDate"
+                                   [disableControl]="canEditOptionSearchBox() && !selectedPlayerToEdit" (dateChange)="setDateFormat()">
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker touchUi #picker></mat-datepicker>
+                            <mat-error *ngIf="errorHandling('birthDate', 'required')">
+                                Debe proporcionar una <strong>fecha de nacimiento</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="long-label">Lugar de nacimiento</mat-label>
+                            <input matInput type="text" formControlName="birthPlace" [disableControl]="canEditOptionSearchBox() && !selectedPlayerToEdit">
+                            <mat-error *ngIf="errorHandling('birthPlace', 'required')">
+                                Debe proporcionar un <strong>lugar de nacimiento</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Altura (m)</mat-label>
+                            <input matInput type="text" formControlName="height" [disableControl]="canEditOptionSearchBox() && !selectedPlayerToEdit" autocomplete="off">
+                            <mat-error *ngIf="errorHandling('height', 'required')">
+                                Debe proporcionar una <strong>altura</strong>
+                            </mat-error>
+                            <mat-error *ngIf="errorHandling('height', 'pattern')">
+                                Debe proporcionar una <strong>altura</strong> en el formato correcto (p.e. 2.01 m)
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Peso (Kg)</mat-label>
+                            <input matInput type="text" formControlName="weight" [disableControl]="canEditOptionSearchBox() && !selectedPlayerToEdit" autocomplete="off">
+                            <mat-error *ngIf="errorHandling('weight', 'required')">
+                                Debe proporcionar un <strong>peso</strong>
+                            </mat-error>
+                            <mat-error *ngIf="errorHandling('weight', 'pattern')">
+                                Debe proporcionar un <strong>peso</strong> en el formato correcto (p.e. 85.04 Kg)
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Imagen</mat-label>
+                            <ngx-mat-file-input [multiple]="false" [disableControl]="cannotUploadImage()"
+                                                formControlName="avatar" [accept]="'image/*'"></ngx-mat-file-input>
+                            <mat-icon matSuffix>folder</mat-icon>
+                        </mat-form-field>
+                        <mat-checkbox class="mat-form-checkbox" formControlName="deleteAvatar" *ngIf="canEditOptionSearchBox()" [disableControl]="canEditOptionSearchBox() && !selectedPlayerToEdit">
+                            Eliminar imagen para este jugador
+                        </mat-checkbox>
+                        <div class="button-wrapper d-flex justify-content-end align-items-center">
+                            <button mat-flat-button color="accent" type="button" (click)="resetPlayerForm()">Limpiar</button>
+                            <button mat-flat-button color="warn" type="button" (click)="deletePlayer()" *ngIf="canEditOptionSearchBox()"
+                                [disabled]="!selectedPlayerToEdit">Borrar</button>
+                            <button mat-flat-button color="primary" type="button" (click)="sendPlayer($event)" [disabled]="!playerForm?.valid">
+                                Enviar
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<mat-autocomplete class="autocomplete-header" #auto="matAutocomplete" (optionSelected)="setPlayerToEdit($event)" autoActiveFirstOption>
+    <mat-option *ngFor="let option of filteredOptions" [value]="option" class="autocomplete-option">
+        <mat-icon class="icon-type">person</mat-icon>
+        <span class="result-name">{{ option.idCard + " ( " + option.name + " " + option.surname + " )"}}</span>
+    </mat-option>
+</mat-autocomplete>

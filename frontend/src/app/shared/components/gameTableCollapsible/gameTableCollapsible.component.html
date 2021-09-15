@@ -1,0 +1,43 @@
+<div *ngIf="rounds">
+    <mat-form-field class="table-filter w-100">
+        <mat-label>Filtro</mat-label>
+        <input matInput (keyup)="applyFilter($event?.target?.value)">
+    </mat-form-field>
+    <div class="table-border shadow round" *ngFor="let item of rounds | keyvalue">
+        <mat-table [dataSource]="dataSource[item?.key]" class="table-responsive game-collapsible-table">
+            <caption class="caption-fixture-info">
+                <div class="fixture-info-container">
+                    <div class="fixture-number">{{getRoundText( item?.key )}}</div>
+                </div>
+            </caption>
+            <div class="table-container">
+                <ng-container matColumnDef="localTeamName">
+                    <mat-cell class="local-team" *matCellDef="let element"> {{element?.localTeamName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="roundStatus">
+                    <mat-cell class="roundStatus" *matCellDef="let element"> {{element?.roundStatus}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="visitorTeamName">
+                    <mat-cell class="visitor-team" *matCellDef="let element"> {{element?.visitorTeamName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="expandedDetail">
+                    <mat-cell *matCellDef="let detail; let element">
+                        <div class="playoffs-matchup-container">
+                            <app-playoffs-matchup [games]="element?.games"></app-playoffs-matchup>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" matRipple class="collapsible-row"
+                         [cdkDetailRow]="row" [cdkDetailRowTpl]="tpl" (toggleChange)="onToggleChange($event)"></mat-row>
+                <ng-template #tpl let-element>
+                    <div class="detail-row" [@detailExpand] style="overflow: hidden">
+                        <app-playoffs-matchup [games]="element?.games"></app-playoffs-matchup>
+                    </div>
+                </ng-template>
+            </div>
+        </mat-table>
+        <div class="no-data" *ngIf="!dataSource || dataSource?.filteredData?.length == 0">
+            <span>No hay datos para este filtro</span>
+        </div>
+    </div>
+</div>

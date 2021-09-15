@@ -1,0 +1,58 @@
+@import "src/assets/scss/base";
+
+.league-table {
+
+    .title {
+        .title-container {
+            margin: 40px 0 20px 0;
+            text-align: center;
+        }
+    }
+
+    .table-container {
+        margin-top: 20px;
+        margin-bottom: 50px;
+
+        .table-border {
+            @include border_radius(10px);
+
+            table.mat-table {
+                display: table;
+
+                .td-padding {
+                    display: block;
+                    padding-right: 10px;
+                }
+
+                td.mat-cell:last-of-type, td.mat-footer-cell:last-of-type, th.mat-header-cell:last-of-type {
+                    padding-right: 0 !important;
+                }
+
+                tr.mat-header-row {
+                    background-color: $indigo-900;
+                    border-bottom: 3px solid $orange;
+                }
+
+                th.mat-header-cell {
+                    color: white;
+                    font-size: 16px;
+                }
+                td.mat-cell {
+                    font-size: 16px;
+                }
+
+                ::ng-deep .mat-sort-header-arrow {
+                    color: $orange;
+                    margin-left: 2px;
+                    margin-right: 5px;
+                }
+
+                ::ng-deep .cdk-column-team {
+                    min-width: 165px;
+                }
+            }
+
+        }
+
+    }
+}

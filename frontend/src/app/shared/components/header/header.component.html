@@ -1,0 +1,53 @@
+<mat-toolbar class="main-header">
+    <div class="left-side">
+        <button mat-button (click)="goToIndex()">
+            <span class="header-title">Actapp</span>
+        </button>
+    </div>
+
+    <div class="right-side">
+        <div class="searchbox-container" *ngIf="showSearchBox">
+            <button mat-mini-fab class="search-button" color="primary" (click)="toggleSearchBox()">
+                <mat-icon *ngIf="!openedSearchBox">search</mat-icon>
+                <mat-icon *ngIf="openedSearchBox">close</mat-icon>
+            </button>
+            <div class="searchbox mat-elevation-z8 col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3 d-print-none" *ngIf="openedSearchBox" [@floatingSearchBox]>
+                <form>
+                    <mat-form-field class="search-engine-input col-sm-12" appearance="outline" color="primary">
+                        <mat-icon matPrefix [color]="searchInput.focused ? 'primary' : ''">search</mat-icon>
+                        <input matInput placeholder="Introduce competición, equipo, jugador, etc." type="text"
+                               [formControl]="searchControlHeader" [matAutocomplete]="auto" name="searchingFor"
+                               #searchbox #searchInput="matInput">
+                    </mat-form-field>
+                </form>
+            </div>
+        </div>
+        <div class="user-icon-container">
+            <button mat-mini-fab color="secondary" class="user-icon" (click)="goToLogin()" *ngIf="!getUserToken()">
+                <mat-icon>account_box</mat-icon>
+            </button>
+            <button mat-mini-fab color="secondary" class="user-icon" (click)="toggleAdminPanel()" *ngIf="getUserToken()">
+                <mat-icon *ngIf="!openedAdminPanel">build</mat-icon>
+                <mat-icon *ngIf="openedAdminPanel">close</mat-icon>
+            </button>
+            <div class="admin-panel mat-elevation-z8 col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3 text-center d-print-none" *ngIf="openedAdminPanel" [@adminPanel]>
+                <div class="admin-action" (click)="goToAdminPage()">
+                    Ir a panel de administración
+                </div>
+                <div class="admin-action" (click)="logout()">
+                    Salir
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-toolbar>
+
+<mat-autocomplete class="autocomplete-header" #auto="matAutocomplete" (optionSelected)="goToResultPage($event)" autoActiveFirstOption>
+    <mat-option *ngFor="let option of filteredOptions" [value]="option" [ngSwitch]="option.type" class="autocomplete-option">
+        <mat-icon class="icon-type" *ngSwitchCase="'PLAYER'">person</mat-icon>
+        <mat-icon class="icon-type" *ngSwitchCase="'TEAM'">people</mat-icon>
+        <mat-icon class="icon-type" *ngSwitchCase="'COMPETITION'">emoji_events</mat-icon>
+        <span class="result-name">{{option.name}}</span>
+    </mat-option>
+</mat-autocomplete>
+

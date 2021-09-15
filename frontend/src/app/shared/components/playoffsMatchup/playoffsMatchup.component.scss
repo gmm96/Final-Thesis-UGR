@@ -1,0 +1,51 @@
+@import "src/assets/scss/base";
+
+.playoffs-matchup-table-container {
+    padding-top: 12px;
+    padding-bottom: 12px;
+
+    .playoffs-matchup-table {
+        display: table;
+
+        .mat-row:nth-child(odd) {
+            background-color: rgba(0, 0, 0, .05);
+        }
+
+        .mat-row {
+            cursor: pointer;
+        }
+
+        mat-cell {
+            text-overflow: ellipsis;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .local-team {
+            justify-content: flex-start;
+            text-align: left;
+        }
+
+        .gameStatus {
+            justify-content: center;
+
+            .text {
+                font-size: 10px;
+            }
+            .result {
+                font-size: 16px;
+            }
+            .date {
+                font-size: 14px;
+            }
+            .time {
+                font-size: 12px;
+            }
+        }
+
+        .visitor-team {
+            justify-content: flex-end;
+            text-align: right;
+        }
+    }
+}

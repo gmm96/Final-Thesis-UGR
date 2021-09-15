@@ -1,0 +1,64 @@
+@import "src/assets/scss/base";
+
+.calendar {
+
+    .title {
+        .title-container {
+            margin: 30px 0 20px 0;
+            text-align: center;
+        }
+    }
+
+    .fixture-changer {
+        .fixture-changer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .arrow-icon {
+                min-width: 35px;
+                max-height: 30px;
+                line-height: 30px;
+                padding: 0;
+
+                .mat-icon {
+                    font-size: 20px;
+                }
+            }
+
+            .fixture-changer-panel {
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+                flex-wrap: nowrap;
+
+                .fixture-text {
+                    min-width: fit-content;
+                    margin: 0 10px;
+                }
+                .fixture-text:last-of-type {
+                    margin-left: 0;
+                }
+
+                .fixture-input-container {
+                    .fixture-number {
+                        max-width: 55px;
+                        text-align: center;
+                    }
+
+                    .go-button {
+                        font-size: 14px;
+                        padding: .375rem .65rem;
+                    }
+                }
+            }
+        }
+    }
+
+    .table-container-matchup {
+        padding-bottom: 40px;
+        padding-top: 30px;
+    }
+}
+
+

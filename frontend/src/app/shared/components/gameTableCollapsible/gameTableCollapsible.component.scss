@@ -1,0 +1,70 @@
+@import "src/assets/scss/base";
+
+.table-border {
+    @include border_radius(10px);
+    margin: 25px 0;
+    &:not(:first-of-type) {
+        margin-top: 40px;
+    }
+
+    .game-collapsible-table {
+        display: table;
+
+        mat-cell {
+            font-size: 16px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .collapsible-row {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .collapsible-row:hover {
+            background: #f5f5f5;
+        }
+
+        .collapsible-row.expanded {
+            border-bottom-color: transparent;
+        }
+
+        .detail-row {
+            margin: 0 24px;
+        }
+
+        .local-team {
+            justify-content: flex-start;
+            text-align: left;
+        }
+
+        .roundStatus {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .visitor-team {
+            justify-content: flex-end;
+            text-align: right;
+        }
+    }
+}
+
+$filer-color: $orange;
+.table-filter {
+    font-size: 14px;
+
+    ::ng-deep.mat-form-field-underline {
+        /*change color of underline*/
+        background-color: $filer-color;
+    }
+
+    ::ng-deep.mat-form-field-ripple {
+        /*change color of underline when focused*/
+        background-color: $filer-color;;
+    }
+}
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+    color: $filer-color;
+}

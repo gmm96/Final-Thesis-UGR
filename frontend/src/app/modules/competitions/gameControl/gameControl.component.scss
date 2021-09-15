@@ -1,0 +1,606 @@
+@import "src/assets/scss/base";
+
+.game-control {
+    padding-top: 5px;
+    padding-bottom: 10px;
+
+    .scoreboard-container {
+        @include border-radius(25px);
+        border: 6px solid $orange;
+        background-color: $blue-grey-800;
+        color: white;
+        font-weight: bold;
+
+        .score {
+            .score-container {
+                justify-content: space-evenly;
+
+                .score-separator {
+                    margin: 0 5px;
+                }
+            }
+
+            .quarter {
+                font-size: 12px;
+                text-align: center;
+            }
+        }
+
+        .team-container {
+            display: flex;
+            align-items: center;
+
+            .team-name {
+                text-overflow: ellipsis;
+                margin: 5px;
+
+                .team-status {
+                    min-height: 22px;
+                    display: flex;
+                    align-items: center;
+
+                    .status-chip {
+                        cursor: pointer;;
+                        @include border_radius(25px);
+                        background-color: $orange;
+                        color: white;
+                        min-height: 22px;
+                        font-size: 12px;
+                        white-space: nowrap;
+                        padding: 3px 10px;
+                        margin: 0 3px;
+
+                        &:hover {
+                            background-color: darken($orange, 10%);
+                            color: darken(white, 10%);
+                        }
+
+                        &:first-of-type {
+                            margin: 0 3px 0 0;
+                        }
+
+                        &:last-of-type {
+                            margin: 0 0 0 3px;
+                        }
+                    }
+                }
+            }
+
+            .team-pic {
+                height: 64px;
+                width: 64px;
+                @include border_radius(50px);
+                margin: 10px;
+            }
+        }
+    }
+
+    .game-info {
+        margin: 8px 0 5px 0;
+
+        .print-button {
+            margin-right: 10px;
+        }
+
+        .game-info-header {
+            @include border-top-left-radius(8px);
+            @include border-top-right-radius(8px);
+            font-size: 14px;
+            color: white;
+            background-color: $blue-grey-800;
+            padding: 5px 10px;
+
+            .button-collapse[aria-expanded=false] .arrow-up {
+                display: none;
+            }
+
+            .button-collapse[aria-expanded=true] .arrow-down {
+                display: none;
+            }
+
+            .button-collapse, .print-button {
+                width: 28px !important;
+                height: 28px !important;
+                line-height: 28px !important;
+
+                .mat-icon {
+                    width: 20px !important;
+                    height: 20px !important;
+                    line-height: 20px !important;
+                }
+
+                .material-icons {
+                    font-size: 20px !important;
+                }
+            }
+
+        }
+
+        .game-info-content {
+            border-top: 2px solid $orange;
+            background-color: $blue-grey-800;
+            @include border-bottom-left-radius(8px);
+            @include border-bottom-right-radius(8px);
+            padding: 5px 10px;
+
+            .game-info-content-cell {
+                color: white;
+                padding: 5px 15px;
+
+                .game-info-label {
+                    font-size: 12px;
+                    color: $blue-grey-100;
+
+                    span {
+                    }
+                }
+
+                .game-info-text {
+                    font-size: 18px;
+
+                    .score-by-quarter {
+                        font-size: 15px;
+                        width: 100%;
+
+                        thead {
+                            tr {
+                                border-bottom: 2px solid $orange;
+                            }
+                        }
+
+                        tbody {
+                            tr:not(:last-of-type) {
+                                border-bottom: 2px solid $orange;
+                            }
+
+                            th:first-of-type {
+                                border-right: 2px solid $orange;
+                            }
+                        }
+
+                        th, td {
+                            padding: 0 5px;
+                            text-align: center;
+                            border-left: 2px solid $orange;
+                            border-right: 2px solid $orange;
+
+                            &:first-of-type {
+                                border-left: 0;
+                            }
+
+                            &:last-of-type {
+                                border-right: 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .players-and-events {
+        .team {
+            .game-team-roster {
+                display: flex;
+                flex-direction: column;
+                @include border_radius(10px);
+                border: 2px solid grey;
+                margin: 5px 0;
+
+                .game-team-roster-title {
+                    @include border-top-left-radius(8px);
+                    @include border-top-right-radius(8px);
+                    font-size: 14px;
+                    color: white;
+                    background-color: $blue-grey-800;
+                    padding: 5px 10px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    .button-collapse[aria-expanded=false] .arrow-up {
+                        display: none;
+                    }
+
+                    .button-collapse[aria-expanded=true] .arrow-down {
+                        display: none;
+                    }
+
+                    .button-collapse {
+                        width: 28px !important;
+                        height: 28px !important;
+                        line-height: 28px !important;
+
+                        .mat-icon {
+                            width: 20px !important;
+                            height: 20px !important;
+                            line-height: 20px !important;
+                        }
+
+                        .material-icons {
+                            font-size: 20px !important;
+                        }
+                    }
+                }
+
+                .player-list {
+                    flex-direction: column;
+
+                    .player-display {
+                        margin: 5px 10px;
+
+                        .img-container {
+                            margin-right: 10px;
+                            .player-pic {
+                                @include border-radius(5px);
+                                height: 54px;
+                                width: 36px;
+                            }
+                        }
+
+                        .mat-card-image {
+                            margin: 0;
+
+                            &:first-child {
+                                margin-top: 0;
+                            }
+                        }
+
+                        .player-info {
+                            .number-and-name {
+                                .player-number {
+                                    font-size: 18px;
+                                    font-weight: bold;
+                                    margin-right: 10px;
+                                }
+
+                                .player-name {
+                                    font-size: 16px;
+                                }
+                            }
+
+                            .points-and-fouls {
+                                .player-points {
+                                    font-size: 16px;
+                                    font-weight: 500;
+                                    margin-left: 15px;
+                                }
+
+                                .starter-badge {
+                                    margin-left: 15px;
+                                    @include border-radius(50%);
+                                    background-color: $orange;
+                                    color: white;
+                                    height: 16px;
+                                    width: 16px;
+                                    line-height: 16px;
+                                    font-size: 10px;
+                                    padding: 0 5px;
+                                }
+
+                                .player-fouls {
+                                    display: flex;
+                                    flex-direction: row;
+
+                                    .foul-cell {
+                                        border-left: 2px solid $orange;
+                                        border-top: 2px solid $orange;
+                                        border-bottom: 2px solid $orange;
+                                        min-width: 18px;
+                                        min-height: 24px;
+                                        font-size: 14px;
+                                        line-height: 16px;
+                                        padding: 2px 0;
+                                        text-align: center;
+
+                                        &:first-of-type {
+                                            @include border-bottom-left-radius(10px);
+                                            @include border-top-left-radius(10px);
+                                        }
+
+                                        &:last-of-type {
+                                            border-right: 2px solid $orange;
+                                            @include border-bottom-right-radius(10px);
+                                            @include border-top-right-radius(10px);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            .game-visitor-team-roster {
+                .player-display {
+                    flex-direction: row-reverse !important;
+
+                    .img-container {
+                        margin-left: 10px !important;
+                        margin-right: 0 !important;
+                    }
+
+                    .player-info {
+                        .number-and-name {
+                            .player-number {
+                                margin-left: 10px !important;;
+                                margin-right: 0px !important;
+                            }
+                        }
+
+                        .points-and-fouls {
+                            .starter-badge {
+                                margin-right: 15px !important;
+                                margin-left: 0 !important;
+                            }
+
+                            .player-points {
+                                margin-right: 15px !important;
+                                margin-left: 0 !important;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        .events {
+            .event-container {
+                display: flex;
+                flex-direction: column;
+                @include border_radius(10px);
+                border: 2px solid grey;
+                margin: 5px 0;
+
+                .no-events {
+                    padding: 10px 15px;
+                    font-size: 16px;
+                }
+
+                .event-container-title {
+                    @include border-top-left-radius(8px);
+                    @include border-top-right-radius(8px);
+                    font-size: 16px;
+                    color: white;
+                    background-color: $indigo-900;
+                    padding: 5px 10px;
+                }
+
+                .event {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 3px 10px;
+
+                    .event-text {
+                    }
+
+                    .event-text {
+                        display: flex;
+                        align-items: center;
+
+                        .event-minute {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            @include border_radius(50%);
+                            background-color: $orange;
+                            color: white;
+                            min-width: 30px;
+                            margin-right: 8px;
+
+                            .minute-text {
+                                font-size: 8px;
+                                line-height: 8px;
+                                padding: 5px 5px 0 5px;
+                            }
+
+                            .minute-value {
+                                font-size: 13px;
+                                line-height: 18px;
+                                padding: 0 5px;
+                            }
+                        }
+
+                        .event-text-container {
+                            font-size: 16px;
+                        }
+                    }
+
+                    .event-delete {
+                        width: 36px !important;
+                        height: 36px !important;
+                        line-height: 36px !important;
+
+                        .mat-icon {
+                            width: 28px !important;
+                            height: 28px !important;
+                            line-height: 28px !important;
+                        }
+
+                        .material-icons {
+                            font-size: 28px !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @media print {
+        .add-event, .scroll-top {
+            display: none;
+        }
+    }
+
+    .add-event {
+        z-index: 2;
+        position: fixed;
+        right: 30px;
+        bottom: 30px;
+    }
+
+    .scroll-top {
+        z-index: 2;
+        position: fixed;
+        right: 96px;
+        bottom: 30px;
+        opacity: 0;
+        transition: all .2s ease-in-out;
+    }
+
+    .show-scrollTop {
+        opacity: 1;
+        transition: all .2s ease-in-out;
+    }
+}
+
+::ng-deep .chip-tooltip {
+    background-color: $black;
+    color: $blue-grey-50;
+    font-size: 12px;
+}
+
+.bottom-sheet {
+    @include border-top-left-radius(15px);
+    @include border-top-right-radius(15px);
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: stretch;
+    max-width: inherit;
+    background-color: white;
+    z-index: 4;
+    position: fixed !important;
+    bottom: 0;
+    margin-right: 30px;
+
+    .mat-nav-list {
+        padding-bottom: 8px;
+    }
+
+    .bottomSheet-header {
+        @include border-top-left-radius(15px);
+        @include border-top-right-radius(15px);
+        padding: 5px 16px;
+        font-size: 14px;
+        background-color: $indigo-900;
+        color: white;
+
+        .close-bottomSheet {
+            @include change-mat-fab-button-size(24px, 12px);
+        }
+    }
+}
+
+.timeout-counter-wrapper {
+    transition: all 0.5s ease;
+    position: fixed;
+    z-index: 5;
+    top: 0;
+    left: 0;
+    height: 100%;
+    min-height: 100% !important;
+    width: 100%;
+    background-color: rgba(black, 0.50);
+
+    .timeout-counter {
+        transition: all 0.5s ease;
+        height: 144px;
+        width: 144px;
+        font-size: 64px;
+        padding: 24px 36px;
+        @include border_radius(50%);
+        text-align: center;
+        background-color: $orange;
+        color: white;
+    }
+}
+
+::ng-deep .cdk-overlay-container {
+    z-index: 1051;
+}
+
+.modal {
+    &[aria-modal=true] {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding-right: 0 !important;
+    }
+
+    .modal-content {
+        @include border_radius(15px);
+        border: 2px solid $orange;
+
+        .modal-header {
+            @include border_top-left-radius(13px);
+            @include border_top-right-radius(13px);
+            background-color: $indigo-900;
+            color: white;
+            border-bottom: 0;
+
+            .modal-subtitle {
+                font-size: 13px;
+                text-align: center;
+            }
+        }
+
+        .modal-body {
+            border-top: 3px solid $orange;
+
+            .modal-body-header {
+                font-size: 14px;
+                font-variant: all-small-caps;
+                margin-bottom: 10px;
+            }
+
+            .player-container {
+
+                .player-number {
+                    width: 45px;
+                    margin: 0 12px;
+                }
+
+                .startingLineup {
+                    margin-right: 12px;
+                }
+            }
+
+            .player-idCard {
+                font-size: 15px;
+            }
+
+            .player-name {
+                font-size: 12px;
+                margin-left: 12px;
+            }
+
+            mat-form-field {
+                width: 100%;
+                font-size: 14px;
+            }
+
+            .slide-toggle {
+                ::ng-deep .mat-form-field-infix {
+                    padding-top: 0;
+                }
+            }
+
+            .required-tip {
+                font-size: 12px;
+            }
+        }
+
+        .modal-footer {
+            border-top: 2px solid $orange;
+
+            .close-button {
+                margin-right: 8px;
+            }
+        }
+    }
+}
+

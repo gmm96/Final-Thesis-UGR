@@ -1,0 +1,51 @@
+@import "src/assets/scss/base";
+
+.admin {
+    .admin-header {
+        background-color: $blue-grey-800;
+        text-align: center;
+
+        .title {
+            padding: 15px 20px 5px 20px;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            padding: 5px 20px 15px 20px;
+            font-size: 14px;
+            color: $blue-grey-100;
+        }
+    }
+
+    .admin-content {
+        padding: 30px 0;
+        .admin-actions {
+            .admin-action-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-direction: column;
+                margin: 20px 5px;
+                padding: 10px 5px;
+                background-color: white;
+                border: 3px solid $orange;
+                text-align: center;
+                @include border_radius(15px);
+
+                .mat-icon {
+                    font-size: 50px;
+                    line-height: 50px;
+                    width: 50px;
+                    height: 50px;
+                }
+
+                &:hover {
+                    background-color: darken(white, 10%);
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}

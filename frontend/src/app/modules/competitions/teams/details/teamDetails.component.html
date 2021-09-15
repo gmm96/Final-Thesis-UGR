@@ -1,0 +1,60 @@
+<div class="team-details container-fluid" *ngIf="team">
+    <div class="details-header-intro row align-items-center">
+        <div class="header-name col-12 col-md-7 offset-md-1 col-lg-7 offset-lg-1 order-2 order-md-1 text-md-left text-center">
+            <div class="header-name-title">
+                <span class="underline" (click)="goToTeamPage()" matTooltip="Ir a página personal de equipo">
+                    {{ team?.name }}
+                </span>
+            </div>
+            <div class="header-name-subtitle" >
+                <span class="underline" (click)="goToCompetitionPage()" matTooltip="Ir a página de competición">
+                    {{ competition?.name }}
+                </span>
+            </div>
+        </div>
+        <div class="header-pic col-12 col-md-4 col-lg-4 order-1 order-md-2">
+            <img mat-card-image [src]="team?.avatar || '/assets/images/defaultteam.png'">
+        </div>
+    </div>
+
+    <div class="details-navbar-links">
+        <nav class="navbar navbar-expand-md navbar-light">
+            <div class="navbar-toggler-title navbar-toggler"><span>{{ currentTabField?.toLowerCase() }}</span></div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-toggler-content collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
+                <ul class="navbar-links nav navbar-nav text-center">
+                    <li [class.active]="currentTabField === getTeamDetailsTabs().roster">
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openTeamRoster()">Plantilla</a>
+                    </li>
+                    <li [class.active]="currentTabField === getTeamDetailsTabs().nextGames">
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openNextGames()">Partidos posteriores</a>
+                    </li>
+                    <li [class.active]="currentTabField === getTeamDetailsTabs().prevGames">
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openPrevGames()">Partidos Anteriores</a>
+                    </li>
+                    <li [class.active]="currentTabField === getTeamDetailsTabs().stats" *ngIf="competition?.leagueFixturesVsSameTeam">
+                        <a data-toggle="collapse" data-target=".navbar-collapse.show" class="nav-item nav-link btn" (click)="openTeamStats()">Estadísticas</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <div class="competition-details-content w-100" [ngSwitch]="currentTabField" [@avoidAnimatedTabsFirstEvent]>
+        <div *ngSwitchCase="getTeamDetailsTabs().roster" [@animatedTabs]>
+            <app-competition-team-roster [competitionID]="competitionID" [team]="team"></app-competition-team-roster>
+        </div>
+        <div *ngSwitchCase="getTeamDetailsTabs().nextGames" [@animatedTabs]>
+            <app-team-next-games [competitionID]="competitionID" [teamID]="teamID"></app-team-next-games>
+        </div>
+        <div *ngSwitchCase="getTeamDetailsTabs().prevGames" [@animatedTabs]>
+            <app-team-prev-games [competitionID]="competitionID" [teamID]="teamID"></app-team-prev-games>
+        </div>
+        <div *ngSwitchCase="getTeamDetailsTabs().stats" [@animatedTabs]>
+            <app-team-stats [competitionID]="competitionID" [teamID]="teamID" *ngIf="competition?.leagueFixturesVsSameTeam"></app-team-stats>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,152 @@
+<div class="admin-teams">
+    <div class="admin-header">
+        <div class="title">Gestión de equipos</div>
+        <div class="disclaimer alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center"
+             role="alert">
+            <mat-icon color="primary">priority_high</mat-icon>
+            <span>Recuerde que necesita crear y/o editar los jugadores necesarios antes de seguir con la gestión de equipos</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="disclaimer alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center"
+             role="alert">
+            <mat-icon color="primary">priority_high</mat-icon>
+            <span>Recuerde que necesita crear y/o editar los equipos necesarios, añadiendo y/o quitando jugadores, antes de seguir con la creación de competiciones</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="admin-content container">
+        <div class="row">
+            <div class="form-wrapper col-12 col-md-10 offset-md-1 col-xl-8 offset-xl-2">
+                <div class="form-header">
+                    <form [formGroup]="optionForm" class="d-flex row align-items-center">
+                        <mat-radio-group
+                                class="radio-group d-flex col-12 col-md-3 align-items-center justify-content-center"
+                                formControlName="action">
+                            <mat-radio-button class="radio-button" color="primary"
+                                              value="{{ getManageTeamActions().create }}" [checked]="true">
+                                Crear
+                            </mat-radio-button>
+                            <mat-radio-button class="radio-button" color="primary"
+                                              value="{{ getManageTeamActions().edit }}">
+                                Editar
+                            </mat-radio-button>
+                        </mat-radio-group>
+                        <mat-form-field class="query col-12 col-md-8 offset-md-1" appearance="outline" color="accent">
+                            <mat-icon matPrefix [color]="searchInput.focused ? 'accent' : ''" class="search-icon">search</mat-icon>
+                            <mat-label>Nombre de equipo</mat-label>
+                            <input matInput formControlName="name" [disableControl]="!canEditOptionSearchBox()"
+                                   #searchInput="matInput" [matAutocomplete]="auto" [readonly]="selectedTeamToEdit" (keydown.enter)="addFirstFilteredOption($event)">
+                            <button mat-button *ngIf="selectedTeamToEdit" matSuffix mat-icon-button aria-label="Clear" (click)="clearTeamToEdit()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </form>
+                </div>
+                <div class="form-content mat-elevation-z8 rounded">
+                    <form [formGroup]="teamForm" class="team-form" #formDirective="ngForm" enctype="multipart/form-data" method="post">
+                        <div class="team-form-title">{{ canEditOptionSearchBox()? "Editar equipo" : "Crear equipo" }}</div>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Nombre</mat-label>
+                            <input matInput type="text" formControlName="name" [disableControl]="canEditOptionSearchBox() && !selectedTeamToEdit">
+                            <mat-error *ngIf="errorHandling('name', 'required')">
+                                Debe proporcionar un <strong>nombre</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Ciudad</mat-label>
+                            <input matInput type="text" formControlName="city" [disableControl]="canEditOptionSearchBox() && !selectedTeamToEdit">
+                            <mat-error *ngIf="errorHandling('city', 'required')">
+                                Debe proporcionar una <strong>ciudad</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Sede</mat-label>
+                            <input matInput type="text" formControlName="address" [disableControl]="canEditOptionSearchBox() && !selectedTeamToEdit">
+                            <mat-error *ngIf="errorHandling('address', 'required')">
+                                Debe proporcionar una <strong>sede</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="long-label">Equipación local</mat-label>
+                            <input matInput type="text" formControlName="localJersey" [disableControl]="canEditOptionSearchBox() && !selectedTeamToEdit">
+                            <mat-error *ngIf="errorHandling('localJersey', 'required')">
+                                Debe proporcionar los colores de la <strong>equipación local</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Equipación visitante</mat-label>
+                            <input matInput type="text" formControlName="visitorJersey" [disableControl]="canEditOptionSearchBox() && !selectedTeamToEdit">
+                            <mat-error *ngIf="errorHandling('visitorJersey', 'required')">
+                                Debe proporcionar los colores de la <strong>equipación visitante</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="col-sm-12" appearance="outline" color="accent">
+                            <mat-label class="regular-label">Imagen</mat-label>
+                            <ngx-mat-file-input [multiple]="false" [disableControl]="cannotUploadImage()"
+                                                formControlName="avatar" [accept]="'image/*'"></ngx-mat-file-input>
+                            <mat-icon matSuffix>folder</mat-icon>
+                        </mat-form-field>
+                        <mat-checkbox class="mat-form-checkbox" formControlName="deleteAvatar" *ngIf="canEditOptionSearchBox()" [disableControl]="canEditOptionSearchBox() && !selectedTeamToEdit">
+                            Eliminar imagen para este equipo
+                        </mat-checkbox>
+                        <div class="players-container">
+                            <div class="players-title">Lista de jugadores ({{ teamPlayers.length }})</div>
+                            <mat-form-field class="query col-12" appearance="outline" color="accent">
+                                <mat-icon matPrefix [color]="searchInput.focused ? 'accent' : ''" class="search-icon">search</mat-icon>
+                                <mat-label>Identificación personal</mat-label>
+                                <input matInput [(ngModel)]="playerQueryToSearch" [ngModelOptions]="{standalone: true}" #searchInput="matInput" [matAutocomplete]="autoPlayers"
+                                       [disabled]="canEditOptionSearchBox() && !selectedTeamToEdit" type="text" (input)="searchPlayerToAdd($event)">
+                            </mat-form-field>
+                            <div class="players-wrapper" *ngIf="teamPlayers.length">
+                                <div class="player d-flex align-items-center justify-content-between" *ngFor="let player of teamPlayers; index as i">
+                                    <div class="player-counter">
+                                        {{i+1}}
+                                    </div>
+                                    <div class="idCard" [matTooltip]="player.name + ' ' + player.surname">
+                                        {{player.idCard}}
+                                    </div>
+                                    <div class="remove-icon d-flex">
+                                        <button mat-icon-button (click)="removePlayerFromList(player.idCard)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="no-players players-wrapper" *ngIf="!teamPlayers.length">No hay jugadores aún</div>
+                        </div>
+                        <div class="button-wrapper d-flex justify-content-end align-items-center">
+                            <button mat-flat-button color="accent" type="button" (click)="resetTeamForm()">Limpiar</button>
+                            <button mat-flat-button color="warn" type="button" (click)="deleteTeam()" *ngIf="canEditOptionSearchBox()"
+                                    [disabled]="!selectedTeamToEdit"> Borrar</button>
+
+                            <button mat-flat-button color="primary" type="button" (click)="sendTeam($event)" [disabled]="!teamForm.valid">
+                                Enviar
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<mat-autocomplete class="autocomplete-header" #auto="matAutocomplete" (optionSelected)="setTeamToEdit($event)" autoActiveFirstOption>
+    <mat-option *ngFor="let option of filteredOptions" [value]="option" class="autocomplete-option">
+        <mat-icon class="icon-type">people</mat-icon>
+        <span class="result-name">{{ option.name + " ( " + option.city + " )"}}</span>
+    </mat-option>
+</mat-autocomplete>
+
+<mat-autocomplete class="autocomplete-header" #autoPlayers="matAutocomplete" (optionSelected)="addPlayerToTeam($event)" autoActiveFirstOption>
+    <mat-option *ngFor="let option of filteredOptionsPlayers" [value]="option" class="autocomplete-option">
+        <mat-icon class="icon-type">person</mat-icon>
+        <span class="result-name">{{ option.idCard + " ( " + option.name + " " + option.surname + " )"}}</span>
+    </mat-option>
+</mat-autocomplete>
+
