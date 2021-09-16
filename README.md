@@ -76,6 +76,49 @@ reference is embedded in another one as a subdocument, giving us more flexibilit
 
 ## Frontend: Angular
 
+Angular is an open-source frontend framework developed by Google for creating dynamic, modern web apps. Its election 
+over other technologies is easy to understand: I have previous experience with it and its implementation would be 
+painless as I imagined some sites would share components. Angular fits perfectly thanks to its component-based 
+architecture, as we avoid duplicated code, make us easier its maintenance and improve code consistency. 
+
+In addition to this framework, some other tools has been used:
+- Angular material: implementation of Google's Material Design specification. Provides us some components and basic 
+functionality.
+- Bootstrap: kit of tools formed by a set of style sheets that help us to create websites.
+- Lottie: animation library based on json objects rather than media files. This will reduce loading time.
+
 ## Backend: Node.js
 
+Node.js is a JavaScript execution environment based on engine V8 by Google. This system compiles all the instructions to
+native code, making things faster. It let us execute JavaScript code outside a web browser. It executes just one thread, 
+deals request in asynchronous mode, and it's based on a non-blocking I/O event-guided architecture, which it's perfect 
+for managing a large number of connections without blocking.
+
+It has also been used by its NPM, its package manager which it's really popular. It offers a huge variety of tools that 
+help us to make easier to develop the app.
+
 ## Screenshots
+
+![Home](./screenshots/inicio-busqueda.png)
+
+![Admin login](./screenshots/login.png)
+
+![Tournament creation](./screenshots/creación-de-competiciones.png)
+
+![Calendar management](./screenshots/gestion-de-calendario.png)
+
+![Player management](./screenshots/gestión-de-jugadores.png)
+
+![Competition view on mobile](./screenshots/competicion-movil.png)
+
+![Team view](./screenshots/pagina-equipos.png)
+
+![Player view](./screenshots/pagina-Jugadores.png)
+
+![Game view](./screenshots/partido-basico.png)
+
+![Game event](./screenshots/partido-evento.png)
+
+![Game view on mobile](./screenshots/partido-movil.png)
+
+![Game view on tablet](./screenshots/partido-tablet.png)
