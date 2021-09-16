@@ -1,6 +1,5 @@
 # Actapp - Basketball tournament manager 
-### Computer Science Bachelor's Final Thesis
-### University of Granada, 2020
+### Computer Science Bachelor's Final Thesis - University of Granada, 2020
 
 The main goal of this project is to design and develop a **web application for managing and displaying basketball
 competitions** with a flexible approach, trying to avoid the current chaos we can find in our country (Spain)
@@ -44,4 +43,38 @@ data into the system. Administrators are also responsible for managing players, 
 Also, data will always be updated, so you're able to view events that happened in a past game or what is happening **in 
 live**.
 
+## Architectural pattern
 
+The chosen architectural pattern for this web application will be client-server model: it is a distributed pattern where
+clients ask for utils to the different independent servers, which offers their services to other subsystems. Clients and
+servers are communicated by a red.
+
+This model holds a strong division between frontend and backend, improves the independence of designs and its 
+cohesion, facilitates to reuse code, rise up the abstraction level, etc. Anyway, it isn't a common client-server model, 
+as it is divided in 3 layers. This will help us to improve the scalability and the reliability of the application, among 
+other benefits.
+
+- **Presentation layer**: most superficial layer of the system. Displays the user interface and interact with him.
+- **Prosecution layer**: keeps the set of rules that compose the business logic of the application. This layer is also 
+divided in API, which receives the requests, and domain, which contains the business logic.
+- **Database layer**: is the layer in charge of administration of the information inside the database.
+
+## Database design
+
+For its implementation, I decided to choose a document-oriented non-relational database technology like MongoDB. Due to 
+that reason, it isn't possible to draw a common entity relationship diagram, but I will present an adapted version of
+it.
+
+We can find two types of relations between actors:
+- **Relationships by reference**: we just keep the identifier of the document we want to reference. They are similar to 
+the common relations we can find in a MySQL system. Will be indicated in the diagram with a blue line.
+- **Relationships by embedded document**: in this kind of relationships, a full copy of the document we want to
+reference is embedded in another one as a subdocument, giving us more flexibility. Will be represented with a red line.
+
+![DB design](./BBDD_UML.png)
+
+## Frontend: Angular
+
+## Backend: Node.js
+
+## Screenshots
