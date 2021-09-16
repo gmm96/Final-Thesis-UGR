@@ -1,5 +1,6 @@
 # Actapp - Basketball tournament manager 
 ### Computer Science Bachelor's Final Thesis - University of Granada, 2020
+___
 
 The main goal of this project is to design and develop a **web application for managing and displaying basketball
 competitions** with a flexible approach, trying to avoid the current chaos we can find in our country (Spain)
