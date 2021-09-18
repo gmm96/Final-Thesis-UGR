@@ -109,7 +109,7 @@ help us to make easier to develop the app.
 
 ![Player management](./screenshots/gestión-de-jugadores.png)
 
-![Competition view on mobile](./screenshots/competicion-movil.png)
+![Competition view on mobile](./screenshots/partido-competicion-movil.png)
 
 ![Team view](./screenshots/pagina-equipos.png)
 
@@ -118,7 +118,5 @@ help us to make easier to develop the app.
 ![Game view](./screenshots/partido-basico.png)
 
 ![Game event](./screenshots/partido-evento.png)
-
-![Game view on mobile](./screenshots/partido-movil.png)
 
 ![Game view on tablet](./screenshots/partido-tablet.png)
